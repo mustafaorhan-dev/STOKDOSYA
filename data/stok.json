@@ -26,9 +26,9 @@
       "name": "TAVUK BONFİLE",
       "category": "Temel Gıda",
       "unit": "kg",
-      "stock": 300,
+      "stock": 500,
       "criticalLevel": 50,
-      "stt": "2026-05-26",
+      "stt": "2026-05-28",
       "createdAt": "2026-05-23T19:36:56.007Z"
     },
     "554466": {
@@ -151,6 +151,18 @@
       "date": "2026-05-23",
       "note": "İlk giriş",
       "timestamp": "2026-05-23T19:54:58.914Z"
+    },
+    {
+      "id": 1779566144499.4429,
+      "type": "giris",
+      "partiNo": "226",
+      "productName": "TAVUK BONFİLE",
+      "amount": 200,
+      "unit": "kg",
+      "date": "2026-05-23",
+      "note": "MEHMET",
+      "stt": "2026-05-28",
+      "timestamp": "2026-05-23T19:55:44.144Z"
     }
   ]
 }
