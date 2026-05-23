@@ -76,7 +76,7 @@
       "name": "ARMUT",
       "category": "Meyve",
       "unit": "kg",
-      "stock": 945,
+      "stock": 922.8,
       "criticalLevel": 50,
       "createdAt": "2026-05-23T19:07:53.045Z"
     }
@@ -282,6 +282,17 @@
       "date": "2026-05-23",
       "note": "Ürün çıkış",
       "timestamp": "2026-05-23T21:26:12.057Z"
+    },
+    {
+      "id": 1779571589924.8152,
+      "type": "cikis",
+      "partiNo": "A262161-3",
+      "productName": "ARMUT",
+      "amount": 22.2,
+      "unit": "kg",
+      "date": "2026-05-23",
+      "note": "Ürün çıkış",
+      "timestamp": "2026-05-23T21:26:29.046Z"
     }
   ]
 }
