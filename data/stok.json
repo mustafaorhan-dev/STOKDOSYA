@@ -76,7 +76,7 @@
       "name": "ARMUT",
       "category": "Meyve",
       "unit": "kg",
-      "stock": 1.599999999999909,
+      "stock": 6.599999999999909,
       "criticalLevel": 50,
       "createdAt": "2026-05-23T19:07:53.045Z"
     }
@@ -328,6 +328,18 @@
       "date": "2026-05-23",
       "note": "Ürün çıkış",
       "timestamp": "2026-05-23T21:41:41.699Z"
+    },
+    {
+      "id": 1779572844455.098,
+      "type": "giris",
+      "partiNo": "A262161-3",
+      "productName": "ARMUT",
+      "amount": 5,
+      "unit": "kg",
+      "date": "2026-05-23",
+      "note": "Mal kabul",
+      "stt": "",
+      "timestamp": "2026-05-23T21:47:23.605Z"
     }
   ]
 }
