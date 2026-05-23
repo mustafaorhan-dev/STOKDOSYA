@@ -454,7 +454,10 @@ function navigateTo(target) {
   if (target === 'stt-tracking') refreshSttTracking();
   if (target === 'entry') refreshEntryForm();
   if (target === 'exit') refreshExitForm();
-  if (target === 'daily') refreshDailyView();
+  if (target === 'daily') {
+    document.getElementById('daily-date').value = todayStr();
+    refreshDailyView();
+  }
   if (target === 'settings-view') refreshSettings();
 }
 
@@ -1431,9 +1434,6 @@ function refreshAll() {
   refreshExitForm();
   refreshSettings();
 
-  // Günlük İşlemler tarihini bugüne ayarla
-  document.getElementById('daily-date').value = todayStr();
-
   // Aktif view'i güncelle
   const aktifView = document.querySelector('.view-section.active');
   if (aktifView) {
@@ -1477,7 +1477,7 @@ function refreshDailyView() {
   document.getElementById('daily-cikis-adet').textContent = _fmt(cikis.reduce((s,t) => s + t.amount, 0)) + ' (' + cikis.length + ' işlem)';
   document.getElementById('daily-toplam-adet').textContent = _fmt(hareketler.reduce((s,t) => s + t.amount, 0)) + ' (' + hareketler.length + ' işlem)';
 
-  document.getElementById('daily-baslik').textContent = yil + ' Yılı' + (dateStr ? ' — ' + dateStr : ' — Tümü');
+  document.getElementById('daily-baslik').textContent = yil + ' Yılı' + (dateStr ? ' — ' + formatDate(dateStr) : ' — Tümü');
 
   const tbody = document.getElementById('daily-body');
   if (!hareketler.length) {
