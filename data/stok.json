@@ -31,6 +31,16 @@
       "stt": "2026-05-28",
       "createdAt": "2026-05-23T19:36:56.007Z"
     },
+    "6699": {
+      "partiNo": "6699",
+      "name": "SÜT",
+      "category": "Süt Ürünleri",
+      "unit": "kg",
+      "stock": 450,
+      "criticalLevel": 50,
+      "stt": "2026-08-28",
+      "createdAt": "2026-05-23T19:56:39.818Z"
+    },
     "554466": {
       "partiNo": "554466",
       "name": "EJDER MEYVESİ",
@@ -163,6 +173,17 @@
       "note": "MEHMET",
       "stt": "2026-05-28",
       "timestamp": "2026-05-23T19:55:44.144Z"
+    },
+    {
+      "id": 1779566200764.6887,
+      "type": "giris",
+      "partiNo": "6699",
+      "productName": "SÜT",
+      "amount": 450,
+      "unit": "kg",
+      "date": "2026-05-23",
+      "note": "İlk giriş",
+      "timestamp": "2026-05-23T19:56:39.818Z"
     }
   ]
 }
