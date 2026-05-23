@@ -325,21 +325,40 @@ const AY_INDEX = new Date().getMonth();
 let _yearChart = null;
 let _monthChart = null;
 
+function populateYearProductFilter() {
+  const select = document.getElementById('year-product-filter');
+  if (!select) return;
+  const current = select.value;
+  const urunler = [...new Set(data.transactions.map(t => t.productName).filter(Boolean))].sort();
+  select.innerHTML = '<option value="">Tüm Ürünler</option>';
+  urunler.forEach(name => {
+    const opt = document.createElement('option');
+    opt.value = name;
+    opt.textContent = name;
+    if (name === current) opt.selected = true;
+    select.appendChild(opt);
+  });
+}
+
 function renderYearChart(yil) {
   const canvas = document.getElementById('year-chart');
   if (!canvas) return;
   if (_yearChart) { _yearChart.destroy(); _yearChart = null; }
 
+  const urunFiltre = document.getElementById('year-product-filter').value;
+
   const girisAylik = AYLAR.map((_, i) =>
     data.transactions.filter(t => {
       const d = new Date(t.date);
-      return t.type === 'giris' && d.getMonth() === i && d.getFullYear() === yil;
+      return t.type === 'giris' && d.getMonth() === i && d.getFullYear() === yil
+        && (!urunFiltre || t.productName === urunFiltre);
     }).reduce((s, t) => s + t.amount, 0)
   );
   const cikisAylik = AYLAR.map((_, i) =>
     data.transactions.filter(t => {
       const d = new Date(t.date);
-      return t.type === 'cikis' && d.getMonth() === i && d.getFullYear() === yil;
+      return t.type === 'cikis' && d.getMonth() === i && d.getFullYear() === yil
+        && (!urunFiltre || t.productName === urunFiltre);
     }).reduce((s, t) => s + t.amount, 0)
   );
 
@@ -894,9 +913,14 @@ function refreshMonthView() {
 function refreshYearsView() {
   const prevYil = parseInt(document.getElementById('year-select').value);
   populateYearSelect('year-select', prevYil || new Date().getFullYear());
+  populateYearProductFilter();
   const yil = parseInt(document.getElementById('year-select').value) || new Date().getFullYear();
+  const urunFiltre = document.getElementById('year-product-filter').value;
   renderYearChart(yil);
-  const hareketler = data.transactions.filter(t => new Date(t.date).getFullYear() === yil);
+  const hareketler = data.transactions.filter(t => {
+    const ayniYil = new Date(t.date).getFullYear() === yil;
+    return urunFiltre ? (ayniYil && t.productName === urunFiltre) : ayniYil;
+  });
 
   const girisler = hareketler.filter(t => t.type === 'giris');
   const cikislar = hareketler.filter(t => t.type === 'cikis');
@@ -921,6 +945,7 @@ function refreshYearsView() {
 }
 
 document.getElementById('year-select').addEventListener('change', refreshYearsView);
+document.getElementById('year-product-filter').addEventListener('change', refreshYearsView);
 
 // ----- AYARLAR -----
 function refreshSettings() {
