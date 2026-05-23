@@ -13,7 +13,7 @@ const HARD_CODED_GITHUB = {
   owner: 'mustafaorhan-dev',
   repo: 'STOKDOSYA',
   path: 'data/stok.json',
-  token: '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' // GitHub Personal Access Token (settings'ten de girilebilir)
+  token: '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' // GitHub Personal Access Token (settings'ten de girilebilir)
 };
 
 let data = { products: {}, transactions: [], users: [], activeUser: '', settings: {} };
