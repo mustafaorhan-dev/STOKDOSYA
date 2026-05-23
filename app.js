@@ -888,18 +888,18 @@ function refreshMonthView() {
     return t.type === 'cikis' && d.getMonth() === ay && d.getFullYear() === yil;
   });
 
-  document.getElementById('month-in-total').textContent = girisler.reduce((s, t) => s + t.amount, 0);
-  document.getElementById('month-out-total').textContent = cikislar.reduce((s, t) => s + t.amount, 0);
+  document.getElementById('month-in-total').textContent = `${girisler.reduce((s, t) => s + t.amount, 0)} Adet`;
+  document.getElementById('month-out-total').textContent = `${cikislar.reduce((s, t) => s + t.amount, 0)} Adet`;
 
   const inBody = document.getElementById('month-in-list');
   inBody.innerHTML = girisler.length
-    ? girisler.map(t => `<tr><td>${formatDate(t.date)}</td><td>${t.productName}</td><td>${t.amount}</td></tr>`).join('')
-    : '<tr><td colspan="3" style="text-align:center;color:var(--text-muted);padding:20px;">Bu ayda giriş yok.</td></tr>';
+    ? girisler.map(t => `<tr><td>${formatDate(t.date)}</td><td>${t.productName}</td><td>${t.amount}</td><td>${t.unit || '—'}</td></tr>`).join('')
+    : '<tr><td colspan="4" style="text-align:center;color:var(--text-muted);padding:20px;">Bu ayda giriş yok.</td></tr>';
 
   const outBody = document.getElementById('month-out-list');
   outBody.innerHTML = cikislar.length
-    ? cikislar.map(t => `<tr><td>${formatDate(t.date)}</td><td>${t.productName}</td><td>${t.amount}</td></tr>`).join('')
-    : '<tr><td colspan="3" style="text-align:center;color:var(--text-muted);padding:20px;">Bu ayda çıkış yok.</td></tr>';
+    ? cikislar.map(t => `<tr><td>${formatDate(t.date)}</td><td>${t.productName}</td><td>${t.amount}</td><td>${t.unit || '—'}</td></tr>`).join('')
+    : '<tr><td colspan="4" style="text-align:center;color:var(--text-muted);padding:20px;">Bu ayda çıkış yok.</td></tr>';
 }
 
 // ----- YILLIK RAPOR -----
