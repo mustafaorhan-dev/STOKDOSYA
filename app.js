@@ -697,7 +697,7 @@ function openProductModal(editPartiNo) {
     document.getElementById('np-name').value = p.name;
     document.getElementById('np-category').value = p.category;
     document.getElementById('np-unit').value = p.unit;
-    document.getElementById('np-stock').value = p.stock;
+    document.getElementById('np-stock').value = _fmt(p.stock);
     document.getElementById('np-critical').value = p.criticalLevel;
     document.getElementById('np-stt').value = p.stt || '';
     document.getElementById('submit-product-btn').innerHTML = '<i class="fa-solid fa-pen"></i> Kartı Güncelle';
@@ -728,7 +728,7 @@ document.getElementById('new-product-form').addEventListener('submit', (e) => {
   const name = document.getElementById('np-name').value.trim();
   const category = document.getElementById('np-category').value;
   const unit = document.getElementById('np-unit').value;
-  const stock = parseInt(document.getElementById('np-stock').value) || 0;
+  const stock = _parseAmount(document.getElementById('np-stock').value) || 0;
   const critical = parseInt(document.getElementById('np-critical').value) || 0;
   const stt = document.getElementById('np-stt').value || '';
 
@@ -866,7 +866,7 @@ document.getElementById('exit-form').addEventListener('submit', (e) => {
   if (!partiNo || !amount || amount <= 0 || !date) { toast('Tüm alanları doldurun.', 'error'); return; }
   const p = data.products[partiNo];
   if (!p) { toast('Ürün bulunamadı.', 'error'); return; }
-  if (p.stock < amount) { toast(`Yetersiz stok! Mevcut: ${p.stock} ${p.unit}`, 'error'); return; }
+  if (p.stock < amount) { toast(`Yetersiz stok! Mevcut: ${_fmt(p.stock)} ${p.unit}`, 'error'); return; }
 
   p.stock -= amount;
   data.transactions.push({
