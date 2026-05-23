@@ -693,22 +693,16 @@ function _exportData() {
   });
 }
 
-function _xlsBlob(rows, headers, sheetName, fileName) {
-  const escXml = s => String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
-  let xml = '<?xml version="1.0" encoding="UTF-8"?><?mso-application progid="Excel.Sheet"?>';
-  xml += '<Workbook xmlns="urn:schemas-microsoft-com:office:spreadsheet" xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel">';
-  xml += '<Worksheet ss:Name="' + escXml(sheetName) + '"><Table>';
-  xml += '<Row>' + headers.map(h => '<Cell><Data ss:Type="String">' + escXml(h) + '</Data></Cell>').join('') + '</Row>';
+function _htmlExcelBlob(rows, headers, fileName) {
+  const esc = s => String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  const attr = ' style="border:1px solid #ccc;padding:6px 8px;"';
+  let html = '<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel"><head><meta charset="UTF-8"><!--[if gte mso 9]><xml><x:ExcelWorkbook><x:ExcelWorksheets><x:ExcelWorksheet><x:Name>Sayfa1</x:Name></x:ExcelWorksheet></x:ExcelWorksheets></x:ExcelWorkbook></xml><![endif]--></head><body><table>';
+  html += '<tr>' + headers.map(h => '<th' + attr + '>' + esc(h) + '</th>').join('') + '</tr>';
   rows.forEach(r => {
-    xml += '<Row>' + r.map(v => {
-      const num = parseFloat(String(v).replace(',', '.'));
-      const type = isNaN(num) || v === '' || v === '—' ? 'String' : 'Number';
-      const val = type === 'Number' ? String(num) : escXml(String(v));
-      return '<Cell><Data ss:Type="' + type + '">' + val + '</Data></Cell>';
-    }).join('') + '</Row>';
+    html += '<tr>' + r.map(v => '<td' + attr + '>' + esc(v) + '</td>').join('') + '</tr>';
   });
-  xml += '</Table></Worksheet></Workbook>';
-  const blob = new Blob([xml], { type: 'application/vnd.ms-excel;charset=utf-8' });
+  html += '</table></body></html>';
+  const blob = new Blob([html], { type: 'application/vnd.ms-excel;charset=utf-8' });
   const a = document.createElement('a');
   a.href = URL.createObjectURL(blob);
   a.download = fileName;
@@ -722,9 +716,9 @@ function exportXLSX() {
   const data = rows.map(p => {
     const durum = p.stokBitti ? p.stokBitti.trim() : (p.stock <= p.criticalLevel ? 'KRİTİK' : '');
     return [p.partiNo, p.category, p.name, _fmt(p.stock), p.unit,
-      p.criticalLevel, p.stt || '—', p.sttDurum, durum];
+      p.criticalLevel, formatDate(p.stt) || '—', p.sttDurum, durum];
   });
-  _xlsBlob(data, headers, 'Stok Listesi', 'stok_listesi.xls');
+  _htmlExcelBlob(data, headers, 'stok_listesi.xls');
   toast('Excel dosyası indirildi.', 'success');
 }
 
@@ -739,7 +733,7 @@ function exportWord() {
 </tr></thead>
 <tbody>${rows.map(p => {
     const durum = p.stokBitti ? p.stokBitti : (p.stock <= p.criticalLevel ? ' KRİTİK' : '');
-    return `<tr><td>${p.partiNo}</td><td>${p.category}</td><td>${p.name}</td><td align="right">${_fmt(p.stock)}</td><td>${p.unit}</td><td align="right">${p.criticalLevel}</td><td>${p.stt || '—'}</td><td>${p.sttDurum}</td><td>${durum.trim()}</td></tr>`;
+    return `<tr><td>${p.partiNo}</td><td>${p.category}</td><td>${p.name}</td><td align="right">${_fmt(p.stock)}</td><td>${p.unit}</td><td align="right">${p.criticalLevel}</td><td>${formatDate(p.stt) || '—'}</td><td>${p.sttDurum}</td><td>${durum.trim()}</td></tr>`;
   }).join('\n')}</tbody></table></body></html>`;
   const blob = new Blob(['\ufeff' + html], { type: 'application/msword;charset=utf-8' });
   const a = document.createElement('a');
@@ -770,7 +764,7 @@ function exportPrint() {
     <tbody>${rows.map(p => {
       const durum = p.stokBitti ? 'STOKTA BİTTİ' : (p.stock <= p.criticalLevel ? 'KRİTİK' : '');
       const cls = p.stokBitti ? ' class="bitti"' : '';
-      return `<tr${cls}><td>${p.partiNo}</td><td>${p.category}</td><td>${p.name}</td><td align="right">${_fmt(p.stock)}</td><td>${p.unit}</td><td align="right">${p.criticalLevel}</td><td>${p.stt || '—'}</td><td>${p.sttDurum}</td><td>${durum}</td></tr>`;
+      return `<tr${cls}><td>${p.partiNo}</td><td>${p.category}</td><td>${p.name}</td><td align="right">${_fmt(p.stock)}</td><td>${p.unit}</td><td align="right">${p.criticalLevel}</td><td>${formatDate(p.stt) || '—'}</td><td>${p.sttDurum}</td><td>${durum}</td></tr>`;
     }).join('\n')}</tbody></table>
     <p style="margin-top:20px;color:#888;font-size:11px;">Oluşturulma: ${new Date().toLocaleDateString('tr-TR')}</p>
     <script>window.print();<\/script>
@@ -793,7 +787,7 @@ function _sttExportData() {
 
 function sttExportXLSX() {
   const rows = _sttExportData();
-  _xlsBlob(rows, ['Parti No','Ürün','STT','Kalan Gün','Stok','Durum'], 'STT Takip', 'stt_takip.xls');
+  _htmlExcelBlob(rows, ['Parti No','Ürün','STT','Kalan Gün','Stok','Durum'], 'stt_takip.xls');
   toast('Excel dosyası indirildi.', 'success');
 }
 function sttExportWord() {
