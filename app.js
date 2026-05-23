@@ -325,6 +325,25 @@ const AY_INDEX = new Date().getMonth();
 let _yearChart = null;
 let _monthChart = null;
 
+const barValuePlugin = {
+  id: 'barValuePlugin',
+  afterDatasetsDraw(chart) {
+    const ctx = chart.ctx;
+    chart.data.datasets.forEach((dataset, i) => {
+      const meta = chart.getDatasetMeta(i);
+      meta.data.forEach((bar, index) => {
+        const val = dataset.data[index];
+        if (val === 0) return;
+        ctx.fillStyle = dataset.borderColor || '#fff';
+        ctx.font = 'bold 11px Outfit, sans-serif';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'bottom';
+        ctx.fillText(val, bar.x, bar.y - 3);
+      });
+    });
+  }
+};
+
 function populateYearProductFilter() {
   const select = document.getElementById('year-product-filter');
   if (!select) return;
@@ -379,7 +398,8 @@ function renderYearChart(yil) {
         x: { ticks: { color: '#94a3b8' } },
         y: { beginAtZero: true, ticks: { color: '#94a3b8' } }
       }
-    }
+    },
+    plugins: [barValuePlugin]
   });
 }
 
@@ -419,7 +439,8 @@ function renderMonthChart(ay, yil) {
         x: { ticks: { color: '#94a3b8' } },
         y: { beginAtZero: true, ticks: { color: '#94a3b8' } }
       }
-    }
+    },
+    plugins: [barValuePlugin]
   });
 }
 
