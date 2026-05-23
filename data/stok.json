@@ -46,7 +46,7 @@
       "name": "AYVA",
       "category": "Meyve",
       "unit": "kg",
-      "stock": 450,
+      "stock": 425,
       "criticalLevel": 50,
       "stt": "",
       "createdAt": "2026-05-23T19:57:30.086Z"
@@ -226,6 +226,17 @@
       "date": "2026-05-23",
       "note": "İlk giriş",
       "timestamp": "2026-05-23T20:06:40.725Z"
+    },
+    {
+      "id": 1779567353434.1084,
+      "type": "cikis",
+      "partiNo": "7777",
+      "productName": "AYVA",
+      "amount": 25,
+      "unit": "kg",
+      "date": "2026-05-23",
+      "note": "AHMET",
+      "timestamp": "2026-05-23T20:15:53.096Z"
     }
   ]
 }
