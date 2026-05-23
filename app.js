@@ -408,28 +408,28 @@ function renderMonthChart(ay, yil) {
   if (!canvas) return;
   if (_monthChart) { _monthChart.destroy(); _monthChart = null; }
 
-  const girisKat = {};
-  const cikisKat = {};
+  const girisUrun = {};
+  const cikisUrun = {};
   data.transactions.filter(t => {
     const d = new Date(t.date);
     return d.getMonth() === ay && d.getFullYear() === yil;
   }).forEach(t => {
-    const kat = data.products[t.partiNo] ? data.products[t.partiNo].category : 'Diğer';
-    if (t.type === 'giris') girisKat[kat] = (girisKat[kat] || 0) + t.amount;
-    else cikisKat[kat] = (cikisKat[kat] || 0) + t.amount;
+    const ad = t.productName || 'Bilinmeyen';
+    if (t.type === 'giris') girisUrun[ad] = (girisUrun[ad] || 0) + t.amount;
+    else cikisUrun[ad] = (cikisUrun[ad] || 0) + t.amount;
   });
 
-  const kategoriler = [...new Set([...Object.keys(girisKat), ...Object.keys(cikisKat)])];
-  if (!kategoriler.length) return;
+  const urunler = [...new Set([...Object.keys(girisUrun), ...Object.keys(cikisUrun)])];
+  if (!urunler.length) return;
 
   const ctx = canvas.getContext('2d');
   _monthChart = new Chart(ctx, {
     type: 'bar',
     data: {
-      labels: kategoriler,
+      labels: urunler,
       datasets: [
-        { label: 'Giriş', data: kategoriler.map(k => girisKat[k] || 0), backgroundColor: 'rgba(34,197,94,0.7)', borderColor: '#22c55e', borderWidth: 1 },
-        { label: 'Çıkış', data: kategoriler.map(k => cikisKat[k] || 0), backgroundColor: 'rgba(239,68,68,0.7)', borderColor: '#ef4444', borderWidth: 1 }
+        { label: 'Giriş', data: urunler.map(k => girisUrun[k] || 0), backgroundColor: 'rgba(34,197,94,0.7)', borderColor: '#22c55e', borderWidth: 1 },
+        { label: 'Çıkış', data: urunler.map(k => cikisUrun[k] || 0), backgroundColor: 'rgba(239,68,68,0.7)', borderColor: '#ef4444', borderWidth: 1 }
       ]
     },
     options: {
