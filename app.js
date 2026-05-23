@@ -377,13 +377,13 @@ function refreshDashboard() {
   const bugunHareket = data.transactions.filter(t => t.date === bugun);
   document.getElementById('today-transactions').textContent = bugunHareket.length;
 
-  // Son hareketler tablosu
+  // Son hareketler tablosu (tümü, en yeniler üstte)
   const tbody = document.getElementById('recent-transactions-body');
-  const son = data.transactions.slice(-10).reverse();
-  if (!son.length) {
+  const hareketler = [...data.transactions].reverse();
+  if (!hareketler.length) {
     tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;color:var(--text-muted);padding:40px;">Henüz hareket kaydı yok.</td></tr>';
   } else {
-    tbody.innerHTML = son.map(t => {
+    tbody.innerHTML = hareketler.map(t => {
       const tipEl = t.type === 'giris' ? '<span style="color:var(--success);font-weight:700;">GİRİŞ</span>' : '<span style="color:var(--accent);font-weight:700;">ÇIKIŞ</span>';
       const birim = t.unit || (data.products[t.partiNo] && data.products[t.partiNo].unit) || '';
       return `<tr><td style="font-weight:600;">${t.partiNo}</td><td>${formatDate(t.date)}</td><td>${tipEl}</td><td>${t.productName}</td><td>${t.amount}</td><td>${birim}</td><td style="color:var(--text-secondary);">${t.note || '-'}</td></tr>`;

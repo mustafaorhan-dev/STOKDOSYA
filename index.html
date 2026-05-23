@@ -149,21 +149,24 @@
                     <div class="panel-container" style="margin-bottom:0;">
                         <div class="panel-header">
                             <h3>Son Hareketler</h3>
+                            <a href="#" onclick="navigateTo('daily'); return false;" style="font-size:0.85rem;color:var(--primary);font-weight:600;text-decoration:none;">Tümünü Gör →</a>
                         </div>
-                        <table class="minimal-table">
-                            <thead>
-                                <tr>
-                                    <th>Parti No</th>
-                                    <th>Tarih</th>
-                                    <th>Tür</th>
-                                    <th>Ürün</th>
-                                    <th>Miktar</th>
-                                    <th>Birim</th>
-                                    <th>Açıklama</th>
-                                </tr>
-                            </thead>
-                            <tbody id="recent-transactions-body"></tbody>
-                        </table>
+                        <div style="overflow-x:auto; max-height:380px; overflow-y:auto;">
+                            <table class="minimal-table" style="min-width:650px;">
+                                <thead>
+                                    <tr>
+                                        <th>Parti No</th>
+                                        <th>Tarih</th>
+                                        <th>Tür</th>
+                                        <th>Ürün</th>
+                                        <th>Miktar</th>
+                                        <th>Birim</th>
+                                        <th>Açıklama</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="recent-transactions-body"></tbody>
+                            </table>
+                        </div>
                     </div>
 
                     <!-- Kritik Stok Listesi Yan Panel -->
