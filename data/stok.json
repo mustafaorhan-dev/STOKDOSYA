@@ -24,7 +24,7 @@
       "name": "DOMATES",
       "category": "Sebze",
       "unit": "kg",
-      "stock": 350,
+      "stock": 345,
       "criticalLevel": 50,
       "createdAt": "2026-05-23T16:01:53.783Z"
     }
@@ -40,6 +40,17 @@
       "date": "2026-05-23",
       "note": "İlk giriş",
       "timestamp": "2026-05-23T16:01:53.783Z"
+    },
+    {
+      "id": 1779552143151.4033,
+      "type": "cikis",
+      "partiNo": "A262161",
+      "productName": "DOMATES",
+      "amount": 5,
+      "unit": "kg",
+      "date": "2026-05-23",
+      "note": "BAYRAM AKKURT",
+      "timestamp": "2026-05-23T16:02:22.820Z"
     }
   ]
 }
