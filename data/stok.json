@@ -66,7 +66,7 @@
       "name": "EJDER MEYVESİ",
       "category": "Meyve",
       "unit": "kg",
-      "stock": 72,
+      "stock": 95,
       "criticalLevel": 50,
       "stt": "",
       "createdAt": "2026-05-23T19:54:58.914Z"
@@ -293,6 +293,18 @@
       "date": "2026-05-23",
       "note": "Ürün çıkış",
       "timestamp": "2026-05-23T21:26:29.046Z"
+    },
+    {
+      "id": 1779571624098.3328,
+      "type": "giris",
+      "partiNo": "554466",
+      "productName": "EJDER MEYVESİ",
+      "amount": 23,
+      "unit": "kg",
+      "date": "2026-05-23",
+      "note": "Mal kabul",
+      "stt": "",
+      "timestamp": "2026-05-23T21:27:03.379Z"
     }
   ]
 }
