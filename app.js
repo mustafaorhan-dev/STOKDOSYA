@@ -802,10 +802,14 @@ document.getElementById('entry-product').addEventListener('change', () => {
   }
 });
 
+function _parseAmount(v) {
+  return parseFloat(v.replace(',', '.'));
+}
+
 document.getElementById('entry-form').addEventListener('submit', (e) => {
   e.preventDefault();
   const partiNo = document.getElementById('entry-product').value;
-  const amount = parseInt(document.getElementById('entry-amount').value);
+  const amount = _parseAmount(document.getElementById('entry-amount').value);
   const date = document.getElementById('entry-date').value;
   const note = document.getElementById('entry-note').value.trim();
   const stt = document.getElementById('entry-stt').value || '';
@@ -823,9 +827,7 @@ document.getElementById('entry-form').addEventListener('submit', (e) => {
   });
   saveData();
   toast(`${amount} ${p.unit} ${p.name} girişi kaydedildi.`, 'success');
-  document.getElementById('entry-amount').value = '';
-  document.getElementById('entry-note').value = '';
-  document.getElementById('entry-stt').value = '';
+  switchTab('warehouse');
   refreshEntryForm();
   refreshDashboard();
   buildMonthMenu();
@@ -850,7 +852,7 @@ function refreshExitForm() {
 document.getElementById('exit-form').addEventListener('submit', (e) => {
   e.preventDefault();
   const partiNo = document.getElementById('exit-product').value;
-  const amount = parseInt(document.getElementById('exit-amount').value);
+  const amount = _parseAmount(document.getElementById('exit-amount').value);
   const date = document.getElementById('exit-date').value;
   const note = document.getElementById('exit-note').value.trim();
 
@@ -866,8 +868,7 @@ document.getElementById('exit-form').addEventListener('submit', (e) => {
   });
   saveData();
   toast(`${amount} ${p.unit} ${p.name} çıkışı kaydedildi.`, 'success');
-  document.getElementById('exit-amount').value = '';
-  document.getElementById('exit-note').value = '';
+  switchTab('warehouse');
   refreshExitForm();
   refreshDashboard();
   buildMonthMenu();
