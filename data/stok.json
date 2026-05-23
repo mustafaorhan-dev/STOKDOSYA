@@ -31,6 +31,16 @@
       "stt": "2026-05-26",
       "createdAt": "2026-05-23T19:36:56.007Z"
     },
+    "554466": {
+      "partiNo": "554466",
+      "name": "EJDER MEYVESİ",
+      "category": "Meyve",
+      "unit": "kg",
+      "stock": 72,
+      "criticalLevel": 50,
+      "stt": "",
+      "createdAt": "2026-05-23T19:54:58.914Z"
+    },
     "A262161-3": {
       "partiNo": "A262161-3",
       "name": "ARMUT",
@@ -130,6 +140,17 @@
       "note": "Mal kabul",
       "stt": "",
       "timestamp": "2026-05-23T19:39:47.147Z"
+    },
+    {
+      "id": 1779566098939.9617,
+      "type": "giris",
+      "partiNo": "554466",
+      "productName": "EJDER MEYVESİ",
+      "amount": 72,
+      "unit": "kg",
+      "date": "2026-05-23",
+      "note": "İlk giriş",
+      "timestamp": "2026-05-23T19:54:58.914Z"
     }
   ]
 }
