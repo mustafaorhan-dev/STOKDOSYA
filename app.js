@@ -263,8 +263,10 @@ function toggleTheme() {
 
 // ----- YARDIMCI -----
 function formatDate(iso) {
-  const d = new Date(iso);
-  return d.toLocaleDateString('tr-TR', { day: '2-digit', month: '2-digit', year: 'numeric' });
+  if (!iso) return '-';
+  const [y, m, d] = iso.split('-');
+  if (!y || !m || !d) return iso;
+  return d + '.' + m + '.' + y;
 }
 
 function todayStr() { return new Date().toISOString().split('T')[0]; }
@@ -424,7 +426,7 @@ function refreshDashboard() {
       return `
       <div style="display:flex;align-items:center;gap:12px;background:${bgLight};padding:12px;border-radius:var(--border-radius-sm);border:1px solid ${bg}40;">
         <i class="fa-regular fa-clock" style="color:${bg};font-size:18px;"></i>
-        <div style="flex:1;"><strong>${p.name}</strong> [${p.partiNo}]<br><span style="font-size:13px;color:var(--text-secondary);">STT: ${p.stt} — Stok: ${p.stock} ${p.unit}</span></div>
+        <div style="flex:1;"><strong>${p.name}</strong> [${p.partiNo}]<br><span style="font-size:13px;color:var(--text-secondary);">STT: ${formatDate(p.stt)} — Stok: ${p.stock} ${p.unit}</span></div>
         <span style="background:${bg};color:#fff;padding:2px 10px;border-radius:999px;font-size:12px;font-weight:700;">${uyari}</span>
       </div>`;
     }).join('');
@@ -442,9 +444,10 @@ function sttDurum(stt) {
   bugun.setHours(0, 0, 0, 0);
   const sttDate = new Date(stt + 'T00:00:00');
   const fark = Math.ceil((sttDate - bugun) / (1000 * 60 * 60 * 24));
-  if (fark < 0) return { text: stt + ' (GEÇTİ)', cls: 'color:var(--accent);font-weight:800;' };
-  if (fark <= 3) return { text: stt + ' (' + fark + ' gün)', cls: 'color:var(--warning);font-weight:700;' };
-  return { text: stt, cls: '' };
+  const goster = formatDate(stt);
+  if (fark < 0) return { text: goster + ' (GEÇTİ)', cls: 'color:var(--accent);font-weight:800;' };
+  if (fark <= 3) return { text: goster + ' (' + fark + ' gün)', cls: 'color:var(--warning);font-weight:700;' };
+  return { text: goster, cls: '' };
 }
 
 function refreshWarehouse() {
