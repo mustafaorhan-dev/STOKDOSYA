@@ -271,6 +271,37 @@ function formatDate(iso) {
 
 function todayStr() { return new Date().toISOString().split('T')[0]; }
 
+// ----- KİŞİ ADI AYIKLAMA -----
+function extractPerson(note) {
+  if (!note) return '';
+  const regex = /\b([A-ZİŞĞÜÖÇ][A-ZİŞĞÜÖÇ]{1,}(?:\s+[A-ZİŞĞÜÖÇ][A-ZİŞĞÜÖÇ]{1,})+)\b/g;
+  const match = regex.exec(note);
+  return match ? match[1].trim() : '';
+}
+
+function getAllPersons() {
+  const set = new Set();
+  data.transactions.forEach(t => {
+    const p = extractPerson(t.note);
+    if (p) set.add(p);
+  });
+  return [...set].sort();
+}
+
+function refreshPersonFilter() {
+  const select = document.getElementById('daily-person-filter');
+  if (!select) return;
+  const current = select.value;
+  select.innerHTML = '<option value="">Tüm Personel</option>';
+  getAllPersons().forEach(name => {
+    const opt = document.createElement('option');
+    opt.value = name;
+    opt.textContent = name;
+    if (name === current) opt.selected = true;
+    select.appendChild(opt);
+  });
+}
+
 function populateYearSelect(selectId, selectedYear) {
   const select = document.getElementById(selectId);
   if (!select) return;
@@ -287,7 +318,90 @@ function populateYearSelect(selectId, selectedYear) {
 
 // ----- AYLAR -----
 const AYLAR = ['Ocak','Şubat','Mart','Nisan','Mayıs','Haziran','Temmuz','Ağustos','Eylül','Ekim','Kasım','Aralık'];
-const AY_INDEX = new Date().getMonth(); // 0-based
+const AY_INDEX = new Date().getMonth();
+
+// ----- CHART JS YÖNETİMİ -----
+let _yearChart = null;
+let _monthChart = null;
+
+function renderYearChart(yil) {
+  const canvas = document.getElementById('year-chart');
+  if (!canvas) return;
+  if (_yearChart) { _yearChart.destroy(); _yearChart = null; }
+
+  const girisAylik = AYLAR.map((_, i) =>
+    data.transactions.filter(t => {
+      const d = new Date(t.date);
+      return t.type === 'giris' && d.getMonth() === i && d.getFullYear() === yil;
+    }).reduce((s, t) => s + t.amount, 0)
+  );
+  const cikisAylik = AYLAR.map((_, i) =>
+    data.transactions.filter(t => {
+      const d = new Date(t.date);
+      return t.type === 'cikis' && d.getMonth() === i && d.getFullYear() === yil;
+    }).reduce((s, t) => s + t.amount, 0)
+  );
+
+  const ctx = canvas.getContext('2d');
+  _yearChart = new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: AYLAR,
+      datasets: [
+        { label: 'Giriş', data: girisAylik, backgroundColor: 'rgba(34,197,94,0.7)', borderColor: '#22c55e', borderWidth: 1 },
+        { label: 'Çıkış', data: cikisAylik, backgroundColor: 'rgba(239,68,68,0.7)', borderColor: '#ef4444', borderWidth: 1 }
+      ]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: { legend: { labels: { color: '#94a3b8' } } },
+      scales: {
+        x: { ticks: { color: '#94a3b8' } },
+        y: { beginAtZero: true, ticks: { color: '#94a3b8' } }
+      }
+    }
+  });
+}
+
+function renderMonthChart(ay, yil) {
+  const canvas = document.getElementById('month-chart');
+  if (!canvas) return;
+  if (_monthChart) { _monthChart.destroy(); _monthChart = null; }
+
+  const girisKat = {};
+  const cikisKat = {};
+  data.transactions.filter(t => {
+    const d = new Date(t.date);
+    return d.getMonth() === ay && d.getFullYear() === yil;
+  }).forEach(t => {
+    const kat = data.products[t.partiNo] ? data.products[t.partiNo].category : 'Diğer';
+    if (t.type === 'giris') girisKat[kat] = (girisKat[kat] || 0) + t.amount;
+    else cikisKat[kat] = (cikisKat[kat] || 0) + t.amount;
+  });
+
+  const kategoriler = [...new Set([...Object.keys(girisKat), ...Object.keys(cikisKat)])];
+  if (!kategoriler.length) return;
+
+  const ctx = canvas.getContext('2d');
+  _monthChart = new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: kategoriler,
+      datasets: [
+        { label: 'Giriş', data: kategoriler.map(k => girisKat[k] || 0), backgroundColor: 'rgba(34,197,94,0.7)', borderColor: '#22c55e', borderWidth: 1 },
+        { label: 'Çıkış', data: kategoriler.map(k => cikisKat[k] || 0), backgroundColor: 'rgba(239,68,68,0.7)', borderColor: '#ef4444', borderWidth: 1 }
+      ]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: { legend: { labels: { color: '#94a3b8' } } },
+      scales: {
+        x: { ticks: { color: '#94a3b8' } },
+        y: { beginAtZero: true, ticks: { color: '#94a3b8' } }
+      }
+    }
+  });
+}
 
 // ----- TOAST -----
 function toast(msg, type = 'info') {
@@ -430,6 +544,30 @@ function refreshDashboard() {
         <span style="background:${bg};color:#fff;padding:2px 10px;border-radius:999px;font-size:12px;font-weight:700;">${uyari}</span>
       </div>`;
     }).join('');
+  }
+
+  // Personel İşlem Özeti
+  const personMap = {};
+  data.transactions.forEach(t => {
+    const p = extractPerson(t.note);
+    if (!p) return;
+    if (!personMap[p]) personMap[p] = { giris: 0, cikis: 0, adet: 0 };
+    personMap[p].adet++;
+    if (t.type === 'giris') personMap[p].giris += t.amount;
+    else personMap[p].cikis += t.amount;
+  });
+  const personList = Object.entries(personMap).sort((a, b) => b[1].adet - a[1].adet);
+  const personDiv = document.getElementById('personel-summary-list');
+  if (!personList.length) {
+    personDiv.innerHTML = '<p style="color:var(--text-secondary);text-align:center;font-size:0.9rem;">Henüz işlem yok.</p>';
+  } else {
+    personDiv.innerHTML = personList.map(([isim, v]) => `
+      <div style="display:flex;align-items:center;gap:12px;background:var(--bg-primary);padding:10px 12px;border-radius:var(--border-radius-sm);border:1px solid var(--border-color);cursor:pointer;" onclick="document.getElementById('daily-person-filter').value='${isim}';navigateTo('daily');refreshDailyView();">
+        <i class="fa-regular fa-user" style="color:var(--primary);font-size:18px;"></i>
+        <div style="flex:1;"><strong>${isim}</strong><br><span style="font-size:12px;color:var(--text-secondary);">${v.giris} giriş / ${v.cikis} çıkış (${v.adet} işlem)</span></div>
+        <span style="font-size:12px;color:var(--primary);font-weight:600;">Detay →</span>
+      </div>
+    `).join('');
   }
 }
 
@@ -726,6 +864,7 @@ function refreshMonthView() {
   const ay = window._selectedMonth !== undefined ? window._selectedMonth : AY_INDEX;
   const yil = window._selectedYear !== undefined ? window._selectedYear : new Date().getFullYear();
   document.getElementById('month-title').textContent = `${AYLAR[ay]} ${yil} — Aylık Rapor`;
+  renderMonthChart(ay, yil);
 
   const girisler = data.transactions.filter(t => {
     const d = new Date(t.date);
@@ -755,6 +894,7 @@ function refreshYearsView() {
   const prevYil = parseInt(document.getElementById('year-select').value);
   populateYearSelect('year-select', prevYil || new Date().getFullYear());
   const yil = parseInt(document.getElementById('year-select').value) || new Date().getFullYear();
+  renderYearChart(yil);
   const hareketler = data.transactions.filter(t => new Date(t.date).getFullYear() === yil);
 
   const girisler = hareketler.filter(t => t.type === 'giris');
@@ -1023,6 +1163,7 @@ document.querySelectorAll('.nav-item[data-target]').forEach(item => {
 function refreshAll() {
   refreshUserSelect();
   buildMonthMenu();
+  refreshPersonFilter();
   refreshDashboard();
   refreshWarehouse();
   refreshEntryForm();
@@ -1062,6 +1203,12 @@ function refreshDailyView() {
   // Yıla göre filtrele, tarih seçiliyse ona da daralt
   let yilHareket = data.transactions.filter(t => new Date(t.date).getFullYear() === yil);
   let hareketler = dateStr ? yilHareket.filter(t => t.date === dateStr) : yilHareket;
+
+  // Kişi filtresi
+  const kisiFiltre = document.getElementById('daily-person-filter').value;
+  if (kisiFiltre) {
+    hareketler = hareketler.filter(t => extractPerson(t.note) === kisiFiltre);
+  }
 
   const giris = hareketler.filter(t => t.type === 'giris');
   const cikis = hareketler.filter(t => t.type === 'cikis');
@@ -1128,6 +1275,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Ay menüsü yıl değişikliği
   document.getElementById('months-year-select').addEventListener('change', buildMonthMenu);
+
+  // Kişi filtresi değişikliği
+  const personSelect = document.getElementById('daily-person-filter');
+  if (personSelect) {
+    personSelect.addEventListener('change', refreshDailyView);
+  }
 
   // Otomatik senkron aç/kapa
   document.getElementById('auto-sync-toggle').addEventListener('change', (e) => {
