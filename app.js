@@ -89,7 +89,13 @@ async function githubSave(dataToSave) {
       sha = existingJson.sha;
     }
 
-    const content = btoa(unescape(encodeURIComponent(JSON.stringify(dataToSave, null, 2))));
+    const encoder = new TextEncoder();
+    const utf8Bytes = encoder.encode(JSON.stringify(dataToSave, null, 2));
+    let binary = '';
+    for (let i = 0; i < utf8Bytes.length; i++) {
+      binary += String.fromCharCode(utf8Bytes[i]);
+    }
+    const content = btoa(binary);
     const body = {
       message: 'STOKDOSYA otomatik kayıt',
       content: content
@@ -395,21 +401,79 @@ function refreshDashboard() {
       </div>
     `).join('');
   }
+
+  // Tarihi Yaklaşan / Geçen Ürünler
+  const now = new Date();
+  now.setHours(0, 0, 0, 0);
+  const expiring = Object.values(data.products).filter(p => p.stt).map(p => {
+    const sttDate = new Date(p.stt + 'T00:00:00');
+    const fark = Math.ceil((sttDate - now) / (1000 * 60 * 60 * 24));
+    return { ...p, sttGunFark: fark };
+  }).filter(p => p.sttGunFark <= 3);
+  expiring.sort((a, b) => a.sttGunFark - b.sttGunFark);
+
+  const expDiv = document.getElementById('expiring-products-list');
+  if (!expiring.length) {
+    expDiv.innerHTML = '<p style="color:var(--text-secondary);text-align:center;font-size:0.9rem;">✅ 3 gün içinde son kullanma tarihi yaklaşan ürün yok.</p>';
+  } else {
+    expDiv.innerHTML = expiring.map(p => {
+      const gecti = p.sttGunFark < 0;
+      const uyari = gecti ? 'GEÇTİ' : (p.sttGunFark === 0 ? 'BUGÜN' : p.sttGunFark + ' gün');
+      const bg = gecti ? 'var(--accent)' : 'var(--warning)';
+      const bgLight = gecti ? 'rgba(239,68,68,0.1)' : 'rgba(234,179,8,0.1)';
+      return `
+      <div style="display:flex;align-items:center;gap:12px;background:${bgLight};padding:12px;border-radius:var(--border-radius-sm);border:1px solid ${bg}40;">
+        <i class="fa-regular fa-clock" style="color:${bg};font-size:18px;"></i>
+        <div style="flex:1;"><strong>${p.name}</strong> [${p.partiNo}]<br><span style="font-size:13px;color:var(--text-secondary);">STT: ${p.stt} — Stok: ${p.stock} ${p.unit}</span></div>
+        <span style="background:${bg};color:#fff;padding:2px 10px;border-radius:999px;font-size:12px;font-weight:700;">${uyari}</span>
+      </div>`;
+    }).join('');
+  }
 }
 
 // ----- ANBAR / WAREHOUSE -----
 let _warehouseFilter = 'ALL';
+let _hideZeroStock = false;
+let _onlyCritical = false;
+
+function sttDurum(stt) {
+  if (!stt) return { text: '-', cls: '' };
+  const bugun = new Date();
+  bugun.setHours(0, 0, 0, 0);
+  const sttDate = new Date(stt + 'T00:00:00');
+  const fark = Math.ceil((sttDate - bugun) / (1000 * 60 * 60 * 24));
+  if (fark < 0) return { text: stt + ' (GEÇTİ)', cls: 'color:var(--accent);font-weight:800;' };
+  if (fark <= 3) return { text: stt + ' (' + fark + ' gün)', cls: 'color:var(--warning);font-weight:700;' };
+  return { text: stt, cls: '' };
+}
+
 function refreshWarehouse() {
   const prods = Object.values(data.products);
   const search = (document.getElementById('anbar-search').value || '').toLowerCase();
 
   let filtered = prods;
   if (_warehouseFilter !== 'ALL') filtered = filtered.filter(p => p.category === _warehouseFilter);
+  if (_hideZeroStock) filtered = filtered.filter(p => p.stock > 0);
+  if (_onlyCritical) filtered = filtered.filter(p => p.criticalLevel > 0 && p.stock <= p.criticalLevel);
   if (search) filtered = filtered.filter(p => p.name.toLowerCase().includes(search) || p.partiNo.toLowerCase().includes(search));
 
+  // Filtre durumunu göster
+  const badge = document.getElementById('filter-active-badge');
+  const aktifFiltreler = [];
+  if (_hideZeroStock) aktifFiltreler.push('Sıfır stok gizli');
+  if (_onlyCritical) aktifFiltreler.push('Kritik altı');
+  if (_warehouseFilter !== 'ALL') aktifFiltreler.push('Kategori: ' + _warehouseFilter);
+  if (aktifFiltreler.length) {
+    badge.style.display = 'inline';
+    badge.textContent = '🔍 ' + aktifFiltreler.join(' | ');
+  } else {
+    badge.style.display = 'none';
+  }
+
+  const colCount = 8;
   const tbody = document.getElementById('anbar-body');
   if (!filtered.length) {
-    tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;color:var(--text-muted);padding:40px;">Eşleşen ürün bulunamadı.</td></tr>';
+    tbody.innerHTML = '<tr><td colspan="' + colCount + '" style="text-align:center;color:var(--text-muted);padding:40px;">Eşleşen ürün bulunamadı.</td></tr>';
     return;
   }
 
@@ -417,6 +481,7 @@ function refreshWarehouse() {
   tbody.innerHTML = filtered.map(p => {
     const kritik = p.criticalLevel > 0 && p.stock <= p.criticalLevel;
     const stokClass = kritik ? 'color:var(--accent);font-weight:800;' : '';
+    const stt = sttDurum(p.stt);
     return `<tr>
       <td style="font-weight:600;color:var(--primary);">${p.partiNo}</td>
       <td><span style="background:var(--primary-light);color:var(--primary);padding:2px 10px;border-radius:999px;font-size:12px;">${p.category}</span></td>
@@ -424,6 +489,7 @@ function refreshWarehouse() {
       <td style="${stokClass}">${p.stock} ${p.unit}</td>
       <td>${p.unit}</td>
       <td>${p.criticalLevel}</td>
+      <td style="${stt.cls}">${stt.text}</td>
       <td style="text-align:right;">
         <button class="btn-ui btn-sm btn-outline" onclick="editProduct('${p.partiNo}')" title="Düzenle"><i class="fa-solid fa-pen"></i></button>
         <button class="btn-ui btn-sm btn-outline" onclick="deleteProduct('${p.partiNo}')" title="Sil" style="color:var(--accent);"><i class="fa-solid fa-trash-can"></i></button>
@@ -432,7 +498,7 @@ function refreshWarehouse() {
   }).join('');
 }
 
-// Kategori filtreleme
+// Kategori filtreleme + Anbar filtre butonları
 document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('category-filter-container').addEventListener('click', (e) => {
     if (e.target.classList.contains('category-tag')) {
@@ -444,6 +510,19 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   document.getElementById('anbar-search').addEventListener('input', refreshWarehouse);
+
+  document.getElementById('filter-zero-btn').addEventListener('click', () => {
+    _hideZeroStock = !_hideZeroStock;
+    document.getElementById('filter-zero-btn').classList.toggle('active', _hideZeroStock);
+    refreshWarehouse();
+  });
+
+  document.getElementById('filter-critical-btn').addEventListener('click', () => {
+    _onlyCritical = !_onlyCritical;
+    document.getElementById('filter-critical-btn').classList.toggle('active', _onlyCritical);
+    if (_onlyCritical) document.getElementById('filter-zero-btn').classList.remove('active');
+    refreshWarehouse();
+  });
 });
 
 // ----- ÜRÜN CRUD -----
@@ -465,10 +544,12 @@ function openProductModal(editPartiNo) {
     document.getElementById('np-unit').value = p.unit;
     document.getElementById('np-stock').value = p.stock;
     document.getElementById('np-critical').value = p.criticalLevel;
+    document.getElementById('np-stt').value = p.stt || '';
     document.getElementById('submit-product-btn').innerHTML = '<i class="fa-solid fa-pen"></i> Kartı Güncelle';
   } else {
     document.getElementById('np-id').readOnly = false;
     document.getElementById('np-id').value = '';
+    document.getElementById('np-stt').value = '';
   }
 
   modal.classList.add('show');
@@ -494,6 +575,7 @@ document.getElementById('new-product-form').addEventListener('submit', (e) => {
   const unit = document.getElementById('np-unit').value;
   const stock = parseInt(document.getElementById('np-stock').value) || 0;
   const critical = parseInt(document.getElementById('np-critical').value) || 0;
+  const stt = document.getElementById('np-stt').value || '';
 
   if (!partiNo || !name) { toast('Parti No ve ürün adı gerekli!', 'error'); return; }
 
@@ -501,14 +583,14 @@ document.getElementById('new-product-form').addEventListener('submit', (e) => {
     const p = data.products[partiNo];
     if (p) {
       p.name = name; p.category = category; p.unit = unit;
-      p.stock = stock; p.criticalLevel = critical;
+      p.stock = stock; p.criticalLevel = critical; p.stt = stt;
       saveData();
       toast('Ürün güncellendi.', 'success');
     }
   } else {
     if (data.products[partiNo]) { toast('Bu Parti No zaten var!', 'error'); return; }
     data.products[partiNo] = {
-      partiNo, name, category, unit, stock, criticalLevel: critical,
+      partiNo, name, category, unit, stock, criticalLevel: critical, stt: stt,
       createdAt: new Date().toISOString()
     };
     if (stock > 0) {
@@ -547,7 +629,23 @@ function refreshEntryForm() {
   ).join('');
   if (!prods.length) select.innerHTML = '<option value="">Önce ürün ekleyin</option>';
   document.getElementById('entry-date').value = todayStr();
+  // Seçili ürün varsa STT'sini göster
+  const secili = select.value;
+  if (secili && data.products[secili] && data.products[secili].stt) {
+    document.getElementById('entry-stt').value = data.products[secili].stt;
+  } else {
+    document.getElementById('entry-stt').value = '';
+  }
 }
+
+document.getElementById('entry-product').addEventListener('change', () => {
+  const partiNo = document.getElementById('entry-product').value;
+  if (partiNo && data.products[partiNo] && data.products[partiNo].stt) {
+    document.getElementById('entry-stt').value = data.products[partiNo].stt;
+  } else {
+    document.getElementById('entry-stt').value = '';
+  }
+});
 
 document.getElementById('entry-form').addEventListener('submit', (e) => {
   e.preventDefault();
@@ -555,20 +653,24 @@ document.getElementById('entry-form').addEventListener('submit', (e) => {
   const amount = parseInt(document.getElementById('entry-amount').value);
   const date = document.getElementById('entry-date').value;
   const note = document.getElementById('entry-note').value.trim();
+  const stt = document.getElementById('entry-stt').value || '';
 
   if (!partiNo || !amount || !date) { toast('Tüm alanları doldurun.', 'error'); return; }
   const p = data.products[partiNo];
   if (!p) { toast('Ürün bulunamadı.', 'error'); return; }
 
+  if (stt) p.stt = stt;
   p.stock += amount;
   data.transactions.push({
     id: Date.now() + Math.random() * 1000, type: 'giris', partiNo, productName: p.name,
-    amount, unit: p.unit, date, note: note || 'Mal kabul', timestamp: new Date().toISOString()
+    amount, unit: p.unit, date, note: note || 'Mal kabul', stt: stt || p.stt || '',
+    timestamp: new Date().toISOString()
   });
   saveData();
   toast(`${amount} ${p.unit} ${p.name} girişi kaydedildi.`, 'success');
   document.getElementById('entry-amount').value = '';
   document.getElementById('entry-note').value = '';
+  document.getElementById('entry-stt').value = '';
   refreshEntryForm();
   refreshDashboard();
   buildMonthMenu();
