@@ -20,7 +20,17 @@
     }
   ],
   "activeUser": "MUSTAFA ORHAN",
-  "products": {},
+  "products": {
+    "A262161-3": {
+      "partiNo": "A262161-3",
+      "name": "ARMUT",
+      "category": "Meyve",
+      "unit": "kg",
+      "stock": 878,
+      "criticalLevel": 50,
+      "createdAt": "2026-05-23T19:07:53.045Z"
+    }
+  },
   "transactions": [
     {
       "id": 1779552114146.8958,
@@ -76,6 +86,17 @@
       "date": "2026-05-23",
       "note": "İSMET ALKAN IZGARA YAPACAK",
       "timestamp": "2026-05-23T16:53:24.286Z"
+    },
+    {
+      "id": 1779563273071.792,
+      "type": "giris",
+      "partiNo": "A262161-3",
+      "productName": "ARMUT",
+      "amount": 878,
+      "unit": "kg",
+      "date": "2026-05-23",
+      "note": "İlk giriş",
+      "timestamp": "2026-05-23T19:07:53.045Z"
     }
   ]
 }
