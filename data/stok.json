@@ -14,17 +14,7 @@
     }
   ],
   "activeUser": "MUSTAFA ORHAN",
-  "products": {
-    "A262161-2": {
-      "partiNo": "A262161-2",
-      "name": "MUZ",
-      "category": "Sebze",
-      "unit": "kg",
-      "stock": 100,
-      "criticalLevel": 50,
-      "createdAt": "2026-05-23T16:08:26.260Z"
-    }
-  },
+  "products": {},
   "transactions": [
     {
       "id": 1779552114146.8958,
