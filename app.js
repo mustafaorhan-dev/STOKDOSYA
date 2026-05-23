@@ -780,7 +780,7 @@ function refreshEntryForm() {
   const select = document.getElementById('entry-product');
   const prods = Object.values(data.products).sort((a, b) => a.name.localeCompare(b.name));
   select.innerHTML = prods.map(p =>
-    `<option value="${p.partiNo}">[${p.partiNo}] ${p.name} (Stok: ${p.stock} ${p.unit})</option>`
+    `<option value="${p.partiNo}">[${p.partiNo}] ${p.name} (Stok: ${_fmt(p.stock)} ${p.unit})</option>`
   ).join('');
   if (!prods.length) select.innerHTML = '<option value="">Önce ürün ekleyin</option>';
   document.getElementById('entry-date').value = todayStr();
@@ -850,7 +850,7 @@ function refreshExitForm() {
   const select = document.getElementById('exit-product');
   const prods = Object.values(data.products).sort((a, b) => a.name.localeCompare(b.name));
   select.innerHTML = prods.map(p =>
-    `<option value="${p.partiNo}">[${p.partiNo}] ${p.name} (Stok: ${p.stock} ${p.unit})</option>`
+    `<option value="${p.partiNo}">[${p.partiNo}] ${p.name} (Stok: ${_fmt(p.stock)} ${p.unit})</option>`
   ).join('');
   if (!prods.length) select.innerHTML = '<option value="">Önce ürün ekleyin</option>';
   document.getElementById('exit-date').value = todayStr();
