@@ -13,7 +13,7 @@ const HARD_CODED_GITHUB = {
   owner: 'mustafaorhan-dev',
   repo: 'STOKDOSYA',
   path: 'data/stok.json',
-  token: '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' // GitHub Personal Access Token (settings'ten de girilebilir)
+  token: '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' // GitHub Personal Access Token (settings'ten de girilebilir)
 };
 
 let data = { products: {}, transactions: [], users: [], activeUser: '', settings: {} };
@@ -52,11 +52,16 @@ async function githubLoad() {
       }
     });
     if (!resp.ok) {
-      if (resp.status === 404) return null; // Dosya henüz yok
+      if (resp.status === 404) return null;
       throw new Error('GitHub API hatası: ' + resp.status);
     }
     const json = await resp.json();
-    const decoded = atob(json.content.replace(/\n/g, ''));
+    const binary = atob(json.content.replace(/\n/g, ''));
+    const bytes = new Uint8Array(binary.length);
+    for (let i = 0; i < binary.length; i++) {
+      bytes[i] = binary.charCodeAt(i);
+    }
+    const decoded = new TextDecoder('utf-8').decode(bytes);
     const parsed = JSON.parse(decoded);
     document.getElementById('cloud-status-text').textContent = '✅ GitHub: veri yüklendi';
     return parsed;
