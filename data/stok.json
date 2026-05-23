@@ -51,6 +51,16 @@
       "stt": "",
       "createdAt": "2026-05-23T19:57:30.086Z"
     },
+    "12358": {
+      "partiNo": "12358",
+      "name": "SALKIM DOMATES",
+      "category": "Sebze",
+      "unit": "kg",
+      "stock": 405,
+      "criticalLevel": 50,
+      "stt": "",
+      "createdAt": "2026-05-23T20:06:40.725Z"
+    },
     "554466": {
       "partiNo": "554466",
       "name": "EJDER MEYVESİ",
@@ -205,6 +215,17 @@
       "date": "2026-05-23",
       "note": "İlk giriş",
       "timestamp": "2026-05-23T19:57:30.086Z"
+    },
+    {
+      "id": 1779566801258.9143,
+      "type": "giris",
+      "partiNo": "12358",
+      "productName": "SALKIM DOMATES",
+      "amount": 405,
+      "unit": "kg",
+      "date": "2026-05-23",
+      "note": "İlk giriş",
+      "timestamp": "2026-05-23T20:06:40.725Z"
     }
   ]
 }
