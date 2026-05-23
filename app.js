@@ -579,7 +579,7 @@ function refreshDashboard() {
     personDiv.innerHTML = personList.map(([isim, v]) => `
       <div style="display:flex;align-items:center;gap:12px;background:var(--bg-primary);padding:10px 12px;border-radius:var(--border-radius-sm);border:1px solid var(--border-color);cursor:pointer;" onclick="document.getElementById('daily-person-filter').value='${isim}';navigateTo('daily');refreshDailyView();">
         <i class="fa-regular fa-user" style="color:var(--primary);font-size:18px;"></i>
-        <div style="flex:1;"><strong>${isim}</strong><br><span style="font-size:12px;color:var(--text-secondary);">${v.giris} giriş / ${v.cikis} çıkış (${v.adet} işlem)</span></div>
+        <div style="flex:1;"><strong>${isim}</strong><br><span style="font-size:12px;color:var(--text-secondary);">${_fmt(v.giris)} giriş / ${_fmt(v.cikis)} çıkış (${v.adet} işlem)</span></div>
         <span style="font-size:12px;color:var(--primary);font-weight:600;">Detay →</span>
       </div>
     `).join('');
@@ -897,8 +897,8 @@ function refreshMonthView() {
     return t.type === 'cikis' && d.getMonth() === ay && d.getFullYear() === yil;
   });
 
-  document.getElementById('month-in-total').textContent = `${girisler.reduce((s, t) => s + t.amount, 0)} Adet`;
-  document.getElementById('month-out-total').textContent = `${cikislar.reduce((s, t) => s + t.amount, 0)} Adet`;
+  document.getElementById('month-in-total').textContent = `${_fmt(girisler.reduce((s, t) => s + t.amount, 0))} Adet`;
+  document.getElementById('month-out-total').textContent = `${_fmt(cikislar.reduce((s, t) => s + t.amount, 0))} Adet`;
 
   function _birim(t) {
     return (data.products[t.partiNo] && data.products[t.partiNo].unit) || t.unit || '—';
@@ -931,8 +931,8 @@ function refreshYearsView() {
   const girisler = hareketler.filter(t => t.type === 'giris');
   const cikislar = hareketler.filter(t => t.type === 'cikis');
 
-  document.getElementById('year-total-in').textContent = `${girisler.reduce((s, t) => s + t.amount, 0)} Adet (${girisler.length} işlem)`;
-  document.getElementById('year-total-out').textContent = `${cikislar.reduce((s, t) => s + t.amount, 0)} Adet (${cikislar.length} işlem)`;
+  document.getElementById('year-total-in').textContent = `${_fmt(girisler.reduce((s, t) => s + t.amount, 0))} Adet (${girisler.length} işlem)`;
+  document.getElementById('year-total-out').textContent = `${_fmt(cikislar.reduce((s, t) => s + t.amount, 0))} Adet (${cikislar.length} işlem)`;
 
   const tbody = document.getElementById('year-report-body');
   if (!hareketler.length) {
@@ -946,7 +946,7 @@ function refreshYearsView() {
       ? '<span style="color:var(--success);font-weight:700;">GİRİŞ</span>'
       : '<span style="color:var(--accent);font-weight:700;">ÇIKIŞ</span>';
     const birim = t.unit || (data.products[t.partiNo] && data.products[t.partiNo].unit) || '';
-    return `<tr><td>${formatDate(t.date)}</td><td>${tipEl}</td><td>${t.productName}</td><td>${t.amount}</td><td>${birim}</td><td style="color:var(--text-secondary);">${t.note || '-'}</td></tr>`;
+    return `<tr><td>${formatDate(t.date)}</td><td>${tipEl}</td><td>${t.productName}</td><td>${_fmt(t.amount)}</td><td>${birim}</td><td style="color:var(--text-secondary);">${t.note || '-'}</td></tr>`;
   }).join('');
 }
 
@@ -1298,9 +1298,9 @@ function refreshDailyView() {
 
   const giris = hareketler.filter(t => t.type === 'giris');
   const cikis = hareketler.filter(t => t.type === 'cikis');
-  document.getElementById('daily-giris-adet').textContent = giris.reduce((s,t) => s + t.amount, 0) + ' (' + giris.length + ' işlem)';
-  document.getElementById('daily-cikis-adet').textContent = cikis.reduce((s,t) => s + t.amount, 0) + ' (' + cikis.length + ' işlem)';
-  document.getElementById('daily-toplam-adet').textContent = hareketler.reduce((s,t) => s + t.amount, 0) + ' (' + hareketler.length + ' işlem)';
+  document.getElementById('daily-giris-adet').textContent = _fmt(giris.reduce((s,t) => s + t.amount, 0)) + ' (' + giris.length + ' işlem)';
+  document.getElementById('daily-cikis-adet').textContent = _fmt(cikis.reduce((s,t) => s + t.amount, 0)) + ' (' + cikis.length + ' işlem)';
+  document.getElementById('daily-toplam-adet').textContent = _fmt(hareketler.reduce((s,t) => s + t.amount, 0)) + ' (' + hareketler.length + ' işlem)';
 
   document.getElementById('daily-baslik').textContent = yil + ' Yılı' + (dateStr ? ' — ' + dateStr : ' — Tümü');
 
@@ -1315,7 +1315,7 @@ function refreshDailyView() {
       ? '<span style="color:var(--success);font-weight:700;">GİRİŞ</span>'
       : '<span style="color:var(--accent);font-weight:700;">ÇIKIŞ</span>';
     const birim = t.unit || (data.products[t.partiNo] && data.products[t.partiNo].unit) || '';
-    return `<tr><td>${i+1}</td><td>${tip}</td><td style="font-weight:600;">${t.partiNo}</td><td>${t.productName}</td><td>${t.amount}</td><td>${birim}</td><td style="color:var(--text-secondary);">${t.note || '-'}</td></tr>`;
+    return `<tr><td>${i+1}</td><td>${tip}</td><td style="font-weight:600;">${t.partiNo}</td><td>${t.productName}</td><td>${_fmt(t.amount)}</td><td>${birim}</td><td style="color:var(--text-secondary);">${t.note || '-'}</td></tr>`;
   }).join('');
 }
 
