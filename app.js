@@ -6,8 +6,15 @@
 const DATA_KEY = 'tazedepo_data';
 
 // ★ BURAYA KALICI GOOGLE SCRIPT URL'NİZİ YAPIŞTIRIN ★
-// Tarayıcı geçmişi silinse bile burada durur, kaybolmaz.
-const HARD_CODED_API_URL = 'https://script.google.com/macros/s/AKfycbwyvEUfeyRADRduy5SB2ePd-WyGd1GHiPIs5SCF-dtb4XguQdle6g00fXCvasEpQ0H-/exec';
+const HARD_CODED_API_URL = '';
+
+// ★ GITHUB YAPILANDIRMASI (Kalıcı — tarayıcı silinse bile durur) ★
+const HARD_CODED_GITHUB = {
+  owner: 'mustafaorhan-dev',
+  repo: 'STOKDOSYA',
+  path: 'data/stok.json',
+  token: '' // GitHub Personal Access Token (settings'ten de girilebilir)
+};
 
 let data = { products: {}, transactions: [], users: [], activeUser: '', settings: {} };
 let nextPartiCounter = 1;
@@ -15,6 +22,127 @@ let _syncLock = false;
 
 function getApiUrl() {
   return HARD_CODED_API_URL || (data.settings && data.settings.apiUrl) || '';
+}
+
+// ----- GITHUB API (Birincil Depolama) -----
+function getGithubConfig() {
+  const cfg = data.settings && data.settings.github;
+  return {
+    owner: (cfg && cfg.owner) || HARD_CODED_GITHUB.owner,
+    repo: (cfg && cfg.repo) || HARD_CODED_GITHUB.repo,
+    path: (cfg && cfg.path) || HARD_CODED_GITHUB.path,
+    token: (cfg && cfg.token) || HARD_CODED_GITHUB.token
+  };
+}
+
+function githubApiUrl() {
+  const c = getGithubConfig();
+  if (!c.owner || !c.repo || !c.path || !c.token) return null;
+  return `https://api.github.com/repos/${c.owner}/${c.repo}/contents/${c.path}`;
+}
+
+async function githubLoad() {
+  const url = githubApiUrl();
+  if (!url) return null;
+  try {
+    const resp = await fetch(url, {
+      headers: {
+        Authorization: 'token ' + getGithubConfig().token,
+        Accept: 'application/vnd.github.v3+json'
+      }
+    });
+    if (!resp.ok) {
+      if (resp.status === 404) return null; // Dosya henüz yok
+      throw new Error('GitHub API hatası: ' + resp.status);
+    }
+    const json = await resp.json();
+    const decoded = atob(json.content.replace(/\n/g, ''));
+    const parsed = JSON.parse(decoded);
+    document.getElementById('cloud-status-text').textContent = '✅ GitHub: veri yüklendi';
+    return parsed;
+  } catch (e) {
+    document.getElementById('cloud-status-text').textContent = '⚠️ GitHub: ' + e.message;
+    return null;
+  }
+}
+
+async function githubSave(dataToSave) {
+  const url = githubApiUrl();
+  if (!url || _syncLock) return;
+  _syncLock = true;
+  try {
+    // Önce mevcut dosyanın SHA'sını al (güncelleme için gerekli)
+    let sha = null;
+    const existing = await fetch(url, {
+      headers: {
+        Authorization: 'token ' + getGithubConfig().token,
+        Accept: 'application/vnd.github.v3+json'
+      }
+    });
+    if (existing.ok) {
+      const existingJson = await existing.json();
+      sha = existingJson.sha;
+    }
+
+    const content = btoa(unescape(encodeURIComponent(JSON.stringify(dataToSave, null, 2))));
+    const body = {
+      message: 'STOKDOSYA otomatik kayıt',
+      content: content
+    };
+    if (sha) body.sha = sha;
+
+    const resp = await fetch(url, {
+      method: 'PUT',
+      headers: {
+        Authorization: 'token ' + getGithubConfig().token,
+        Accept: 'application/vnd.github.v3+json',
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(body)
+    });
+
+    if (!resp.ok) {
+      const errText = await resp.text();
+      throw new Error('GitHub yazma hatası: ' + resp.status + ' — ' + errText);
+    }
+
+    document.getElementById('cloud-status-text').textContent = '✅ GitHub: eşitlendi';
+  } catch (e) {
+    document.getElementById('cloud-status-text').textContent = '⚠️ GitHub: ' + e.message;
+  } finally {
+    _syncLock = false;
+  }
+}
+
+async function githubTest() {
+  const c = getGithubConfig();
+  if (!c.owner || !c.repo || !c.token) {
+    toast('GitHub bilgileri eksik!', 'error');
+    return;
+  }
+  const overlay = document.getElementById('loading-overlay');
+  overlay.style.display = 'flex';
+  document.getElementById('loading-text').textContent = 'GitHub bağlantısı test ediliyor...';
+  try {
+    const resp = await fetch(`https://api.github.com/repos/${c.owner}/${c.repo}`, {
+      headers: {
+        Authorization: 'token ' + c.token,
+        Accept: 'application/vnd.github.v3+json'
+      }
+    });
+    const json = await resp.json();
+    if (resp.ok) {
+      toast(`✅ GitHub bağlantısı başarılı! Depo: ${json.full_name}`, 'success');
+      document.getElementById('connection-status').innerHTML =
+        `<span style="color:var(--success);">✅ GitHub: ${json.full_name} — ${json.private ? 'Gizli' : 'Açık'} repo</span>`;
+    } else {
+      toast('❌ GitHub hatası: ' + (json.message || 'bilinmiyor'), 'error');
+    }
+  } catch (e) {
+    toast('❌ Bağlantı hatası: ' + e.message, 'error');
+  } finally {
+    overlay.style.display = 'none';
+  }
 }
 
 function initData() {
@@ -56,44 +184,7 @@ async function driveKaydet() {
 }
 
 async function driveYukle() {
-  const url = getApiUrl();
-  if (!url) return null;
-  try {
-    const resp = await fetch(url + '?action=load', { mode: 'cors' });
-    const json = await resp.json();
-    if (json.success && json.data) {
-      document.getElementById('cloud-status-text').textContent = '✅ Bulut: veri yüklendi';
-      return json.data;
-    } else {
-      document.getElementById('cloud-status-text').textContent = '⚠️ Bulut: script hatası: ' + (json.error || 'bilinmiyor');
-    }
-  } catch (e) {
-    document.getElementById('cloud-status-text').textContent = '⚠️ Bulut: bağlantı hatası — ' + e.message;
-  }
-  return null;
-}
-
-async function testBaglanti() {
-  const url = getApiUrl();
-  if (!url) { toast('Hiçbir URL tanımlı değil.', 'error'); return; }
-  const overlay = document.getElementById('loading-overlay');
-  overlay.style.display = 'flex'; document.getElementById('loading-text').textContent = 'Bağlantı test ediliyor...';
-  try {
-    const resp = await fetch(url + '?action=load', { mode: 'cors' });
-    const json = await resp.json();
-    if (json.success) {
-      const urunSayisi = json.data && json.data.products ? Object.keys(json.data.products).length : 0;
-      const hareketSayisi = json.data && json.data.transactions ? json.data.transactions.length : 0;
-      toast(`✅ Bağlantı başarılı! ${urunSayisi} ürün, ${hareketSayisi} hareket`, 'success');
-      document.getElementById('connection-status').innerHTML = `<span style="color:var(--success);">✅ Bağlantı başarılı — ${urunSayisi} ürün, ${hareketSayisi} hareket bulundu.</span>`;
-    } else {
-      toast('❌ Script hatası: ' + (json.error || 'bilinmiyor'), 'error');
-    }
-  } catch (e) {
-    toast('❌ Bağlantı hatası: ' + e.message, 'error');
-  } finally {
-    overlay.style.display = 'none';
-  }
+  return null; // Google Drive desteği kaldırıldı, GitHub kullanın
 }
 
 function getLocalSettings() {
@@ -108,23 +199,21 @@ function getLocalSettings() {
 }
 
 async function loadData() {
-  // Önce Drive'dan yüklemeyi dene
-  const driveData = await driveYukle();
-  if (driveData) {
-    data = driveData;
-    // Drive settings'i boş döndüğü için localStorage'daki ayarları koru
+  // Önce GitHub'dan yüklemeyi dene
+  const githubData = await githubLoad();
+  if (githubData) {
+    data = githubData;
     data.settings = { ...data.settings, ...getLocalSettings() };
     initData();
     saveDataLocal();
     return;
   }
 
-  // Drive yoksa localStorage'a bak (cache)
+  // GitHub yoksa localStorage'a bak (cache)
   try {
     const raw = localStorage.getItem(DATA_KEY);
     if (raw) {
       const cached = JSON.parse(raw);
-      // Sadece Drive'da hiç veri yoksa cache'i kullan
       if (cached.products && Object.keys(cached.products).length > 0) {
         data = cached;
       }
@@ -140,9 +229,9 @@ function saveDataLocal() {
 
 function saveData() {
   saveDataLocal();
-  // Otomatik Drive senkronu
-  if (data.settings && data.settings.autoSync && getApiUrl()) {
-    driveKaydet();
+  // Otomatik GitHub senkronu
+  if (data.settings && data.settings.autoSync && githubApiUrl()) {
+    githubSave(data);
   }
 }
 
@@ -599,16 +688,19 @@ function refreshSettings() {
     </li>`;
   }).join('');
 
-  // API URL
-  document.getElementById('api-url').value = data.settings.apiUrl || '';
-  document.getElementById('api-url').style.borderColor = HARD_CODED_API_URL ? 'var(--success)' : '';
+  // GitHub Ayarları
+  const gh = data.settings.github || {};
+  document.getElementById('github-owner').value = gh.owner || HARD_CODED_GITHUB.owner || '';
+  document.getElementById('github-repo').value = gh.repo || HARD_CODED_GITHUB.repo || '';
+  document.getElementById('github-path').value = gh.path || HARD_CODED_GITHUB.path || '';
+  document.getElementById('github-token').value = gh.token || '';
 
   // Otomatik senkron
   document.getElementById('auto-sync-toggle').checked = data.settings.autoSync !== false;
 
   // Cloud status badge
   const badge = document.getElementById('cloud-status-badge');
-  if (getApiUrl()) {
+  if (githubApiUrl()) {
     badge.style.borderColor = 'var(--success)';
     badge.style.color = 'var(--success)';
   } else {
@@ -673,36 +765,44 @@ document.getElementById('active-user-select').addEventListener('change', (e) => 
   toast(`Aktif kullanıcı: ${data.activeUser}`, 'info');
 });
 
-// ----- GOOGLE DRIVE / API -----
+// ----- GITHUB AYARLARI -----
 document.getElementById('save-api-btn').addEventListener('click', () => {
-  const url = document.getElementById('api-url').value.trim();
-  data.settings.apiUrl = url;
+  const owner = document.getElementById('github-owner').value.trim();
+  const repo = document.getElementById('github-repo').value.trim();
+  const path = document.getElementById('github-path').value.trim();
+  const token = document.getElementById('github-token').value.trim();
+
+  if (!data.settings.github) data.settings.github = {};
+  data.settings.github.owner = owner;
+  data.settings.github.repo = repo;
+  data.settings.github.path = path;
+  data.settings.github.token = token;
   saveDataLocal();
+
   const status = document.getElementById('connection-status');
-  if (url) {
-    status.innerHTML = '<span style="color:var(--success);">✅ URL kaydedildi. "Şimdi Eşitle" ile test edebilirsiniz.</span>';
+  if (owner && repo && token) {
+    status.innerHTML = '<span style="color:var(--success);">✅ GitHub bilgileri kaydedildi. "Test Et" ile bağlantıyı doğrulayın.</span>';
   } else {
-    status.innerHTML = '<span style="color:var(--text-secondary);">ℹ️ URL temizlendi. Bulut bağlantısı pasif.</span>';
+    status.innerHTML = '<span style="color:var(--text-secondary);">ℹ️ GitHub bilgileri temizlendi.</span>';
   }
-  toast('API URL kaydedildi.', 'success');
+  toast('GitHub ayarları kaydedildi.', 'success');
   refreshSettings();
 });
 
-document.getElementById('test-connection-btn').addEventListener('click', testBaglanti);
+document.getElementById('test-connection-btn').addEventListener('click', githubTest);
 
 document.getElementById('sync-now-btn').addEventListener('click', async () => {
-  const url = getApiUrl();
-  if (!url) { toast('Hiçbir URL tanımlı değil. Koda veya alana yazın.', 'error'); return; }
+  if (!githubApiUrl()) { toast('GitHub bilgileri eksik. Ayarları doldurun.', 'error'); return; }
 
   const overlay = document.getElementById('loading-overlay');
   overlay.style.display = 'flex';
-  document.getElementById('loading-text').textContent = 'Google Drive ile eşitleniyor...';
+  document.getElementById('loading-text').textContent = 'GitHub\'a kaydediliyor...';
 
   try {
-    await driveKaydet();
-    toast('Veri Google Drive\'a gönderildi. Sheet\'i kontrol edin.', 'info');
+    await githubSave(data);
+    toast('✅ Tüm veriler GitHub\'a kaydedildi!', 'success');
   } catch (err) {
-    toast('Drive bağlantısı başarısız: ' + err.message, 'error');
+    toast('GitHub kayıt hatası: ' + err.message, 'error');
   } finally {
     overlay.style.display = 'none';
     refreshSettings();
