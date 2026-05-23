@@ -323,12 +323,26 @@ const AY_INDEX = new Date().getMonth();
 
 // ----- CHART JS YÖNETİMİ -----
 let _yearChart = null;
-let _monthChart = null;
+
+function _chartUnit() {
+  const el = document.getElementById('year-product-filter');
+  if (!el) return '';
+  const secili = el.value;
+  if (!secili) return '';
+  for (const p of Object.values(data.products)) {
+    if (p.name === secili) return p.unit || '';
+  }
+  for (const t of data.transactions) {
+    if (t.productName === secili && t.unit) return t.unit;
+  }
+  return '';
+}
 
 const barValuePlugin = {
   id: 'barValuePlugin',
   afterDatasetsDraw(chart) {
     const ctx = chart.ctx;
+    const birim = _chartUnit();
     chart.data.datasets.forEach((dataset, i) => {
       const meta = chart.getDatasetMeta(i);
       meta.data.forEach((bar, index) => {
@@ -338,7 +352,7 @@ const barValuePlugin = {
         ctx.font = 'bold 11px Outfit, sans-serif';
         ctx.textAlign = 'center';
         ctx.textBaseline = 'bottom';
-        ctx.fillText(val, bar.x, bar.y - 3);
+        ctx.fillText(val + (birim ? ' ' + birim : ''), bar.x, bar.y - 3);
       });
     });
   }
@@ -395,49 +409,8 @@ function renderYearChart(yil) {
       responsive: true, maintainAspectRatio: false,
       plugins: { legend: { labels: { color: '#94a3b8' } } },
       scales: {
-        x: { ticks: { color: '#94a3b8' } },
-        y: { beginAtZero: true, ticks: { color: '#94a3b8' } }
-      }
-    },
-    plugins: [barValuePlugin]
-  });
-}
-
-function renderMonthChart(ay, yil) {
-  const canvas = document.getElementById('month-chart');
-  if (!canvas) return;
-  if (_monthChart) { _monthChart.destroy(); _monthChart = null; }
-
-  const girisUrun = {};
-  const cikisUrun = {};
-  data.transactions.filter(t => {
-    const d = new Date(t.date);
-    return d.getMonth() === ay && d.getFullYear() === yil;
-  }).forEach(t => {
-    const ad = t.productName || 'Bilinmeyen';
-    if (t.type === 'giris') girisUrun[ad] = (girisUrun[ad] || 0) + t.amount;
-    else cikisUrun[ad] = (cikisUrun[ad] || 0) + t.amount;
-  });
-
-  const urunler = [...new Set([...Object.keys(girisUrun), ...Object.keys(cikisUrun)])];
-  if (!urunler.length) return;
-
-  const ctx = canvas.getContext('2d');
-  _monthChart = new Chart(ctx, {
-    type: 'bar',
-    data: {
-      labels: urunler,
-      datasets: [
-        { label: 'Giriş', data: urunler.map(k => girisUrun[k] || 0), backgroundColor: 'rgba(34,197,94,0.7)', borderColor: '#22c55e', borderWidth: 1 },
-        { label: 'Çıkış', data: urunler.map(k => cikisUrun[k] || 0), backgroundColor: 'rgba(239,68,68,0.7)', borderColor: '#ef4444', borderWidth: 1 }
-      ]
-    },
-    options: {
-      responsive: true, maintainAspectRatio: false,
-      plugins: { legend: { labels: { color: '#94a3b8' } } },
-      scales: {
-        x: { ticks: { color: '#94a3b8' } },
-        y: { beginAtZero: true, ticks: { color: '#94a3b8' } }
+        x: { ticks: { color: '#94a3b8' }, grid: { color: 'rgba(148,163,184,0.15)' } },
+        y: { beginAtZero: true, ticks: { color: '#94a3b8' }, grid: { color: 'rgba(148,163,184,0.15)' } }
       }
     },
     plugins: [barValuePlugin]
@@ -905,7 +878,6 @@ function refreshMonthView() {
   const ay = window._selectedMonth !== undefined ? window._selectedMonth : AY_INDEX;
   const yil = window._selectedYear !== undefined ? window._selectedYear : new Date().getFullYear();
   document.getElementById('month-title').textContent = `${AYLAR[ay]} ${yil} — Aylık Rapor`;
-  renderMonthChart(ay, yil);
 
   const girisler = data.transactions.filter(t => {
     const d = new Date(t.date);
