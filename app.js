@@ -834,7 +834,7 @@ document.getElementById('entry-form').addEventListener('submit', (e) => {
   });
   saveData();
   toast(`${_fmt(amount)} ${p.unit} ${p.name} girişi kaydedildi.`, 'success');
-  switchTab('dashboard');
+  navigateTo('dashboard');
   refreshEntryForm();
   refreshDashboard();
   buildMonthMenu();
@@ -875,7 +875,7 @@ document.getElementById('exit-form').addEventListener('submit', (e) => {
   });
   saveData();
   toast(`${_fmt(amount)} ${p.unit} ${p.name} çıkışı kaydedildi.`, 'success');
-  switchTab('dashboard');
+  navigateTo('dashboard');
   refreshExitForm();
   refreshDashboard();
   buildMonthMenu();
