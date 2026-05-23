@@ -26,9 +26,9 @@
       "name": "TAVUK BONFİLE",
       "category": "Temel Gıda",
       "unit": "kg",
-      "stock": 0.6000000000000014,
+      "stock": 0.66,
       "criticalLevel": 50,
-      "stt": "2026-05-28",
+      "stt": "2026-05-26",
       "createdAt": "2026-05-23T19:36:56.007Z"
     },
     "6699": {
