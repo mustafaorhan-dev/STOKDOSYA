@@ -32,6 +32,15 @@
       "stock": 100,
       "criticalLevel": 50,
       "createdAt": "2026-05-23T16:08:26.260Z"
+    },
+    "A262161-3": {
+      "partiNo": "A262161-3",
+      "name": "DANA  ETi  TAZE",
+      "category": "Sebze",
+      "unit": "kg",
+      "stock": 500,
+      "criticalLevel": 50,
+      "createdAt": "2026-05-23T16:52:45.979Z"
     }
   },
   "transactions": [
@@ -67,6 +76,17 @@
       "date": "2026-05-23",
       "note": "Ä°lk giriÅ",
       "timestamp": "2026-05-23T16:08:26.260Z"
+    },
+    {
+      "id": 1779555166484.0842,
+      "type": "giris",
+      "partiNo": "A262161-3",
+      "productName": "DANA  ETi  TAZE",
+      "amount": 500,
+      "unit": "kg",
+      "date": "2026-05-23",
+      "note": "İlk giriş",
+      "timestamp": "2026-05-23T16:52:45.979Z"
     }
   ]
 }
