@@ -1,1 +1,75 @@
-{}
+{
+  "settings": {
+    "apiUrl": "",
+    "autoBackupTime": "17:00",
+    "autoBackupEnabled": false,
+    "theme": "light",
+    "autoSync": true,
+    "_migrated": true
+  },
+  "users": [
+    {
+      "name": "MUSTAFA ORHAN",
+      "role": "Depo Personeli"
+    }
+  ],
+  "activeUser": "MUSTAFA ORHAN",
+  "products": {},
+  "transactions": [
+    {
+      "id": 1779552114146.8958,
+      "type": "giris",
+      "partiNo": "A262161",
+      "productName": "DOMATES",
+      "amount": 350,
+      "unit": "kg",
+      "date": "2026-05-23",
+      "note": "İlk Giriş",
+      "timestamp": "2026-05-23T16:01:53.783Z"
+    },
+    {
+      "id": 1779552143151.4033,
+      "type": "cikis",
+      "partiNo": "A262161",
+      "productName": "DOMATES",
+      "amount": 5,
+      "unit": "kg",
+      "date": "2026-05-23",
+      "note": "BAYRAM AKKURT",
+      "timestamp": "2026-05-23T16:02:22.820Z"
+    },
+    {
+      "id": 1779552507189.3557,
+      "type": "giris",
+      "partiNo": "A262161-2",
+      "productName": "MUZ",
+      "amount": 100,
+      "unit": "kg",
+      "date": "2026-05-23",
+      "note": "İlk Giriş",
+      "timestamp": "2026-05-23T16:08:26.260Z"
+    },
+    {
+      "id": 1779555166484.0842,
+      "type": "giris",
+      "partiNo": "A262161-3",
+      "productName": "DANA  ETi  TAZE",
+      "amount": 500,
+      "unit": "kg",
+      "date": "2026-05-23",
+      "note": "İlk giriş",
+      "timestamp": "2026-05-23T16:52:45.979Z"
+    },
+    {
+      "id": 1779555205236.6711,
+      "type": "cikis",
+      "partiNo": "A262161-3",
+      "productName": "DANA  ETi  TAZE",
+      "amount": 450,
+      "unit": "kg",
+      "date": "2026-05-23",
+      "note": "İSMET ALKAN IZGARA YAPACAK",
+      "timestamp": "2026-05-23T16:53:24.286Z"
+    }
+  ]
+}
