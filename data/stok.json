@@ -21,6 +21,16 @@
   ],
   "activeUser": "MUSTAFA ORHAN",
   "products": {
+    "226": {
+      "partiNo": "226",
+      "name": "TAVUK BONFİLE",
+      "category": "Temel Gıda",
+      "unit": "kg",
+      "stock": 300,
+      "criticalLevel": 50,
+      "stt": "2026-06-27",
+      "createdAt": "2026-05-23T19:36:56.007Z"
+    },
     "A262161-3": {
       "partiNo": "A262161-3",
       "name": "ARMUT",
@@ -97,6 +107,17 @@
       "date": "2026-05-23",
       "note": "İlk giriş",
       "timestamp": "2026-05-23T19:07:53.045Z"
+    },
+    {
+      "id": 1779565016195.399,
+      "type": "giris",
+      "partiNo": "226",
+      "productName": "TAVUK BONFİLE",
+      "amount": 300,
+      "unit": "kg",
+      "date": "2026-05-23",
+      "note": "İlk giriş",
+      "timestamp": "2026-05-23T19:36:56.007Z"
     }
   ]
 }
