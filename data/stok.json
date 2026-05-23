@@ -38,7 +38,7 @@
       "name": "DANA  ETi  TAZE",
       "category": "Sebze",
       "unit": "kg",
-      "stock": 500,
+      "stock": 50,
       "criticalLevel": 50,
       "createdAt": "2026-05-23T16:52:45.979Z"
     }
@@ -87,6 +87,17 @@
       "date": "2026-05-23",
       "note": "İlk giriş",
       "timestamp": "2026-05-23T16:52:45.979Z"
+    },
+    {
+      "id": 1779555205236.6711,
+      "type": "cikis",
+      "partiNo": "A262161-3",
+      "productName": "DANA  ETi  TAZE",
+      "amount": 450,
+      "unit": "kg",
+      "date": "2026-05-23",
+      "note": "İSMET ALKAN IZGARA YAPACAK",
+      "timestamp": "2026-05-23T16:53:24.286Z"
     }
   ]
 }
