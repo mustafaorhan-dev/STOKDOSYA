@@ -15,15 +15,6 @@
   ],
   "activeUser": "MUSTAFA ORHAN",
   "products": {
-    "A262161": {
-      "partiNo": "A262161",
-      "name": "DOMATES",
-      "category": "Sebze",
-      "unit": "kg",
-      "stock": 345,
-      "criticalLevel": 50,
-      "createdAt": "2026-05-23T16:01:53.783Z"
-    },
     "A262161-2": {
       "partiNo": "A262161-2",
       "name": "MUZ",
