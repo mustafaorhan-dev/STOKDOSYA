@@ -1566,4 +1566,38 @@ document.addEventListener('DOMContentLoaded', () => {
     setInterval(updateClock, 10000);
     if (data.settings.autoBackupEnabled) scheduleAutoBackup();
   });
+
+  // Mobil menü toggle
+  const menuBtn = document.getElementById('mobile-menu-btn');
+  const sidebar = document.querySelector('.sidebar');
+  const overlay = document.getElementById('sidebar-overlay');
+  if (menuBtn && sidebar) {
+    menuBtn.addEventListener('click', () => {
+      sidebar.classList.toggle('open');
+      if (overlay) overlay.classList.toggle('show');
+    });
+    if (overlay) overlay.addEventListener('click', () => {
+      sidebar.classList.remove('open');
+      overlay.classList.remove('show');
+    });
+    // Tabloları kaydırılabilir yap
+    document.querySelectorAll('.minimal-table').forEach(t => {
+      if (!t.parentElement.classList.contains('table-wrap')) {
+        const wrap = document.createElement('div');
+        wrap.className = 'table-wrap';
+        t.parentNode.insertBefore(wrap, t);
+        wrap.appendChild(t);
+      }
+    });
+
+    // Sidebar link tıklanınca kapat
+    document.querySelectorAll('.nav-item').forEach(item => {
+      item.addEventListener('click', () => {
+        if (window.innerWidth <= 480) {
+          sidebar.classList.remove('open');
+          if (overlay) overlay.classList.remove('show');
+        }
+      });
+    });
+  }
 });

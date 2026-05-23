@@ -97,12 +97,18 @@
                     </a>
                 </div>
             </nav>
+            <div id="sidebar-overlay" class="sidebar-overlay"></div>
         </aside>
 
         <!-- Main Content -->
         <main class="main-content">
             <header class="top-bar">
-                <h2 id="page-title">Genel Bakış</h2>
+                <div style="display:flex;align-items:center;gap:12px;">
+                    <button id="mobile-menu-btn" class="mobile-menu-btn" aria-label="Menü">
+                        <i class="fa-solid fa-bars"></i>
+                    </button>
+                    <h2 id="page-title">Genel Bakış</h2>
+                </div>
                 <div class="info-cards">
                     <div class="info-badge" id="cloud-status-badge">
                         <i class="fa-solid fa-cloud"></i>
