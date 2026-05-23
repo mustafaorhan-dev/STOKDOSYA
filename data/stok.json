@@ -3,7 +3,7 @@
     "apiUrl": "",
     "autoBackupTime": "17:00",
     "autoBackupEnabled": false,
-    "theme": "light",
+    "theme": "dark",
     "autoSync": true,
     "_migrated": true,
     "github": {
@@ -35,7 +35,7 @@
       "partiNo": "6699",
       "name": "SÜT",
       "category": "Süt Ürünleri",
-      "unit": "kg",
+      "unit": "lt",
       "stock": 450,
       "criticalLevel": 50,
       "stt": "2026-08-28",
