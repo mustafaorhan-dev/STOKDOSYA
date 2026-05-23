@@ -693,21 +693,38 @@ function _exportData() {
   });
 }
 
-function exportCSV() {
-  const rows = _exportData();
-  let csv = 'Parti No,Kategori,Ürün Adı,Stok Miktarı,Birim,Kritik Limit,STT,STT Durumu,Durum\n';
-  const esc = s => '"' + String(s).replace(/"/g, '""') + '"';
-  csv += rows.map(p => {
-    const durum = p.stokBitti ? p.stokBitti : (p.stock <= p.criticalLevel ? ' KRİTİK' : '');
-    return [p.partiNo, p.category, p.name, _fmt(p.stock), p.unit,
-      p.criticalLevel, p.stt || '—', p.sttDurum, durum.trim()].map(esc).join(',');
-  }).join('\n');
-  const blob = new Blob(['\ufeff' + csv], { type: 'text/csv;charset=utf-8;' });
+function _xlsBlob(rows, headers, sheetName, fileName) {
+  const escXml = s => String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  let xml = '<?xml version="1.0" encoding="UTF-8"?><?mso-application progid="Excel.Sheet"?>';
+  xml += '<Workbook xmlns="urn:schemas-microsoft-com:office:spreadsheet" xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel">';
+  xml += '<Worksheet ss:Name="' + escXml(sheetName) + '"><Table>';
+  xml += '<Row>' + headers.map(h => '<Cell><Data ss:Type="String">' + escXml(h) + '</Data></Cell>').join('') + '</Row>';
+  rows.forEach(r => {
+    xml += '<Row>' + r.map(v => {
+      const num = parseFloat(String(v).replace(',', '.'));
+      const type = isNaN(num) || v === '' || v === '—' ? 'String' : 'Number';
+      const val = type === 'Number' ? String(num) : escXml(String(v));
+      return '<Cell><Data ss:Type="' + type + '">' + val + '</Data></Cell>';
+    }).join('') + '</Row>';
+  });
+  xml += '</Table></Worksheet></Workbook>';
+  const blob = new Blob([xml], { type: 'application/vnd.ms-excel;charset=utf-8' });
   const a = document.createElement('a');
   a.href = URL.createObjectURL(blob);
-  a.download = 'stok_listesi.csv';
+  a.download = fileName;
   a.click();
   URL.revokeObjectURL(a.href);
+}
+
+function exportXLSX() {
+  const rows = _exportData();
+  const headers = ['Parti No','Kategori','Ürün Adı','Stok Miktarı','Birim','Kritik Limit','STT','STT Durumu','Durum'];
+  const data = rows.map(p => {
+    const durum = p.stokBitti ? p.stokBitti.trim() : (p.stock <= p.criticalLevel ? 'KRİTİK' : '');
+    return [p.partiNo, p.category, p.name, _fmt(p.stock), p.unit,
+      p.criticalLevel, p.stt || '—', p.sttDurum, durum];
+  });
+  _xlsBlob(data, headers, 'Stok Listesi', 'stok_listesi.xls');
   toast('Excel dosyası indirildi.', 'success');
 }
 
@@ -762,22 +779,86 @@ function exportPrint() {
   w.document.close();
 }
 
+// ----- STT LISTE AL -----
+function _sttExportData() {
+  const now = new Date(); now.setHours(0,0,0,0);
+  return Object.values(data.products).filter(p => p.stt).map(p => {
+    const sttDate = new Date(p.stt + 'T00:00:00');
+    const fark = Math.ceil((sttDate - now) / (1000*60*60*24));
+    const uyari = fark < 0 ? 'GEÇTİ' : (fark === 0 ? 'BUGÜN' : fark + ' gün');
+    const durum = (p.stock <= 0) ? 'STOKTA BİTTİ' : (p.criticalLevel > 0 && p.stock <= p.criticalLevel ? 'KRİTİK' : '—');
+    return [p.partiNo, p.name, formatDate(p.stt), uyari, _fmt(p.stock) + ' ' + p.unit, durum];
+  });
+}
+
+function sttExportXLSX() {
+  const rows = _sttExportData();
+  _xlsBlob(rows, ['Parti No','Ürün','STT','Kalan Gün','Stok','Durum'], 'STT Takip', 'stt_takip.xls');
+  toast('Excel dosyası indirildi.', 'success');
+}
+function sttExportWord() {
+  const rows = _sttExportData();
+  const html = `<html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40'>
+<head><meta charset="utf-8"><title>STT Takip</title></head>
+<body><h2>STT Takip Listesi</h2>
+<table border="1" cellpadding="6" cellspacing="0" style="border-collapse:collapse;font-family:Arial;font-size:13px;width:100%;">
+<thead><tr style="background:#e2e8f0;"><th>Parti No</th><th>Ürün</th><th>STT</th><th>Kalan Gün</th><th>Stok</th><th>Durum</th></tr></thead>
+<tbody>${rows.map(r => '<tr><td>' + r.join('</td><td>') + '</td></tr>').join('\n')}</tbody></table></body></html>`;
+  const blob = new Blob(['\ufeff' + html], { type: 'application/msword;charset=utf-8' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob); a.download = 'stt_takip.doc'; a.click();
+  URL.revokeObjectURL(a.href);
+  toast('Word dosyası indirildi.', 'success');
+}
+function sttExportPrint() {
+  const rows = _sttExportData();
+  const w = window.open('', '_blank');
+  w.document.write(`
+    <html><head><title>STT Takip - Yazdır</title>
+    <style>body{font-family:Arial;padding:20px;}table{width:100%;border-collapse:collapse;font-size:12px;}th,td{border:1px solid #ccc;padding:6px 8px;text-align:left;}th{background:#e2e8f0;}</style></head>
+    <body><h2>STT Takip Listesi</h2>
+    <table><thead><tr><th>Parti No</th><th>Ürün</th><th>STT</th><th>Kalan Gün</th><th>Stok</th><th>Durum</th></tr></thead>
+    <tbody>${rows.map(r => '<tr><td>' + r.join('</td><td>') + '</td></tr>').join('\n')}</tbody></table>
+    <p style="margin-top:20px;color:#888;font-size:11px;">Oluşturulma: ${new Date().toLocaleDateString('tr-TR')}</p>
+    <script>window.print();<\/script></body></html>`);
+  w.document.close();
+}
+
 // Dropdown ac/kapa
+function _toggleMenu(btnId, menuId) {
+  const menu = document.getElementById(menuId);
+  menu.style.display = menu.style.display === 'none' ? 'block' : 'none';
+}
+function _closeMenu(menuId) {
+  document.getElementById(menuId).style.display = 'none';
+}
+
 document.addEventListener('click', (e) => {
-  const dropdown = document.querySelector('.export-dropdown');
-  const menu = document.getElementById('export-menu');
-  if (e.target.closest('#export-btn')) {
-    menu.style.display = menu.style.display === 'none' ? 'block' : 'none';
-  } else if (!e.target.closest('.export-menu')) {
-    menu.style.display = 'none';
+  // Anbar export
+  if (e.target.closest('#export-btn')) { _toggleMenu('export-btn', 'export-menu'); return; }
+  if (!e.target.closest('.export-dropdown') && !e.target.closest('.export-menu')) {
+    _closeMenu('export-menu');
   }
   const opt = e.target.closest('.export-option');
   if (opt) {
-    menu.style.display = 'none';
+    _closeMenu('export-menu');
     const fmt = opt.dataset.format;
-    if (fmt === 'csv') exportCSV();
+    if (fmt === 'xlsx') exportXLSX();
     else if (fmt === 'word') exportWord();
     else if (fmt === 'print') exportPrint();
+  }
+  // STT export
+  if (e.target.closest('#stt-export-btn')) { _toggleMenu('stt-export-btn', 'stt-export-menu'); return; }
+  if (!e.target.closest('.export-dropdown') && !e.target.closest('#stt-export-menu')) {
+    _closeMenu('stt-export-menu');
+  }
+  const sopt = e.target.closest('.stt-export-option');
+  if (sopt) {
+    _closeMenu('stt-export-menu');
+    const fmt = sopt.dataset.format;
+    if (fmt === 'xlsx') sttExportXLSX();
+    else if (fmt === 'word') sttExportWord();
+    else if (fmt === 'print') sttExportPrint();
   }
 });
 
