@@ -79,6 +79,16 @@
       "stock": 6.599999999999909,
       "criticalLevel": 50,
       "createdAt": "2026-05-23T19:07:53.045Z"
+    },
+    "KRF014": {
+      "partiNo": "KRF014",
+      "name": "KURU FASÜLYE",
+      "category": "Bakliyat",
+      "unit": "kg",
+      "stock": 550,
+      "criticalLevel": 50,
+      "stt": "2028-11-22",
+      "createdAt": "2026-05-23T23:11:26.433Z"
     }
   },
   "transactions": [
@@ -340,6 +350,17 @@
       "note": "Mal kabul",
       "stt": "",
       "timestamp": "2026-05-23T21:47:23.605Z"
+    },
+    {
+      "id": 1779577886727.3289,
+      "type": "giris",
+      "partiNo": "KRF014",
+      "productName": "KURU FASÜLYE",
+      "amount": 550,
+      "unit": "kg",
+      "date": "2026-05-23",
+      "note": "İlk giriş",
+      "timestamp": "2026-05-23T23:11:26.433Z"
     }
   ]
 }
