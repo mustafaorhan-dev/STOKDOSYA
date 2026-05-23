@@ -9,15 +9,15 @@
   },
   "users": [
     {
-      "name": "Depo Şefi",
-      "role": "Yönetici"
+      "name": "Depo Åefi",
+      "role": "YÃ¶netici"
     },
     {
-      "name": "Yardımcı Şef Ali",
+      "name": "YardÄ±mcÄ± Åef Ali",
       "role": "Depo Sorumlusu"
     }
   ],
-  "activeUser": "Depo Şefi",
+  "activeUser": "Depo Åefi",
   "products": {
     "A262161": {
       "partiNo": "A262161",
@@ -27,6 +27,15 @@
       "stock": 345,
       "criticalLevel": 50,
       "createdAt": "2026-05-23T16:01:53.783Z"
+    },
+    "A262161-2": {
+      "partiNo": "A262161-2",
+      "name": "MUZ",
+      "category": "Sebze",
+      "unit": "kg",
+      "stock": 100,
+      "criticalLevel": 50,
+      "createdAt": "2026-05-23T16:08:26.260Z"
     }
   },
   "transactions": [
@@ -38,7 +47,7 @@
       "amount": 350,
       "unit": "kg",
       "date": "2026-05-23",
-      "note": "İlk giriş",
+      "note": "Ä°lk giriÅ",
       "timestamp": "2026-05-23T16:01:53.783Z"
     },
     {
@@ -51,6 +60,17 @@
       "date": "2026-05-23",
       "note": "BAYRAM AKKURT",
       "timestamp": "2026-05-23T16:02:22.820Z"
+    },
+    {
+      "id": 1779552507189.3557,
+      "type": "giris",
+      "partiNo": "A262161-2",
+      "productName": "MUZ",
+      "amount": 100,
+      "unit": "kg",
+      "date": "2026-05-23",
+      "note": "İlk giriş",
+      "timestamp": "2026-05-23T16:08:26.260Z"
     }
   ]
 }
