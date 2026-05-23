@@ -26,7 +26,7 @@
       "name": "TAVUK BONFİLE",
       "category": "Temel Gıda",
       "unit": "kg",
-      "stock": 45,
+      "stock": 0.6000000000000014,
       "criticalLevel": 50,
       "stt": "2026-05-28",
       "createdAt": "2026-05-23T19:36:56.007Z"
@@ -66,7 +66,7 @@
       "name": "EJDER MEYVESİ",
       "category": "Meyve",
       "unit": "kg",
-      "stock": 72,
+      "stock": 95,
       "criticalLevel": 50,
       "stt": "",
       "createdAt": "2026-05-23T19:54:58.914Z"
@@ -76,7 +76,7 @@
       "name": "ARMUT",
       "category": "Meyve",
       "unit": "kg",
-      "stock": 945,
+      "stock": 922.8,
       "criticalLevel": 50,
       "createdAt": "2026-05-23T19:07:53.045Z"
     }
@@ -271,6 +271,40 @@
       "date": "2026-05-23",
       "note": "Ürün çıkış",
       "timestamp": "2026-05-23T21:09:00.432Z"
+    },
+    {
+      "id": 1779571572090.797,
+      "type": "cikis",
+      "partiNo": "226",
+      "productName": "TAVUK BONFİLE",
+      "amount": 44.4,
+      "unit": "kg",
+      "date": "2026-05-23",
+      "note": "Ürün çıkış",
+      "timestamp": "2026-05-23T21:26:12.057Z"
+    },
+    {
+      "id": 1779571589924.8152,
+      "type": "cikis",
+      "partiNo": "A262161-3",
+      "productName": "ARMUT",
+      "amount": 22.2,
+      "unit": "kg",
+      "date": "2026-05-23",
+      "note": "Ürün çıkış",
+      "timestamp": "2026-05-23T21:26:29.046Z"
+    },
+    {
+      "id": 1779571624098.3328,
+      "type": "giris",
+      "partiNo": "554466",
+      "productName": "EJDER MEYVESİ",
+      "amount": 23,
+      "unit": "kg",
+      "date": "2026-05-23",
+      "note": "Mal kabul",
+      "stt": "",
+      "timestamp": "2026-05-23T21:27:03.379Z"
     }
   ]
 }
