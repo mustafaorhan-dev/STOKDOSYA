@@ -891,14 +891,18 @@ function refreshMonthView() {
   document.getElementById('month-in-total').textContent = `${girisler.reduce((s, t) => s + t.amount, 0)} Adet`;
   document.getElementById('month-out-total').textContent = `${cikislar.reduce((s, t) => s + t.amount, 0)} Adet`;
 
+  function _birim(t) {
+    return (data.products[t.partiNo] && data.products[t.partiNo].unit) || t.unit || '—';
+  }
+
   const inBody = document.getElementById('month-in-list');
   inBody.innerHTML = girisler.length
-    ? girisler.map(t => `<tr><td>${formatDate(t.date)}</td><td>${t.productName}</td><td>${t.amount}</td><td>${t.unit || '—'}</td></tr>`).join('')
+    ? girisler.map(t => `<tr><td>${formatDate(t.date)}</td><td>${t.productName}</td><td>${t.amount}</td><td>${_birim(t)}</td></tr>`).join('')
     : '<tr><td colspan="4" style="text-align:center;color:var(--text-muted);padding:20px;">Bu ayda giriş yok.</td></tr>';
 
   const outBody = document.getElementById('month-out-list');
   outBody.innerHTML = cikislar.length
-    ? cikislar.map(t => `<tr><td>${formatDate(t.date)}</td><td>${t.productName}</td><td>${t.amount}</td><td>${t.unit || '—'}</td></tr>`).join('')
+    ? cikislar.map(t => `<tr><td>${formatDate(t.date)}</td><td>${t.productName}</td><td>${t.amount}</td><td>${_birim(t)}</td></tr>`).join('')
     : '<tr><td colspan="4" style="text-align:center;color:var(--text-muted);padding:20px;">Bu ayda çıkış yok.</td></tr>';
 }
 
