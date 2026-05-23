@@ -76,7 +76,7 @@
       "name": "ARMUT",
       "category": "Meyve",
       "unit": "kg",
-      "stock": 900,
+      "stock": 945,
       "criticalLevel": 50,
       "createdAt": "2026-05-23T19:07:53.045Z"
     }
@@ -237,6 +237,18 @@
       "date": "2026-05-23",
       "note": "AHMET",
       "timestamp": "2026-05-23T20:15:53.096Z"
+    },
+    {
+      "id": 1779567425320.7341,
+      "type": "giris",
+      "partiNo": "A262161-3",
+      "productName": "ARMUT",
+      "amount": 45,
+      "unit": "kg",
+      "date": "2026-05-23",
+      "note": "AHMET",
+      "stt": "",
+      "timestamp": "2026-05-23T20:17:05.003Z"
     }
   ]
 }
