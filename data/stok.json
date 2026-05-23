@@ -1,1 +1,45 @@
-{}
+{
+  "settings": {
+    "apiUrl": "",
+    "autoBackupTime": "17:00",
+    "autoBackupEnabled": false,
+    "theme": "light",
+    "autoSync": true,
+    "_migrated": true
+  },
+  "users": [
+    {
+      "name": "Depo Şefi",
+      "role": "Yönetici"
+    },
+    {
+      "name": "Yardımcı Şef Ali",
+      "role": "Depo Sorumlusu"
+    }
+  ],
+  "activeUser": "Depo Şefi",
+  "products": {
+    "A262161": {
+      "partiNo": "A262161",
+      "name": "DOMATES",
+      "category": "Sebze",
+      "unit": "kg",
+      "stock": 350,
+      "criticalLevel": 50,
+      "createdAt": "2026-05-23T16:01:53.783Z"
+    }
+  },
+  "transactions": [
+    {
+      "id": 1779552114146.8958,
+      "type": "giris",
+      "partiNo": "A262161",
+      "productName": "DOMATES",
+      "amount": 350,
+      "unit": "kg",
+      "date": "2026-05-23",
+      "note": "İlk giriş",
+      "timestamp": "2026-05-23T16:01:53.783Z"
+    }
+  ]
+}
