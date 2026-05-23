@@ -32,15 +32,6 @@
       "stock": 100,
       "criticalLevel": 50,
       "createdAt": "2026-05-23T16:08:26.260Z"
-    },
-    "A262161-3": {
-      "partiNo": "A262161-3",
-      "name": "DANA  ETi  TAZE",
-      "category": "Sebze",
-      "unit": "kg",
-      "stock": 50,
-      "criticalLevel": 50,
-      "createdAt": "2026-05-23T16:52:45.979Z"
     }
   },
   "transactions": [
