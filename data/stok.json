@@ -3,7 +3,7 @@
     "apiUrl": "",
     "autoBackupTime": "17:00",
     "autoBackupEnabled": false,
-    "theme": "light",
+    "theme": "dark",
     "autoSync": true,
     "_migrated": true
   },
@@ -43,7 +43,7 @@
       "amount": 350,
       "unit": "kg",
       "date": "2026-05-23",
-      "note": "Ä°lk giriÅ",
+      "note": "ÃÂ°lk giriÃÂ",
       "timestamp": "2026-05-23T16:01:53.783Z"
     },
     {
@@ -65,7 +65,7 @@
       "amount": 100,
       "unit": "kg",
       "date": "2026-05-23",
-      "note": "İlk giriş",
+      "note": "Ä°lk giriÅ",
       "timestamp": "2026-05-23T16:08:26.260Z"
     }
   ]
