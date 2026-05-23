@@ -442,7 +442,7 @@ function navigateTo(target) {
   const titles = {
     'dashboard': 'Genel Bakış', 'warehouse': 'Anbar Listesi', 'entry': 'Mal Kabul (Giriş)',
     'exit': 'Ürün Çıkış', 'daily': 'Günlük İşlemler', 'month-view': 'Aylık Rapor',
-    'years-view': 'Yıllık Raporlar', 'settings-view': 'Ayarlar & Bulut'
+    'years-view': 'Yıllık Raporlar', 'stt-tracking': 'STT Takibi', 'settings-view': 'Ayarlar & Bulut'
   };
   document.getElementById('page-title').textContent = titles[target] || 'STOKDOSYA';
 
@@ -451,6 +451,7 @@ function navigateTo(target) {
   if (target === 'warehouse') refreshWarehouse();
   if (target === 'month-view') refreshMonthView();
   if (target === 'years-view') refreshYearsView();
+  if (target === 'stt-tracking') refreshSttTracking();
   if (target === 'entry') refreshEntryForm();
   if (target === 'exit') refreshExitForm();
   if (target === 'daily') refreshDailyView();
@@ -951,6 +952,60 @@ function refreshYearsView() {
 
 document.getElementById('year-select').addEventListener('change', refreshYearsView);
 document.getElementById('year-product-filter').addEventListener('change', refreshYearsView);
+
+// ----- STT TAKIP -----
+let _sttFilter = 'all';
+
+function refreshSttTracking() {
+  const now = new Date();
+  now.setHours(0, 0, 0, 0);
+  const products = Object.values(data.products).filter(p => p.stt).map(p => {
+    const sttDate = new Date(p.stt + 'T00:00:00');
+    const fark = Math.ceil((sttDate - now) / (1000 * 60 * 60 * 24));
+    return { ...p, sttGunFark: fark };
+  });
+
+  let filtered = products;
+  if (_sttFilter === 'expired') filtered = products.filter(p => p.sttGunFark < 0);
+  else if (_sttFilter === 'approaching') filtered = products.filter(p => p.sttGunFark >= 0 && p.sttGunFark <= 30);
+  else if (_sttFilter === 'ok') filtered = products.filter(p => p.sttGunFark > 30);
+  else if (_sttFilter === 'bitti') filtered = products.filter(p => p.stock <= 0);
+
+  filtered.sort((a, b) => a.sttGunFark - b.sttGunFark);
+
+  document.getElementById('stt-filter-badge').textContent = filtered.length + ' ürün';
+
+  const tbody = document.getElementById('stt-tracking-body');
+  if (!filtered.length) {
+    tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;color:var(--text-muted);padding:40px;">Bu filtrede STT\'li ürün bulunamadı.</td></tr>';
+    return;
+  }
+
+  tbody.innerHTML = filtered.map(p => {
+    const gecti = p.sttGunFark < 0;
+    const uyari = gecti ? 'GEÇTİ' : (p.sttGunFark === 0 ? 'BUGÜN' : p.sttGunFark + ' gün');
+    const renk = gecti ? 'var(--accent)' : (p.sttGunFark <= 7 ? 'var(--warning)' : 'var(--success)');
+    const stokBitti = p.stock <= 0;
+    const not = stokBitti ? '<span style="color:var(--accent);font-weight:700;">STOKTA BİTTİ</span>' : '—';
+    return `<tr>
+      <td style="font-weight:600;color:var(--primary);">${p.partiNo}</td>
+      <td><strong>${p.name}</strong></td>
+      <td>${formatDate(p.stt)}</td>
+      <td style="color:${renk};font-weight:700;">${uyari}</td>
+      <td>${_fmt(p.stock)} ${p.unit}</td>
+      <td>${not}</td>
+    </tr>`;
+  }).join('');
+}
+
+document.addEventListener('click', (e) => {
+  const btn = e.target.closest('.stt-filter-btn');
+  if (!btn) return;
+  document.querySelectorAll('.stt-filter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  _sttFilter = btn.dataset.filter;
+  refreshSttTracking();
+});
 
 // ----- AYARLAR -----
 function refreshSettings() {

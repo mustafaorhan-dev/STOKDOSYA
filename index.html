@@ -71,6 +71,14 @@
                     <div id="months-menu" style="display:flex; flex-direction:column; gap:0.25rem;"></div>
                 </div>
 
+                <div class="nav-group">
+                    <h4>Takip</h4>
+                    <a href="#" class="nav-item" data-target="stt-tracking">
+                        <i class="fa-regular fa-calendar"></i>
+                        <span>STT Takibi</span>
+                    </a>
+                </div>
+
                 <div class="user-profile-card" style="margin-top: auto; padding: 0.75rem; background: var(--secondary); border-radius: var(--border-radius-md); margin-bottom: 0.75rem; display: flex; align-items: center; gap: 0.75rem; border: 1px solid var(--border-color);">
                     <div class="user-avatar" style="width: 32px; height: 32px; border-radius: 50%; background: var(--primary-light); color: var(--primary); display: flex; align-items: center; justify-content: center; font-size: 1rem; font-weight: 700; flex-shrink: 0;">
                         <i class="fa-regular fa-user"></i>
@@ -452,6 +460,40 @@
                                 </tr>
                             </thead>
                             <tbody id="year-report-body"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- STT TAKIP -->
+            <div id="stt-tracking" class="view-section">
+                <div class="panel-container">
+                    <div class="panel-header">
+                        <h3><i class="fa-regular fa-calendar"></i> STT Takip Listesi</h3>
+                        <div style="display:flex; gap:8px;align-items:center;">
+                            <span id="stt-filter-badge" style="font-size:12px;color:var(--text-secondary);"></span>
+                        </div>
+                    </div>
+                    <div style="padding: 1.5rem;">
+                        <div style="display:flex; gap:8px; margin-bottom:1rem; flex-wrap:wrap;">
+                            <button class="btn-ui btn-sm btn-outline stt-filter-btn active" data-filter="all">Tümü</button>
+                            <button class="btn-ui btn-sm btn-outline stt-filter-btn" data-filter="expired">Süresi Geçen</button>
+                            <button class="btn-ui btn-sm btn-outline stt-filter-btn" data-filter="approaching">Yaklaşan (≤30 gün)</button>
+                            <button class="btn-ui btn-sm btn-outline stt-filter-btn" data-filter="ok">Süre Var (&gt;30 gün)</button>
+                            <button class="btn-ui btn-sm btn-outline stt-filter-btn" data-filter="bitti">Stokta Biten</button>
+                        </div>
+                        <table class="minimal-table">
+                            <thead>
+                                <tr>
+                                    <th>Parti No</th>
+                                    <th>Ürün</th>
+                                    <th>STT</th>
+                                    <th>Kalan Gün</th>
+                                    <th>Stok</th>
+                                    <th>Not</th>
+                                </tr>
+                            </thead>
+                            <tbody id="stt-tracking-body"></tbody>
                         </table>
                     </div>
                 </div>
