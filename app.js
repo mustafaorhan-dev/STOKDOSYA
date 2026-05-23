@@ -814,7 +814,7 @@ document.getElementById('entry-form').addEventListener('submit', (e) => {
   const note = document.getElementById('entry-note').value.trim();
   const stt = document.getElementById('entry-stt').value || '';
 
-  if (!partiNo || !amount || !date) { toast('Tüm alanları doldurun.', 'error'); return; }
+  if (!partiNo || !amount || amount <= 0 || !date) { toast('Tüm alanları doldurun.', 'error'); return; }
   const p = data.products[partiNo];
   if (!p) { toast('Ürün bulunamadı.', 'error'); return; }
 
@@ -856,7 +856,7 @@ document.getElementById('exit-form').addEventListener('submit', (e) => {
   const date = document.getElementById('exit-date').value;
   const note = document.getElementById('exit-note').value.trim();
 
-  if (!partiNo || !amount || !date) { toast('Tüm alanları doldurun.', 'error'); return; }
+  if (!partiNo || !amount || amount <= 0 || !date) { toast('Tüm alanları doldurun.', 'error'); return; }
   const p = data.products[partiNo];
   if (!p) { toast('Ürün bulunamadı.', 'error'); return; }
   if (p.stock < amount) { toast(`Yetersiz stok! Mevcut: ${p.stock} ${p.unit}`, 'error'); return; }
