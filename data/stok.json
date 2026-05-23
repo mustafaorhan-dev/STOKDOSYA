@@ -41,6 +41,16 @@
       "stt": "2026-08-28",
       "createdAt": "2026-05-23T19:56:39.818Z"
     },
+    "7777": {
+      "partiNo": "7777",
+      "name": "AYVA",
+      "category": "Meyve",
+      "unit": "kg",
+      "stock": 450,
+      "criticalLevel": 50,
+      "stt": "",
+      "createdAt": "2026-05-23T19:57:30.086Z"
+    },
     "554466": {
       "partiNo": "554466",
       "name": "EJDER MEYVESİ",
@@ -184,6 +194,17 @@
       "date": "2026-05-23",
       "note": "İlk giriş",
       "timestamp": "2026-05-23T19:56:39.818Z"
+    },
+    {
+      "id": 1779566250372.4705,
+      "type": "giris",
+      "partiNo": "7777",
+      "productName": "AYVA",
+      "amount": 450,
+      "unit": "kg",
+      "date": "2026-05-23",
+      "note": "İlk giriş",
+      "timestamp": "2026-05-23T19:57:30.086Z"
     }
   ]
 }
