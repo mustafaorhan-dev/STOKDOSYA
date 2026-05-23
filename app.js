@@ -681,6 +681,106 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 });
 
+// ----- LISTE AL (DISARI AKTAR) -----
+function _exportData() {
+  const prods = Object.values(data.products).sort((a, b) => a.name.localeCompare(b.name));
+  const now = new Date(); now.setHours(0,0,0,0);
+  return prods.map(p => {
+    const fark = p.stt ? Math.ceil((new Date(p.stt+'T00:00:00') - now) / (1000*60*60*24)) : '';
+    const sttDurum = fark !== '' ? (fark < 0 ? 'GEÇTİ' : fark + ' gün') : '—';
+    const stokBitti = p.stock <= 0 ? ' STOKTA BİTTİ' : '';
+    return { ...p, sttDurum, stokBitti };
+  });
+}
+
+function exportCSV() {
+  const rows = _exportData();
+  let csv = 'Parti No,Kategori,Ürün Adı,Stok Miktarı,Birim,Kritik Limit,STT,STT Durumu,Durum\n';
+  const esc = s => '"' + String(s).replace(/"/g, '""') + '"';
+  csv += rows.map(p => {
+    const durum = p.stokBitti ? p.stokBitti : (p.stock <= p.criticalLevel ? ' KRİTİK' : '');
+    return [p.partiNo, p.category, p.name, _fmt(p.stock), p.unit,
+      p.criticalLevel, p.stt || '—', p.sttDurum, durum.trim()].map(esc).join(',');
+  }).join('\n');
+  const blob = new Blob(['\ufeff' + csv], { type: 'text/csv;charset=utf-8;' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'stok_listesi.csv';
+  a.click();
+  URL.revokeObjectURL(a.href);
+  toast('Excel dosyası indirildi.', 'success');
+}
+
+function exportWord() {
+  const rows = _exportData();
+  const html = `<html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40'>
+<head><meta charset="utf-8"><title>Stok Listesi</title></head>
+<body><h2>Stok Listesi</h2>
+<table border="1" cellpadding="6" cellspacing="0" style="border-collapse:collapse;font-family:Arial;font-size:13px;width:100%;">
+<thead><tr style="background:#e2e8f0;">
+<th>Parti No</th><th>Kategori</th><th>Ürün Adı</th><th>Stok</th><th>Birim</th><th>Kritik Limit</th><th>STT</th><th>STT Durumu</th><th>Durum</th>
+</tr></thead>
+<tbody>${rows.map(p => {
+    const durum = p.stokBitti ? p.stokBitti : (p.stock <= p.criticalLevel ? ' KRİTİK' : '');
+    return `<tr><td>${p.partiNo}</td><td>${p.category}</td><td>${p.name}</td><td align="right">${_fmt(p.stock)}</td><td>${p.unit}</td><td align="right">${p.criticalLevel}</td><td>${p.stt || '—'}</td><td>${p.sttDurum}</td><td>${durum.trim()}</td></tr>`;
+  }).join('\n')}</tbody></table></body></html>`;
+  const blob = new Blob(['\ufeff' + html], { type: 'application/msword;charset=utf-8' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'stok_listesi.doc';
+  a.click();
+  URL.revokeObjectURL(a.href);
+  toast('Word dosyası indirildi.', 'success');
+}
+
+function exportPrint() {
+  const rows = _exportData();
+  const w = window.open('', '_blank');
+  w.document.write(`
+    <html><head><title>Stok Listesi - Yazdır</title>
+    <style>
+      body { font-family:Arial; padding:20px; }
+      h2 { margin-bottom:12px; }
+      table { width:100%; border-collapse:collapse; font-size:12px; }
+      th, td { border:1px solid #ccc; padding:6px 8px; text-align:left; }
+      th { background:#e2e8f0; }
+      .bitti { color:red; font-weight:700; }
+    </style></head>
+    <body><h2>Stok Listesi</h2>
+    <table><thead><tr>
+      <th>Parti No</th><th>Kategori</th><th>Ürün Adı</th><th>Stok</th><th>Birim</th><th>Kritik</th><th>STT</th><th>STT Durumu</th><th>Durum</th>
+    </tr></thead>
+    <tbody>${rows.map(p => {
+      const durum = p.stokBitti ? 'STOKTA BİTTİ' : (p.stock <= p.criticalLevel ? 'KRİTİK' : '');
+      const cls = p.stokBitti ? ' class="bitti"' : '';
+      return `<tr${cls}><td>${p.partiNo}</td><td>${p.category}</td><td>${p.name}</td><td align="right">${_fmt(p.stock)}</td><td>${p.unit}</td><td align="right">${p.criticalLevel}</td><td>${p.stt || '—'}</td><td>${p.sttDurum}</td><td>${durum}</td></tr>`;
+    }).join('\n')}</tbody></table>
+    <p style="margin-top:20px;color:#888;font-size:11px;">Oluşturulma: ${new Date().toLocaleDateString('tr-TR')}</p>
+    <script>window.print();<\/script>
+    </body></html>
+  `);
+  w.document.close();
+}
+
+// Dropdown ac/kapa
+document.addEventListener('click', (e) => {
+  const dropdown = document.querySelector('.export-dropdown');
+  const menu = document.getElementById('export-menu');
+  if (e.target.closest('#export-btn')) {
+    menu.style.display = menu.style.display === 'none' ? 'block' : 'none';
+  } else if (!e.target.closest('.export-menu')) {
+    menu.style.display = 'none';
+  }
+  const opt = e.target.closest('.export-option');
+  if (opt) {
+    menu.style.display = 'none';
+    const fmt = opt.dataset.format;
+    if (fmt === 'csv') exportCSV();
+    else if (fmt === 'word') exportWord();
+    else if (fmt === 'print') exportPrint();
+  }
+});
+
 // ----- ÜRÜN CRUD -----
 function openProductModal(editPartiNo) {
   const modal = document.getElementById('new-product-modal');

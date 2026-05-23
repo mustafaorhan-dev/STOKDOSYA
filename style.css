@@ -219,6 +219,7 @@ input[type="file"].form-control { padding: 8px; }
 .btn-outline:hover { border-color: var(--primary); color: var(--text-primary); }
 .btn-outline.active { border-color: var(--primary); background: var(--primary-light); color: var(--primary); }
 .btn-sm { padding: 6px 12px; font-size: 12px; }
+.export-option:hover { background: var(--primary-light) !important; }
 
 /* SEARCH */
 .search-field {
