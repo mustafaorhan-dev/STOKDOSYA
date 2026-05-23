@@ -274,9 +274,10 @@ function todayStr() { return new Date().toISOString().split('T')[0]; }
 // ----- KİŞİ ADI AYIKLAMA -----
 function extractPerson(note) {
   if (!note) return '';
-  const regex = /\b([A-ZİŞĞÜÖÇ][A-ZİŞĞÜÖÇ]{1,}(?:\s+[A-ZİŞĞÜÖÇ][A-ZİŞĞÜÖÇ]{1,})+)\b/g;
-  const match = regex.exec(note);
-  return match ? match[1].trim() : '';
+  let clean = note.replace(/[^A-ZİŞĞÜÖÇ\s]/g, ' ').replace(/\s+/g, ' ').trim();
+  const words = clean.split(' ').filter(w => w.length >= 2);
+  if (words.length >= 1) return words.join(' ');
+  return '';
 }
 
 function getAllPersons() {
