@@ -495,7 +495,7 @@ function goToMonth(ay, yil) {
 function refreshDashboard() {
   const prods = Object.values(data.products);
   document.getElementById('total-varieties').textContent = prods.length;
-  document.getElementById('total-stock').textContent = prods.reduce((s, p) => s + p.stock, 0);
+  document.getElementById('total-stock').textContent = _fmt(prods.reduce((s, p) => s + p.stock, 0));
 
   const kritik = prods.filter(p => p.criticalLevel > 0 && p.stock <= p.criticalLevel);
   document.getElementById('critical-count').textContent = kritik.length;
@@ -514,7 +514,7 @@ function refreshDashboard() {
     tbody.innerHTML = hareketler.map(t => {
       const tipEl = t.type === 'giris' ? '<span style="color:var(--success);font-weight:700;">GİRİŞ</span>' : '<span style="color:var(--accent);font-weight:700;">ÇIKIŞ</span>';
       const birim = t.unit || (data.products[t.partiNo] && data.products[t.partiNo].unit) || '';
-      return `<tr><td style="font-weight:600;">${t.partiNo}</td><td>${formatDate(t.date)}</td><td>${tipEl}</td><td>${t.productName}</td><td>${t.amount}</td><td>${birim}</td><td style="color:var(--text-secondary);">${t.note || '-'}</td></tr>`;
+      return `<tr><td style="font-weight:600;">${t.partiNo}</td><td>${formatDate(t.date)}</td><td>${tipEl}</td><td>${t.productName}</td><td>${_fmt(t.amount)}</td><td>${birim}</td><td style="color:var(--text-secondary);">${t.note || '-'}</td></tr>`;
     }).join('');
   }
 
@@ -526,7 +526,7 @@ function refreshDashboard() {
     kritikDiv.innerHTML = kritik.map(p => `
       <div style="display:flex;align-items:center;gap:12px;background:var(--warning-light);padding:12px;border-radius:var(--border-radius-sm);border:1px solid rgba(234,179,8,0.2);">
         <i class="fa-solid fa-triangle-exclamation" style="color:var(--warning);font-size:18px;"></i>
-        <div style="flex:1;"><strong>${p.name}</strong><br><span style="font-size:13px;color:var(--text-secondary);">Stok: ${p.stock} / Limit: ${p.criticalLevel} ${p.unit}</span></div>
+        <div style="flex:1;"><strong>${p.name}</strong><br><span style="font-size:13px;color:var(--text-secondary);">Stok: ${_fmt(p.stock)} / Limit: ${p.criticalLevel} ${p.unit}</span></div>
         <span style="background:#422006;color:var(--warning);padding:2px 10px;border-radius:999px;font-size:12px;font-weight:700;">KRİTİK</span>
       </div>
     `).join('');
@@ -554,7 +554,7 @@ function refreshDashboard() {
       return `
       <div style="display:flex;align-items:center;gap:12px;background:${bgLight};padding:12px;border-radius:var(--border-radius-sm);border:1px solid ${bg}40;">
         <i class="fa-regular fa-clock" style="color:${bg};font-size:18px;"></i>
-        <div style="flex:1;"><strong>${p.name}</strong> [${p.partiNo}]<br><span style="font-size:13px;color:var(--text-secondary);">STT: ${formatDate(p.stt)} — Stok: ${p.stock} ${p.unit}</span></div>
+        <div style="flex:1;"><strong>${p.name}</strong> [${p.partiNo}]<br><span style="font-size:13px;color:var(--text-secondary);">STT: ${formatDate(p.stt)} — Stok: ${_fmt(p.stock)} ${p.unit}</span></div>
         <span style="background:${bg};color:#fff;padding:2px 10px;border-radius:999px;font-size:12px;font-weight:700;">${uyari}</span>
       </div>`;
     }).join('');
@@ -641,7 +641,7 @@ function refreshWarehouse() {
       <td style="font-weight:600;color:var(--primary);">${p.partiNo}</td>
       <td><span style="background:var(--primary-light);color:var(--primary);padding:2px 10px;border-radius:999px;font-size:12px;">${p.category}</span></td>
       <td><strong>${p.name}</strong></td>
-      <td style="${stokClass}">${p.stock} ${p.unit}</td>
+      <td style="${stokClass}">${_fmt(p.stock)} ${p.unit}</td>
       <td>${p.unit}</td>
       <td>${p.criticalLevel}</td>
       <td style="${stt.cls}">${stt.text}</td>
@@ -805,6 +805,13 @@ document.getElementById('entry-product').addEventListener('change', () => {
 function _parseAmount(v) {
   return parseFloat(v.replace(',', '.'));
 }
+function _fmt(n) {
+  const s = n.toString();
+  const i = s.indexOf('.');
+  if (i === -1) return s;
+  const dec = s.slice(i + 1, i + 3).replace(/0+$/, '');
+  return dec ? s.slice(0, i) + '.' + dec : s.slice(0, i);
+}
 
 document.getElementById('entry-form').addEventListener('submit', (e) => {
   e.preventDefault();
@@ -826,8 +833,8 @@ document.getElementById('entry-form').addEventListener('submit', (e) => {
     timestamp: new Date().toISOString()
   });
   saveData();
-  toast(`${amount} ${p.unit} ${p.name} girişi kaydedildi.`, 'success');
-  switchTab('warehouse');
+  toast(`${_fmt(amount)} ${p.unit} ${p.name} girişi kaydedildi.`, 'success');
+  switchTab('dashboard');
   refreshEntryForm();
   refreshDashboard();
   buildMonthMenu();
@@ -867,8 +874,8 @@ document.getElementById('exit-form').addEventListener('submit', (e) => {
     amount, unit: p.unit, date, note: note || 'Ürün çıkış', timestamp: new Date().toISOString()
   });
   saveData();
-  toast(`${amount} ${p.unit} ${p.name} çıkışı kaydedildi.`, 'success');
-  switchTab('warehouse');
+  toast(`${_fmt(amount)} ${p.unit} ${p.name} çıkışı kaydedildi.`, 'success');
+  switchTab('dashboard');
   refreshExitForm();
   refreshDashboard();
   buildMonthMenu();
