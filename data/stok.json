@@ -3,7 +3,7 @@
     "apiUrl": "",
     "autoBackupTime": "17:00",
     "autoBackupEnabled": false,
-    "theme": "light",
+    "theme": "dark",
     "autoSync": true,
     "_migrated": true,
     "github": {
