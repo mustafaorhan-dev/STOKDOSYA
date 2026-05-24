@@ -1,72 +1,5 @@
 {
-  "products": {
-    "01": {
-      "partiNo": "01",
-      "name": "YARMA BUĞDAY",
-      "category": "Bakliyat",
-      "unit": "kg",
-      "stock": 200,
-      "criticalLevel": 50,
-      "stt": "2028-01-01",
-      "companyName": "ALTUNDALLAR",
-      "createdAt": "2026-05-24T02:06:52.007Z"
-    },
-    "02": {
-      "partiNo": "02",
-      "name": "YOĞURT",
-      "category": "Süt Ürünleri",
-      "unit": "kg",
-      "stock": 105,
-      "criticalLevel": 50,
-      "stt": "2026-08-02",
-      "companyName": "ALTUNDALLAR",
-      "createdAt": "2026-05-24T02:17:00.133Z"
-    },
-    "03": {
-      "partiNo": "03",
-      "name": "DOMATES",
-      "category": "Sebze",
-      "unit": "kg",
-      "stock": 300,
-      "criticalLevel": 50,
-      "stt": "",
-      "companyName": "ÖYKÜM MANAV",
-      "createdAt": "2026-05-24T02:23:47.763Z"
-    },
-    "04": {
-      "partiNo": "04",
-      "name": "TAVUK BONFİLE",
-      "category": "Temel Gıda",
-      "unit": "kg",
-      "stock": 0,
-      "criticalLevel": 50,
-      "stt": "2026-06-28",
-      "companyName": "EL-TAŞ TAVUK",
-      "createdAt": "2026-05-24T02:25:23.626Z"
-    },
-    "05": {
-      "partiNo": "05",
-      "name": "EKMEK",
-      "category": "Temel Gıda",
-      "unit": "adet",
-      "stock": 1000,
-      "criticalLevel": 50,
-      "stt": "",
-      "companyName": "OKUL",
-      "createdAt": "2026-05-24T02:30:10.973Z"
-    },
-    "09963": {
-      "partiNo": "09963",
-      "name": "SALKIM DOMATES",
-      "category": "Sebze",
-      "unit": "kg",
-      "stock": 400,
-      "criticalLevel": 50,
-      "stt": "",
-      "companyName": "AHMET BAKKAL",
-      "createdAt": "2026-05-24T02:46:18.671Z"
-    }
-  },
+  "products": {},
   "transactions": [
     {
       "id": 1779588412256.8528,
@@ -134,40 +67,42 @@
       "date": "2026-05-24",
       "note": "İlk giriş",
       "timestamp": "2026-05-24T02:46:18.671Z"
+    },
+    {
+      "id": 1779590912619.3926,
+      "type": "giris",
+      "partiNo": "05",
+      "productName": "EKMEK",
+      "amount": 88,
+      "unit": "adet",
+      "date": "2026-05-24",
+      "note": "Mal kabul",
+      "stt": "",
+      "timestamp": "2026-05-24T02:48:32.431Z"
+    },
+    {
+      "id": 1779591011128.955,
+      "type": "cikis",
+      "partiNo": "05",
+      "productName": "EKMEK",
+      "amount": 1000,
+      "unit": "adet",
+      "date": "2026-05-24",
+      "note": "MUSTAFA ORHAN",
+      "timestamp": "2026-05-24T02:50:10.905Z"
     }
   ],
   "companies": [
-    "AHMET BAKKAL",
-    "ALTUNDALLAR",
-    "EL-TAŞ TAVUK",
-    "OKUL",
     "ÖYKÜM MANAV"
   ],
-  "tenders": [
-    {
-      "id": 1779588289192.092,
-      "companyName": "ALTUNDALLAR",
-      "product": "YARMA BUĞDAY",
-      "quantity": 700,
-      "delivered": 300,
-      "price": 29
-    },
-    {
-      "id": 1779588955541.0244,
-      "companyName": "ALTUNDALLAR",
-      "product": "YOĞURT",
-      "quantity": 10000,
-      "delivered": 1605,
-      "price": 52
-    }
-  ],
+  "tenders": [],
   "settings": {
     "autoBackupTime": "17:00",
     "autoSync": true,
     "_migrated": true,
     "apiUrl": "",
     "autoBackupEnabled": false,
-    "theme": "dark",
+    "theme": "light",
     "github": {
       "owner": "mustafaorhan-dev",
       "repo": "STOKDOSYA",
