@@ -5,7 +5,7 @@
       "name": "DOMATES",
       "category": "Sebze",
       "unit": "kg",
-      "stock": 60,
+      "stock": 1015,
       "criticalLevel": 50,
       "stt": "2026-06-11",
       "companyName": "MANAV",
@@ -57,6 +57,30 @@
       "note": "Mal kabul",
       "stt": "6666-11-15",
       "timestamp": "2026-05-24T10:05:10.407Z"
+    },
+    {
+      "id": 1779617633644.16,
+      "type": "giris",
+      "partiNo": "01",
+      "productName": "DOMATES",
+      "amount": 555,
+      "unit": "kg",
+      "date": "2016-01-01",
+      "note": "Mal kabul",
+      "stt": "2026-06-11",
+      "timestamp": "2026-05-24T10:13:53.574Z"
+    },
+    {
+      "id": 1779617685053.3076,
+      "type": "giris",
+      "partiNo": "01",
+      "productName": "DOMATES",
+      "amount": 400,
+      "unit": "kg",
+      "date": "2040-05-24",
+      "note": "Mal kabul",
+      "stt": "2026-06-11",
+      "timestamp": "2026-05-24T10:14:44.950Z"
     }
   ],
   "companies": [
