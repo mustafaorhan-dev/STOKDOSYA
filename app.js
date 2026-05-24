@@ -961,6 +961,18 @@ document.getElementById('new-product-form').addEventListener('submit', (e) => {
         }
       }
 
+      // Stok değişimini hareketlere kaydet
+      if (fark !== 0) {
+        const tip = fark > 0 ? 'giris' : 'cikis';
+        const mutlakFark = Math.abs(fark);
+        data.transactions.push({
+          id: Date.now() + Math.random() * 1000, type: tip, partiNo, productName: p.name,
+          amount: mutlakFark, unit: p.unit, date: todayStr(),
+          note: tip === 'giris' ? 'Düzenleme ile stok artışı' : 'Düzenleme ile stok azalışı',
+          timestamp: new Date().toISOString()
+        });
+      }
+
       saveData();
       toast('Ürün güncellendi.', 'success');
     }
