@@ -1,33 +1,78 @@
 {
-    "products":  {
-
-                 },
-    "transactions":  [
-
-                     ],
-    "companies":  [
-
-                  ],
-    "tenders":  [
-
-                ],
-    "settings":  {
-                     "autoBackupTime":  "17:00",
-                     "autoSync":  true,
-                     "_migrated":  true,
-                     "apiUrl":  "",
-                     "autoBackupEnabled":  false,
-                     "theme":  "light"
-                 },
-    "users":  [
-                  {
-                      "name":  "Depo Şefi",
-                      "role":  "Yönetici"
-                  },
-                  {
-                      "name":  "Yardımcı Şef Ali",
-                      "role":  "Depo Sorumlusu"
-                  }
-              ],
-    "activeUser":  "Depo Şefi"
+  "products": {
+    "01": {
+      "partiNo": "01",
+      "name": "YARMA BUĞDAY",
+      "category": "Bakliyat",
+      "unit": "kg",
+      "stock": 200,
+      "criticalLevel": 50,
+      "stt": "2028-01-01",
+      "companyName": "ALTUNDALLAR",
+      "createdAt": "2026-05-24T02:06:52.007Z"
+    }
+  },
+  "transactions": [
+    {
+      "id": 1779588412256.8528,
+      "type": "giris",
+      "partiNo": "01",
+      "productName": "YARMA BUĞDAY",
+      "amount": 100,
+      "unit": "kg",
+      "date": "2026-05-24",
+      "note": "İlk giriş",
+      "timestamp": "2026-05-24T02:06:52.007Z"
+    },
+    {
+      "id": 1779588459484.573,
+      "type": "giris",
+      "partiNo": "01",
+      "productName": "YARMA BUĞDAY",
+      "amount": 100,
+      "unit": "kg",
+      "date": "2026-05-24",
+      "note": "Mal kabul",
+      "stt": "2028-01-01",
+      "timestamp": "2026-05-24T02:07:39.374Z"
+    }
+  ],
+  "companies": [
+    "ALTUNDALLAR"
+  ],
+  "tenders": [
+    {
+      "id": 1779588289192.092,
+      "companyName": "ALTUNDALLAR",
+      "product": "YARMA BUĞDAY",
+      "quantity": 700,
+      "delivered": 300,
+      "price": 29
+    }
+  ],
+  "settings": {
+    "autoBackupTime": "17:00",
+    "autoSync": true,
+    "_migrated": true,
+    "apiUrl": "",
+    "autoBackupEnabled": false,
+    "theme": "light",
+    "github": {
+      "owner": "mustafaorhan-dev",
+      "repo": "STOKDOSYA",
+      "path": "data/stok.json",
+      "token": ""
+    }
+  },
+  "users": [
+    {
+      "name": "Depo Şefi",
+      "role": "Yönetici"
+    },
+    {
+      "name": "Yardımcı Şef Ali",
+      "role": "Depo Sorumlusu"
+    }
+  ],
+  "activeUser": "Depo Şefi"
 }
