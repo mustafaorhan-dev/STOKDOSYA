@@ -1600,6 +1600,41 @@ document.getElementById('restore-btn').addEventListener('click', () => {
   reader.readAsText(file);
 });
 
+// ----- DEPO SIFIRLAMA -----
+function resetAllData() {
+  if (!confirm('🔴 Tüm stok verileri silinecek! Bu işlem geri alınamaz. Devam etmek istediğinize emin misiniz?')) return;
+  if (!confirm('⚠️ Son bir kez daha: Tüm ürünler, stok hareketleri, STT kayıtları, ihaleler ve tedarikçiler silinecek. Onaylıyor musunuz?')) return;
+
+  const overlay = document.getElementById('loading-overlay');
+  overlay.style.display = 'flex';
+  document.getElementById('loading-text').textContent = 'Veri sıfırlanıyor...';
+
+  setTimeout(async () => {
+    data.products = {};
+    data.transactions = [];
+    data.tenders = [];
+    data.companies = [];
+
+    // Kullanıcıları ve ayarları koru
+    initData();
+
+    saveData();
+
+    // GitHub'a da sıfırlanmış veriyi gönder
+    if (githubApiUrl()) {
+      document.getElementById('loading-text').textContent = 'GitHub senkronize ediliyor...';
+      await githubSave(data);
+    }
+
+    overlay.style.display = 'none';
+    toast('✅ Depo tamamen sıfırlandı! Baştan başlayabilirsiniz.', 'success');
+    refreshAll();
+    navigateTo('dashboard');
+  }, 300);
+}
+
+document.getElementById('reset-all-btn').addEventListener('click', resetAllData);
+
 // Otomatik yedekleme
 document.getElementById('auto-backup-toggle').addEventListener('change', (e) => {
   data.settings.autoBackupEnabled = e.target.checked;
