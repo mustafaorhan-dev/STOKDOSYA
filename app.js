@@ -293,13 +293,18 @@ function isValidDate(str) {
   return date.getFullYear() === y && date.getMonth() === m - 1 && date.getDate() === d;
 }
 
+function sanitizeDateInput(input) {
+  let val = input.value;
+  if (!val) return;
+  let parts = val.split('-');
+  if (parts.length === 3 && parts[0].length > 4) {
+    parts[0] = parts[0].slice(0, 4);
+    input.value = parts.join('-');
+  }
+}
+
 document.querySelectorAll('input[type="date"]').forEach(el => {
-  el.addEventListener('change', function() {
-    if (this.value && !isValidDate(this.value)) {
-      toast('Geçersiz tarih! Yıl 4 haneli olmalı.', 'error');
-      this.value = '';
-    }
-  });
+  el.addEventListener('input', function() { sanitizeDateInput(this); });
 });
 
 // ----- KİŞİ ADI AYIKLAMA -----
