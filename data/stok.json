@@ -43,6 +43,17 @@
       "stt": "2026-06-28",
       "companyName": "EL-TAŞ TAVUK",
       "createdAt": "2026-05-24T02:25:23.626Z"
+    },
+    "05": {
+      "partiNo": "05",
+      "name": "EKMEK",
+      "category": "Temel Gıda",
+      "unit": "adet",
+      "stock": 1000,
+      "criticalLevel": 50,
+      "stt": "",
+      "companyName": "OKUL",
+      "createdAt": "2026-05-24T02:30:10.973Z"
     }
   },
   "transactions": [
@@ -90,11 +101,23 @@
       "date": "2026-05-24",
       "note": "İlk giriş",
       "timestamp": "2026-05-24T02:23:47.763Z"
+    },
+    {
+      "id": 1779589811679.2327,
+      "type": "giris",
+      "partiNo": "05",
+      "productName": "EKMEK",
+      "amount": 1000,
+      "unit": "adet",
+      "date": "2026-05-24",
+      "note": "İlk giriş",
+      "timestamp": "2026-05-24T02:30:10.982Z"
     }
   ],
   "companies": [
     "ALTUNDALLAR",
     "EL-TAŞ TAVUK",
+    "OKUL",
     "ÖYKÜM MANAV"
   ],
   "tenders": [
