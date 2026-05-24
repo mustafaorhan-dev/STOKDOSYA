@@ -26,7 +26,7 @@
       "name": "PİRİNÇ",
       "category": "Bakliyat",
       "unit": "kg",
-      "stock": 395,
+      "stock": 895,
       "criticalLevel": 50,
       "stt": "2028-10-22",
       "createdAt": "2026-05-24T00:53:45.626Z"
@@ -393,6 +393,18 @@
       "date": "2026-05-24",
       "note": "Ürün çıkış",
       "timestamp": "2026-05-24T00:54:10.010Z"
+    },
+    {
+      "id": 1779584202416.3787,
+      "type": "giris",
+      "partiNo": "159",
+      "productName": "PİRİNÇ",
+      "amount": 500,
+      "unit": "kg",
+      "date": "2026-05-24",
+      "note": "ALTUNDALLAR",
+      "stt": "2028-10-22",
+      "timestamp": "2026-05-24T00:56:42.027Z"
     }
   ],
   "tenders": [
@@ -401,7 +413,7 @@
       "companyName": "ALTUNDALLAR",
       "product": "PİRİNÇ",
       "quantity": 6000,
-      "delivered": 0,
+      "delivered": 500,
       "price": 76.5
     }
   ]
