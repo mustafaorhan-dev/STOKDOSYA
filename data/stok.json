@@ -5,7 +5,7 @@
       "name": "DOMATES",
       "category": "Sebze",
       "unit": "kg",
-      "stock": 40,
+      "stock": 45,
       "criticalLevel": 50,
       "stt": "",
       "companyName": "MANAV",
@@ -35,7 +35,7 @@
     "_migrated": true,
     "apiUrl": "",
     "autoBackupEnabled": false,
-    "theme": "dark",
+    "theme": "light",
     "github": {
       "owner": "mustafaorhan-dev",
       "repo": "STOKDOSYA",
