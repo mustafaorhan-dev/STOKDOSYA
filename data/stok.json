@@ -77,9 +77,9 @@
       "name": "YOĞURT",
       "category": "Süt Ürünleri",
       "unit": "kg",
-      "stock": 455,
+      "stock": 955,
       "criticalLevel": 50,
-      "stt": "2026-07-01",
+      "stt": "2026-09-01",
       "createdAt": "2026-05-24T01:00:37.803Z",
       "companyName": "ALTUNDALLAR"
     },
@@ -461,6 +461,18 @@
       "note": "ALTUNDALLAR",
       "stt": "2026-07-02",
       "timestamp": "2026-05-24T01:30:06.727Z"
+    },
+    {
+      "id": 1779586559432.416,
+      "type": "giris",
+      "partiNo": "8877",
+      "productName": "YOĞURT",
+      "amount": 500,
+      "unit": "kg",
+      "date": "2026-05-24",
+      "note": "ALTUNDALLAR",
+      "stt": "2026-09-01",
+      "timestamp": "2026-05-24T01:35:58.438Z"
     }
   ],
   "tenders": [
@@ -477,7 +489,7 @@
       "companyName": "ALTUNDALLAR",
       "product": "YOĞURT",
       "quantity": 10000,
-      "delivered": 1700,
+      "delivered": 2200,
       "price": 52
     }
   ],
