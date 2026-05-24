@@ -171,6 +171,16 @@ function initData() {
   if (!data.products) data.products = {};
   if (!data.transactions) data.transactions = [];
   if (!data.tenders) data.tenders = [];
+  if (!data.companies) data.companies = [];
+  // Mevcut ürünlerden firma adlarını topla
+  if (data.products) {
+    Object.values(data.products).forEach(p => {
+      if (p.companyName && !data.companies.includes(p.companyName)) {
+        data.companies.push(p.companyName);
+      }
+    });
+    data.companies.sort((a, b) => a.localeCompare(b));
+  }
 }
 
 // ----- DRIVE SENKRONİZASYON -----
@@ -893,6 +903,12 @@ function openProductModal(editPartiNo) {
     document.getElementById('np-company').value = '';
   }
 
+  // Firma listesini datalist'e doldur
+  const dlist = document.getElementById('company-list');
+  if (dlist) {
+    dlist.innerHTML = (data.companies || []).map(c => `<option value="${c}">`).join('');
+  }
+
   modal.classList.add('show');
 }
 
@@ -951,6 +967,13 @@ document.getElementById('new-product-form').addEventListener('submit', (e) => {
     }
     saveData();
     toast('Yeni ürün kartı oluşturuldu!', 'success');
+  }
+
+  // Yeni firma adını hafızaya ekle
+  if (companyName && !data.companies.includes(companyName)) {
+    data.companies.push(companyName);
+    data.companies.sort((a, b) => a.localeCompare(b));
+    saveData();
   }
 
   document.getElementById('new-product-modal').classList.remove('show');
