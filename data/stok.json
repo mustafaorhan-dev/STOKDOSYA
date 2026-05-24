@@ -20,17 +20,7 @@
     }
   ],
   "activeUser": "MUSTAFA ORHAN",
-  "products": {
-    "A262161-3": {
-      "partiNo": "A262161-3",
-      "name": "ARMUT",
-      "category": "Meyve",
-      "unit": "kg",
-      "stock": 6.599999999999909,
-      "criticalLevel": 50,
-      "createdAt": "2026-05-23T19:07:53.045Z"
-    }
-  },
+  "products": {},
   "transactions": [
     {
       "id": 1779552114146.8958,
@@ -408,14 +398,6 @@
     }
   ],
   "tenders": [
-    {
-      "id": 1779583337758.2744,
-      "companyName": "ALTUNDALLAR",
-      "product": "PİRİNÇ",
-      "quantity": 6000,
-      "delivered": 500,
-      "price": 76.5
-    },
     {
       "id": 1779584353528.4514,
       "companyName": "ALTUNDALLAR",
