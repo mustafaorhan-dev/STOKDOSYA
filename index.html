@@ -77,6 +77,10 @@
                         <i class="fa-regular fa-calendar"></i>
                         <span>STT Takibi</span>
                     </a>
+                    <a href="#" class="nav-item" data-target="tender-tracking">
+                        <i class="fa-solid fa-file-signature"></i>
+                        <span>İhale Takip</span>
+                    </a>
                 </div>
 
                 <div class="user-profile-card" style="margin-top: auto; padding: 0.75rem; background: var(--secondary); border-radius: var(--border-radius-md); margin-bottom: 0.75rem; display: flex; align-items: center; gap: 0.75rem; border: 1px solid var(--border-color);">
@@ -521,6 +525,56 @@
                 </div>
             </div>
 
+            <!-- IHALE TAKIP -->
+            <div id="tender-tracking" class="view-section">
+                <div class="panel-container">
+                    <div class="panel-header">
+                        <h3><i class="fa-solid fa-file-signature"></i> İhale Takip Listesi</h3>
+                        <div style="display:flex; gap:8px;align-items:center;">
+                            <button id="add-tender-btn" class="btn-ui btn-primary"><i class="fa-solid fa-plus"></i> Yeni İhale</button>
+                        </div>
+                    </div>
+                    <div style="padding: 1.5rem;">
+                        <table class="minimal-table">
+                            <thead>
+                                <tr>
+                                    <th>Firma Adı</th>
+                                    <th>Ürün</th>
+                                    <th>Anlaşma Miktarı</th>
+                                    <th>Teslim Alınan</th>
+                                    <th>Kalan</th>
+                                    <th>Birim Fiyat</th>
+                                    <th>Sözleşme Tutarı</th>
+                                    <th>Teslim Tutarı</th>
+                                    <th>Teslim Oranı</th>
+                                    <th style="width:80px;text-align:right;">İşlem</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tender-body"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- İhale Ekleme Modal -->
+            <div id="tender-modal" class="modal">
+                <div class="form-card" style="width:480px;max-width:95vw;">
+                    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.5rem;border-bottom:1px solid var(--border-color);padding-bottom:1rem;">
+                        <h3 style="font-size:1.2rem;font-weight:700;"><i class="fa-solid fa-file-signature" style="color:var(--primary);"></i> <span id="tender-modal-title">Yeni İhale</span></h3>
+                        <i class="fa-solid fa-times" onclick="document.getElementById('tender-modal').classList.remove('show')" style="cursor:pointer;font-size:1.2rem;color:var(--text-muted);"></i>
+                    </div>
+                    <form id="tender-form">
+                        <input type="hidden" id="tender-edit-id">
+                        <div class="form-group"><label>Firma Adı</label><input type="text" id="tender-company" class="form-control" required></div>
+                        <div class="form-group"><label>Ürün Adı</label><input type="text" id="tender-product" class="form-control" required></div>
+                        <div class="form-group"><label>Anlaşma Miktarı</label><input type="text" inputmode="decimal" id="tender-quantity" class="form-control" required></div>
+                        <div class="form-group"><label>Teslim Alınan Miktar</label><input type="text" inputmode="decimal" id="tender-delivered" class="form-control" value="0"></div>
+                        <div class="form-group"><label>Birim Fiyat (₺)</label><input type="text" inputmode="decimal" id="tender-price" class="form-control" required></div>
+                        <button type="submit" class="btn-ui btn-primary" style="width:100%;padding:0.9rem;margin-top:0.5rem;"><i class="fa-solid fa-save"></i> <span id="tender-submit-text">İhale Ekle</span></button>
+                    </form>
+                </div>
+            </div>
+
             <!-- 8. SETTINGS VIEW -->
             <div id="settings-view" class="view-section">
                 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem;">
@@ -686,7 +740,7 @@ const HARD_CODED_GITHUB = {
 
     <!-- Modal: Yeni Ürün Kartı -->
     <div id="new-product-modal" class="modal">
-        <div class="form-card" style="width: 480px;">
+        <div class="form-card" style="width: 480px; max-width: 95vw;">
             <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 1.5rem; border-bottom: 1px solid var(--border-color); padding-bottom: 1rem;">
                 <h3 style="font-size:1.2rem; font-weight:700; color:var(--text-primary);"><i class="fa-solid fa-box-open" style="color:var(--primary);"></i> Yeni Ürün & Parti Tanımı</h3>
                 <i class="fa-solid fa-times" id="close-modal" style="cursor:pointer; font-size: 1.2rem; color:var(--text-muted); transition: var(--transition-smooth);"></i>

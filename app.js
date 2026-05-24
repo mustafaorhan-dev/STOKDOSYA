@@ -170,6 +170,7 @@ function initData() {
   if (!data.settings.autoSync) data.settings.autoSync = true;
   if (!data.products) data.products = {};
   if (!data.transactions) data.transactions = [];
+  if (!data.tenders) data.tenders = [];
 }
 
 // ----- DRIVE SENKRONİZASYON -----
@@ -445,7 +446,7 @@ function navigateTo(target) {
   const titles = {
     'dashboard': 'Genel Bakış', 'warehouse': 'Anbar Listesi', 'entry': 'Mal Kabul (Giriş)',
     'exit': 'Ürün Çıkış', 'daily': 'Günlük İşlemler', 'month-view': 'Aylık Rapor',
-    'years-view': 'Yıllık Raporlar', 'stt-tracking': 'STT Takibi', 'settings-view': 'Ayarlar & Bulut'
+    'years-view': 'Yıllık Raporlar', 'stt-tracking': 'STT Takibi', 'tender-tracking': 'İhale Takip', 'settings-view': 'Ayarlar & Bulut'
   };
   document.getElementById('page-title').textContent = titles[target] || 'STOKDOSYA';
 
@@ -455,6 +456,7 @@ function navigateTo(target) {
   if (target === 'month-view') refreshMonthView();
   if (target === 'years-view') refreshYearsView();
   if (target === 'stt-tracking') refreshSttTracking();
+  if (target === 'tender-tracking') refreshTenders();
   if (target === 'entry') refreshEntryForm();
   if (target === 'exit') refreshExitForm();
   if (target === 'daily') {
@@ -1186,6 +1188,95 @@ document.addEventListener('click', (e) => {
   btn.classList.add('active');
   _sttFilter = btn.dataset.filter;
   refreshSttTracking();
+});
+
+// ----- IHALE TAKIP -----
+function refreshTenders() {
+  if (!data.tenders) data.tenders = [];
+  const tbody = document.getElementById('tender-body');
+  if (!data.tenders.length) {
+    tbody.innerHTML = '<tr><td colspan="10" style="text-align:center;color:var(--text-muted);padding:40px;">Henüz ihale kaydı yok.</td></tr>';
+    return;
+  }
+  tbody.innerHTML = data.tenders.map(t => {
+    const kalan = t.quantity - t.delivered;
+    const sozlesmeTutar = t.price * t.quantity;
+    const teslimTutar = t.price * t.delivered;
+    const oran = sozlesmeTutar > 0 ? ((teslimTutar / sozlesmeTutar) * 100).toFixed(1) : 0;
+    const oranRenk = oran >= 100 ? 'var(--success)' : (oran >= 50 ? 'var(--warning)' : 'var(--accent)');
+    return `<tr>
+      <td><strong>${t.companyName}</strong></td>
+      <td>${t.product}</td>
+      <td align="right">${_fmt(t.quantity)}</td>
+      <td align="right">${_fmt(t.delivered)}</td>
+      <td align="right">${_fmt(kalan)}</td>
+      <td align="right">${_fmt(t.price)} ₺</td>
+      <td align="right">${_fmt(sozlesmeTutar)} ₺</td>
+      <td align="right">${_fmt(teslimTutar)} ₺</td>
+      <td align="right" style="color:${oranRenk};font-weight:700;">%${oran}</td>
+      <td style="text-align:right;">
+        <button class="btn-ui btn-sm btn-outline" onclick="editTender(${t.id})" title="Düzenle"><i class="fa-solid fa-pen"></i></button>
+        <button class="btn-ui btn-sm btn-outline" onclick="deleteTender(${t.id})" title="Sil" style="color:var(--accent);"><i class="fa-solid fa-trash-can"></i></button>
+      </td>
+    </tr>`;
+  }).join('');
+}
+
+function openTenderModal(editId) {
+  const modal = document.getElementById('tender-modal');
+  const form = document.getElementById('tender-form');
+  form.reset();
+  document.getElementById('tender-edit-id').value = '';
+  document.getElementById('tender-modal-title').textContent = 'Yeni İhale';
+  document.getElementById('tender-submit-text').textContent = 'İhale Ekle';
+  if (editId) {
+    const t = data.tenders.find(x => x.id === editId);
+    if (!t) return;
+    document.getElementById('tender-edit-id').value = t.id;
+    document.getElementById('tender-company').value = t.companyName;
+    document.getElementById('tender-product').value = t.product;
+    document.getElementById('tender-quantity').value = t.quantity;
+    document.getElementById('tender-delivered').value = t.delivered;
+    document.getElementById('tender-price').value = t.price;
+    document.getElementById('tender-modal-title').textContent = 'İhale Düzenle';
+    document.getElementById('tender-submit-text').textContent = 'Güncelle';
+  }
+  modal.classList.add('show');
+}
+function editTender(id) { openTenderModal(id); }
+
+function deleteTender(id) {
+  if (!confirm('Bu ihaleyi silmek istediğinize emin misiniz?')) return;
+  data.tenders = data.tenders.filter(t => t.id !== id);
+  saveData();
+  refreshTenders();
+  toast('İhale silindi.', 'success');
+}
+
+document.getElementById('add-tender-btn').addEventListener('click', () => openTenderModal());
+
+document.getElementById('tender-form').addEventListener('submit', (e) => {
+  e.preventDefault();
+  const editId = document.getElementById('tender-edit-id').value;
+  const companyName = document.getElementById('tender-company').value.trim();
+  const product = document.getElementById('tender-product').value.trim();
+  const quantity = _parseAmount(document.getElementById('tender-quantity').value);
+  const delivered = _parseAmount(document.getElementById('tender-delivered').value) || 0;
+  const price = _parseAmount(document.getElementById('tender-price').value);
+
+  if (!companyName || !product || !quantity || !price) { toast('Tüm alanları doldurun.', 'error'); return; }
+
+  if (editId) {
+    const t = data.tenders.find(x => x.id === parseFloat(editId));
+    if (t) { t.companyName = companyName; t.product = product; t.quantity = quantity; t.delivered = delivered; t.price = price; }
+    toast('İhale güncellendi.', 'success');
+  } else {
+    data.tenders.push({ id: Date.now() + Math.random() * 1000, companyName, product, quantity, delivered, price });
+    toast('İhale eklendi.', 'success');
+  }
+  saveData();
+  document.getElementById('tender-modal').classList.remove('show');
+  refreshTenders();
 });
 
 // ----- AYARLAR -----
