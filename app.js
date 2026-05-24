@@ -1017,7 +1017,24 @@ document.getElementById('entry-form').addEventListener('submit', (e) => {
     timestamp: new Date().toISOString()
   });
   saveData();
-  toast(`${_fmt(amount)} ${p.unit} ${p.name} girişi kaydedildi.`, 'success');
+
+  // İhale teslimatına otomatik ekle
+  let ihaleMsg = '';
+  if (data.tenders && data.tenders.length) {
+    const firmaAdi = extractPerson(note);
+    if (firmaAdi) {
+      const eslesen = data.tenders.filter(t =>
+        t.companyName.toUpperCase() === firmaAdi && t.product === p.name
+      );
+      eslesen.forEach(t => { t.delivered += amount; });
+      if (eslesen.length) {
+        saveData();
+        ihaleMsg = ` | ✅ "${firmaAdi}" ihaleye işlendi`;
+      }
+    }
+  }
+
+  toast(`${_fmt(amount)} ${p.unit} ${p.name} girişi kaydedildi.${ihaleMsg}`, 'success');
   navigateTo('dashboard');
   refreshEntryForm();
   refreshDashboard();
@@ -1205,16 +1222,16 @@ function refreshTenders() {
     const oran = sozlesmeTutar > 0 ? ((teslimTutar / sozlesmeTutar) * 100).toFixed(1) : 0;
     const oranRenk = oran >= 100 ? 'var(--success)' : (oran >= 50 ? 'var(--warning)' : 'var(--accent)');
     return `<tr>
-      <td><strong>${t.companyName}</strong></td>
-      <td>${t.product}</td>
-      <td align="right">${_fmt(t.quantity)}</td>
-      <td align="right">${_fmt(t.delivered)}</td>
-      <td align="right">${_fmt(kalan)}</td>
-      <td align="right">${_fmt(t.price)} ₺</td>
-      <td align="right">${_fmt(sozlesmeTutar)} ₺</td>
-      <td align="right">${_fmt(teslimTutar)} ₺</td>
-      <td align="right" style="color:${oranRenk};font-weight:700;">%${oran}</td>
-      <td style="text-align:right;">
+      <td style="white-space:nowrap;"><strong>${t.companyName}</strong></td>
+      <td style="white-space:nowrap;">${t.product}</td>
+      <td style="text-align:right;white-space:nowrap;">${_fmt(t.quantity)}</td>
+      <td style="text-align:right;white-space:nowrap;">${_fmt(t.delivered)}</td>
+      <td style="text-align:right;white-space:nowrap;">${_fmt(kalan)}</td>
+      <td style="text-align:right;white-space:nowrap;">${_fmt(t.price)} ₺</td>
+      <td style="text-align:right;white-space:nowrap;">${_fmt(sozlesmeTutar)} ₺</td>
+      <td style="text-align:right;white-space:nowrap;">${_fmt(teslimTutar)} ₺</td>
+      <td style="text-align:right;white-space:nowrap;color:${oranRenk};font-weight:700;">%${oran}</td>
+      <td style="text-align:right;white-space:nowrap;">
         <button class="btn-ui btn-sm btn-outline" onclick="editTender(${t.id})" title="Düzenle"><i class="fa-solid fa-pen"></i></button>
         <button class="btn-ui btn-sm btn-outline" onclick="deleteTender(${t.id})" title="Sil" style="color:var(--accent);"><i class="fa-solid fa-trash-can"></i></button>
       </td>
