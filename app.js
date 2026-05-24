@@ -979,6 +979,17 @@ document.getElementById('new-product-form').addEventListener('submit', (e) => {
         id: Date.now() + Math.random() * 1000, type: 'giris', partiNo, productName: name,
         amount: stock, unit: unit, date: todayStr(), note: 'İlk giriş', timestamp: new Date().toISOString()
       });
+      // Yeni ürün başlangıç stoğunu ihaleye işle
+      if (companyName && data.tenders && data.tenders.length) {
+        const eslesen = data.tenders.filter(t =>
+          t.companyName === companyName && t.product === name
+        );
+        eslesen.forEach(t => { t.delivered += stock; });
+        if (eslesen.length) {
+          saveData();
+          toast(`✅ ${_fmt(stock)} ${unit} "${companyName}" ihaleye işlendi.`, 'success');
+        }
+      }
     }
     saveData();
     toast('Yeni ürün kartı oluşturuldu!', 'success');
