@@ -884,11 +884,13 @@ function openProductModal(editPartiNo) {
     document.getElementById('np-stock').value = _fmt(p.stock);
     document.getElementById('np-critical').value = p.criticalLevel;
     document.getElementById('np-stt').value = p.stt || '';
+    document.getElementById('np-company').value = p.companyName || '';
     document.getElementById('submit-product-btn').innerHTML = '<i class="fa-solid fa-pen"></i> Kartı Güncelle';
   } else {
     document.getElementById('np-id').readOnly = false;
     document.getElementById('np-id').value = '';
     document.getElementById('np-stt').value = '';
+    document.getElementById('np-company').value = '';
   }
 
   modal.classList.add('show');
@@ -915,6 +917,7 @@ document.getElementById('new-product-form').addEventListener('submit', (e) => {
   const stock = _parseAmount(document.getElementById('np-stock').value) || 0;
   const critical = parseInt(document.getElementById('np-critical').value) || 0;
   const stt = document.getElementById('np-stt').value || '';
+  const companyName = document.getElementById('np-company').value.trim().toUpperCase() || '';
 
   if (!partiNo || !name) { toast('Parti No ve ürün adı gerekli!', 'error'); return; }
 
@@ -922,14 +925,14 @@ document.getElementById('new-product-form').addEventListener('submit', (e) => {
     const p = data.products[partiNo];
     if (p) {
       p.name = name; p.category = category; p.unit = unit;
-      p.stock = stock; p.criticalLevel = critical; p.stt = stt;
+      p.stock = stock; p.criticalLevel = critical; p.stt = stt; p.companyName = companyName;
       saveData();
       toast('Ürün güncellendi.', 'success');
     }
   } else {
     if (data.products[partiNo]) { toast('Bu Parti No zaten var!', 'error'); return; }
     data.products[partiNo] = {
-      partiNo, name, category, unit, stock, criticalLevel: critical, stt: stt,
+      partiNo, name, category, unit, stock, criticalLevel: critical, stt: stt, companyName,
       createdAt: new Date().toISOString()
     };
     if (stock > 0) {
@@ -946,6 +949,7 @@ document.getElementById('new-product-form').addEventListener('submit', (e) => {
   refreshWarehouse();
   refreshDashboard();
   buildMonthMenu();
+  navigateTo('warehouse');
 });
 
 // Ürün sil
@@ -964,7 +968,7 @@ function refreshEntryForm() {
   const select = document.getElementById('entry-product');
   const prods = Object.values(data.products).sort((a, b) => a.name.localeCompare(b.name));
   select.innerHTML = prods.map(p =>
-    `<option value="${p.partiNo}">[${p.partiNo}] ${p.name} (Stok: ${_fmt(p.stock)} ${p.unit})</option>`
+    `<option value="${p.partiNo}">[${p.partiNo}] ${p.name}${p.companyName ? ' — ' + p.companyName : ''} (Stok: ${_fmt(p.stock)} ${p.unit})</option>`
   ).join('');
   if (!prods.length) select.innerHTML = '<option value="">Önce ürün ekleyin</option>';
   document.getElementById('entry-date').value = todayStr();
@@ -1018,18 +1022,16 @@ document.getElementById('entry-form').addEventListener('submit', (e) => {
   });
   saveData();
 
-  // İhale teslimatına otomatik ekle
+  // İhale teslimatına otomatik ekle (ürünün firma adı ile eşleştir)
   let ihaleMsg = '';
-  if (data.tenders && data.tenders.length) {
-    const firmaAdi = extractPerson(note);
-    if (firmaAdi) {
+  if (data.tenders && data.tenders.length && p.companyName) {
       const eslesen = data.tenders.filter(t =>
-        t.companyName.toUpperCase() === firmaAdi && t.product === p.name
+        t.companyName === p.companyName && t.product === p.name
       );
       eslesen.forEach(t => { t.delivered += amount; });
       if (eslesen.length) {
         saveData();
-        ihaleMsg = ` | ✅ "${firmaAdi}" ihaleye işlendi`;
+        ihaleMsg = ` | ✅ "${p.companyName}" ihaleye işlendi`;
       }
     }
   }
