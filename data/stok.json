@@ -48,6 +48,14 @@
       "quantity": 700,
       "delivered": 300,
       "price": 29
+    },
+    {
+      "id": 1779588955541.0244,
+      "companyName": "ALTUNDALLAR",
+      "product": "YOĞURT",
+      "quantity": 10000,
+      "delivered": 1500,
+      "price": 52
     }
   ],
   "settings": {
