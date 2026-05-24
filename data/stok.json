@@ -32,16 +32,6 @@
       "createdAt": "2026-05-24T00:53:45.626Z",
       "companyName": "ALTUNDALLAR"
     },
-    "226": {
-      "partiNo": "226",
-      "name": "TAVUK BONFİLE",
-      "category": "Temel Gıda",
-      "unit": "kg",
-      "stock": 0.66,
-      "criticalLevel": 50,
-      "stt": "2026-05-26",
-      "createdAt": "2026-05-23T19:36:56.007Z"
-    },
     "6699": {
       "partiNo": "6699",
       "name": "SÜT",
