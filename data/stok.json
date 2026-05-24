@@ -1,7 +1,9 @@
 {
   "products": {},
   "transactions": [],
-  "companies": [],
+  "companies": [
+    "ALTUNDALLAR"
+  ],
   "tenders": [],
   "settings": {
     "autoBackupTime": "17:00",
