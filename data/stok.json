@@ -21,6 +21,16 @@
   ],
   "activeUser": "MUSTAFA ORHAN",
   "products": {
+    "159": {
+      "partiNo": "159",
+      "name": "PİRİNÇ",
+      "category": "Bakliyat",
+      "unit": "kg",
+      "stock": 895,
+      "criticalLevel": 50,
+      "stt": "2028-10-22",
+      "createdAt": "2026-05-24T00:53:45.626Z"
+    },
     "226": {
       "partiNo": "226",
       "name": "TAVUK BONFİLE",
@@ -50,6 +60,16 @@
       "criticalLevel": 50,
       "stt": "",
       "createdAt": "2026-05-23T19:57:30.086Z"
+    },
+    "8877": {
+      "partiNo": "8877",
+      "name": "YOĞURT",
+      "category": "Süt Ürünleri",
+      "unit": "kg",
+      "stock": 455,
+      "criticalLevel": 50,
+      "stt": "2026-07-01",
+      "createdAt": "2026-05-24T01:00:37.803Z"
     },
     "12358": {
       "partiNo": "12358",
@@ -361,6 +381,51 @@
       "date": "2026-05-23",
       "note": "İlk giriş",
       "timestamp": "2026-05-23T23:11:26.433Z"
+    },
+    {
+      "id": 1779584026579.054,
+      "type": "giris",
+      "partiNo": "159",
+      "productName": "PİRİNÇ",
+      "amount": 400,
+      "unit": "kg",
+      "date": "2026-05-24",
+      "note": "İlk giriş",
+      "timestamp": "2026-05-24T00:53:45.626Z"
+    },
+    {
+      "id": 1779584050752.425,
+      "type": "cikis",
+      "partiNo": "159",
+      "productName": "PİRİNÇ",
+      "amount": 5,
+      "unit": "kg",
+      "date": "2026-05-24",
+      "note": "Ürün çıkış",
+      "timestamp": "2026-05-24T00:54:10.010Z"
+    },
+    {
+      "id": 1779584202416.3787,
+      "type": "giris",
+      "partiNo": "159",
+      "productName": "PİRİNÇ",
+      "amount": 500,
+      "unit": "kg",
+      "date": "2026-05-24",
+      "note": "ALTUNDALLAR",
+      "stt": "2028-10-22",
+      "timestamp": "2026-05-24T00:56:42.027Z"
+    },
+    {
+      "id": 1779584438432.298,
+      "type": "giris",
+      "partiNo": "8877",
+      "productName": "YOĞURT",
+      "amount": 455,
+      "unit": "kg",
+      "date": "2026-05-24",
+      "note": "İlk giriş",
+      "timestamp": "2026-05-24T01:00:37.803Z"
     }
   ],
   "tenders": [
@@ -369,8 +434,16 @@
       "companyName": "ALTUNDALLAR",
       "product": "PİRİNÇ",
       "quantity": 6000,
-      "delivered": 0,
+      "delivered": 500,
       "price": 76.5
+    },
+    {
+      "id": 1779584353528.4514,
+      "companyName": "ALTUNDALLAR",
+      "product": "YOĞURT",
+      "quantity": 10000,
+      "delivered": 1500,
+      "price": 52
     }
   ]
 }
