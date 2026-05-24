@@ -288,9 +288,19 @@ function todayStr() {
 function isValidDate(str) {
   if (!str) return true;
   if (!/^\d{4}-\d{2}-\d{2}$/.test(str)) return false;
-  const d = new Date(str + 'T00:00:00');
-  return !isNaN(d.getTime());
+  const [y, m, d] = str.split('-').map(Number);
+  const date = new Date(y, m - 1, d);
+  return date.getFullYear() === y && date.getMonth() === m - 1 && date.getDate() === d;
 }
+
+document.querySelectorAll('input[type="date"]').forEach(el => {
+  el.addEventListener('change', function() {
+    if (this.value && !isValidDate(this.value)) {
+      toast('Geçersiz tarih! Yıl 4 haneli olmalı.', 'error');
+      this.value = '';
+    }
+  });
+});
 
 // ----- KİŞİ ADI AYIKLAMA -----
 function extractPerson(note) {
