@@ -791,8 +791,12 @@ const HARD_CODED_GITHUB = {
                 </div>
                 <div class="form-group">
                     <label>Tedarikçi <small style="color:var(--text-muted);">(ihale takibi için)</small></label>
-                    <input type="text" id="np-company" class="form-control" list="company-list" placeholder="Örn: ABC GIDA">
-                    <datalist id="company-list"></datalist>
+                    <div style="display:flex;gap:5px;">
+                        <select id="np-company" class="form-control" required>
+                            <option value="">Tedarikçi Seçin</option>
+                        </select>
+                        <button type="button" class="btn-ui btn-outline" id="np-add-supplier" style="padding:0 12px;min-width:40px;" title="Yeni Tedarikçi Ekle"><i class="fa-solid fa-plus"></i></button>
+                    </div>
                     <small style="color:var(--text-muted);display:block;margin-top:4px;"><i class="fa-solid fa-truck"></i> Tedarikçileri <b>Tedarikçiler</b> sayfasından yönetebilirsiniz.</small>
                 </div>
                 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">

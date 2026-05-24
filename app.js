@@ -895,19 +895,19 @@ function openProductModal(editPartiNo) {
     document.getElementById('np-stock').value = _fmt(p.stock);
     document.getElementById('np-critical').value = p.criticalLevel;
     document.getElementById('np-stt').value = p.stt || '';
-    document.getElementById('np-company').value = p.companyName || '';
     document.getElementById('submit-product-btn').innerHTML = '<i class="fa-solid fa-pen"></i> Kartı Güncelle';
   } else {
     document.getElementById('np-id').readOnly = false;
     document.getElementById('np-id').value = '';
     document.getElementById('np-stt').value = '';
-    document.getElementById('np-company').value = '';
   }
 
-  // Firma listesini datalist'e doldur
-  const dlist = document.getElementById('company-list');
-  if (dlist) {
-    dlist.innerHTML = (data.companies || []).map(c => `<option value="${c}">`).join('');
+  // Tedarikçi dropdown'ını doldur
+  const companySelect = document.getElementById('np-company');
+  if (companySelect) {
+    const secili = editPartiNo ? data.products[editPartiNo]?.companyName || '' : '';
+    companySelect.innerHTML = '<option value="">Tedarikçi Seçin</option>' +
+      (data.companies || []).map(c => `<option value="${c}"${c === secili ? ' selected' : ''}>${c}</option>`).join('');
   }
 
   modal.classList.add('show');
@@ -1054,6 +1054,10 @@ function deleteSupplier(name) {
 
 // Tedarikçi sayfası yönetimi (DOMContentLoaded'dan bağımsız çalışır)
 (function setupSuppliers() {
+  // Yeni ürün modalındaki + butonu
+  const npAddBtn = document.getElementById('np-add-supplier');
+  if (npAddBtn) npAddBtn.addEventListener('click', () => navigateTo('suppliers'));
+
   const addBtn = document.getElementById('add-supplier-btn');
   const input = document.getElementById('new-supplier-input');
   if (!addBtn || !input) return;
