@@ -1,39 +1,5 @@
 {
-  "products": {
-    "01": {
-      "partiNo": "01",
-      "name": "YARMA BUĞDAY",
-      "category": "Bakliyat",
-      "unit": "kg",
-      "stock": 200,
-      "criticalLevel": 50,
-      "stt": "2028-01-01",
-      "companyName": "ALTUNDALLAR",
-      "createdAt": "2026-05-24T02:06:52.007Z"
-    },
-    "02": {
-      "partiNo": "02",
-      "name": "YOĞURT",
-      "category": "Süt Ürünleri",
-      "unit": "kg",
-      "stock": 105,
-      "criticalLevel": 50,
-      "stt": "2026-08-02",
-      "companyName": "ALTUNDALLAR",
-      "createdAt": "2026-05-24T02:17:00.133Z"
-    },
-    "04": {
-      "partiNo": "04",
-      "name": "TAVUK BONFİLE",
-      "category": "Temel Gıda",
-      "unit": "kg",
-      "stock": 0,
-      "criticalLevel": 50,
-      "stt": "2026-06-28",
-      "companyName": "EL-TAŞ TAVUK",
-      "createdAt": "2026-05-24T02:25:23.626Z"
-    }
-  },
+  "products": {},
   "transactions": [
     {
       "id": 1779588412256.8528,
