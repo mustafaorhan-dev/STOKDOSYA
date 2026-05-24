@@ -289,6 +289,7 @@ function isValidDate(str) {
   if (!str) return true;
   if (!/^\d{4}-\d{2}-\d{2}$/.test(str)) return false;
   const [y, m, d] = str.split('-').map(Number);
+  if (y < 2024 || y > new Date().getFullYear() + 5) return false;
   const date = new Date(y, m - 1, d);
   return date.getFullYear() === y && date.getMonth() === m - 1 && date.getDate() === d;
 }
