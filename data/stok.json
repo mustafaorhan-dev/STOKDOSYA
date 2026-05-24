@@ -22,17 +22,6 @@
       "companyName": "ALTUNDALLAR",
       "createdAt": "2026-05-24T02:17:00.133Z"
     },
-    "03": {
-      "partiNo": "03",
-      "name": "DOMATES",
-      "category": "Sebze",
-      "unit": "kg",
-      "stock": 300,
-      "criticalLevel": 50,
-      "stt": "",
-      "companyName": "ÖYKÜM MANAV",
-      "createdAt": "2026-05-24T02:23:47.763Z"
-    },
     "04": {
       "partiNo": "04",
       "name": "TAVUK BONFİLE",
