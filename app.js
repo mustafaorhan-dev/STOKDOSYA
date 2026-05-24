@@ -1172,7 +1172,7 @@ document.getElementById('entry-form').addEventListener('submit', (e) => {
 
 // Hizli urun ekle (entry formundaki + butonu)
 document.getElementById('quick-add-btn').addEventListener('click', () => {
-  document.getElementById('new-product-modal').classList.add('show');
+  openProductModal();
 });
 
 // ----- ÇIKIŞ FORMU -----
