@@ -153,6 +153,7 @@ body {
   flex-wrap: wrap; gap: 12px;
 }
 .panel-header h3 { font-size: 16px; font-weight: 700; }
+.panel-body { padding: 16px 20px; }
 
 /* TABLES */
 .minimal-table { width: 100%; border-collapse: collapse; }
