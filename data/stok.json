@@ -5,7 +5,7 @@
       "name": "DOMATES",
       "category": "Sebze",
       "unit": "kg",
-      "stock": 20,
+      "stock": 40,
       "criticalLevel": 50,
       "stt": "",
       "companyName": "MANAV",
