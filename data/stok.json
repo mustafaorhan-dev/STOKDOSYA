@@ -4,7 +4,16 @@
   "companies": [
     "ALTUNDALLAR"
   ],
-  "tenders": [],
+  "tenders": [
+    {
+      "id": 1779588289192.092,
+      "companyName": "ALTUNDALLAR",
+      "product": "YARMA BUĞDAY",
+      "quantity": 700,
+      "delivered": 200,
+      "price": 29
+    }
+  ],
   "settings": {
     "autoBackupTime": "17:00",
     "autoSync": true,
