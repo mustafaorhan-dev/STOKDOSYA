@@ -41,6 +41,17 @@
       "stt": "2026-05-26",
       "createdAt": "2026-05-23T19:36:56.007Z"
     },
+    "4565": {
+      "partiNo": "4565",
+      "name": "YOĞURT",
+      "category": "Süt Ürünleri",
+      "unit": "kg",
+      "stock": 300,
+      "criticalLevel": 50,
+      "stt": "2026-06-02",
+      "companyName": "ALTUNDALLAR",
+      "createdAt": "2026-05-24T01:20:22.931Z"
+    },
     "6699": {
       "partiNo": "6699",
       "name": "SÜT",
@@ -69,7 +80,8 @@
       "stock": 455,
       "criticalLevel": 50,
       "stt": "2026-07-01",
-      "createdAt": "2026-05-24T01:00:37.803Z"
+      "createdAt": "2026-05-24T01:00:37.803Z",
+      "companyName": "ALTUNDALLAR"
     },
     "12358": {
       "partiNo": "12358",
@@ -426,6 +438,17 @@
       "date": "2026-05-24",
       "note": "İlk giriş",
       "timestamp": "2026-05-24T01:00:37.803Z"
+    },
+    {
+      "id": 1779585623570.274,
+      "type": "giris",
+      "partiNo": "4565",
+      "productName": "YOĞURT",
+      "amount": 300,
+      "unit": "kg",
+      "date": "2026-05-24",
+      "note": "İlk giriş",
+      "timestamp": "2026-05-24T01:20:22.931Z"
     }
   ],
   "tenders": [
