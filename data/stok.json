@@ -49,7 +49,7 @@
       "name": "EKMEK",
       "category": "Temel Gıda",
       "unit": "adet",
-      "stock": 1088,
+      "stock": 88,
       "criticalLevel": 50,
       "stt": "",
       "companyName": "OKUL",
@@ -146,6 +146,17 @@
       "note": "Mal kabul",
       "stt": "",
       "timestamp": "2026-05-24T02:48:32.431Z"
+    },
+    {
+      "id": 1779591011128.955,
+      "type": "cikis",
+      "partiNo": "05",
+      "productName": "EKMEK",
+      "amount": 1000,
+      "unit": "adet",
+      "date": "2026-05-24",
+      "note": "MUSTAFA ORHAN",
+      "timestamp": "2026-05-24T02:50:10.905Z"
     }
   ],
   "companies": [
