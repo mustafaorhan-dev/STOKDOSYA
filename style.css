@@ -254,6 +254,7 @@ input[type="file"].form-control { padding: 8px; }
 .toast.success { background: #16a34a; }
 .toast.error { background: #dc2626; }
 .toast.info { background: var(--primary); }
+.toast.warning { background: #d97706; }
 
 /* HELP BOX */
 .help-box {

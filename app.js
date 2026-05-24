@@ -436,7 +436,7 @@ function toast(msg, type = 'info') {
   const container = document.getElementById('toast-container');
   const el = document.createElement('div');
   el.className = `toast ${type}`;
-  const icons = { success: '✅', error: '❌', info: 'ℹ️' };
+  const icons = { success: '✅', error: '❌', warning: '⚠️', info: 'ℹ️' };
   el.innerHTML = `${icons[type] || 'ℹ️'} ${msg}`;
   container.appendChild(el);
   setTimeout(() => { el.style.opacity = '0'; el.style.transition = '0.3s'; setTimeout(() => el.remove(), 300); }, 3000);
@@ -937,6 +937,9 @@ document.getElementById('new-product-form').addEventListener('submit', (e) => {
   const companyName = document.getElementById('np-company').value.trim().toUpperCase() || '';
 
   if (!partiNo || !name) { toast('Parti No ve ürün adı gerekli!', 'error'); return; }
+  if (!companyName) {
+    toast('⚠️ Tedarikçi girilmedi. İhale takibi için Tedarikçiler sayfasından ekleyebilirsiniz.', 'warning');
+  }
 
   if (isEdit) {
     const p = data.products[partiNo];
