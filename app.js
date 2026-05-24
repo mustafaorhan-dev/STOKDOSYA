@@ -456,7 +456,7 @@ function navigateTo(target) {
   const titles = {
     'dashboard': 'Genel Bakış', 'warehouse': 'Anbar Listesi', 'entry': 'Mal Kabul (Giriş)',
     'exit': 'Ürün Çıkış', 'daily': 'Günlük İşlemler', 'month-view': 'Aylık Rapor',
-    'years-view': 'Yıllık Raporlar', 'stt-tracking': 'STT Takibi', 'tender-tracking': 'İhale Takip', 'settings-view': 'Ayarlar & Bulut'
+    'years-view': 'Yıllık Raporlar', 'stt-tracking': 'STT Takibi', 'tender-tracking': 'İhale Takip', 'suppliers': 'Tedarikçiler', 'settings-view': 'Ayarlar & Bulut'
   };
   document.getElementById('page-title').textContent = titles[target] || 'STOKDOSYA';
 
@@ -467,6 +467,7 @@ function navigateTo(target) {
   if (target === 'years-view') refreshYearsView();
   if (target === 'stt-tracking') refreshSttTracking();
   if (target === 'tender-tracking') refreshTenders();
+  if (target === 'suppliers') refreshSuppliers();
   if (target === 'entry') refreshEntryForm();
   if (target === 'exit') refreshExitForm();
   if (target === 'daily') {
@@ -994,16 +995,75 @@ function deleteProduct(partiNo) {
   buildMonthMenu();
 }
 
+// ----- TEDARİKÇİ YÖNETİMİ -----
+function refreshSuppliers() {
+  const container = document.getElementById('supplier-list');
+  if (!container) return;
+  const list = data.companies || [];
+  if (!list.length) {
+    container.innerHTML = '<p style="color:var(--text-muted);text-align:center;padding:2rem 0;">Henüz tedarikçi eklenmemiş.</p>';
+    return;
+  }
+  container.innerHTML = '<table class="minimal-table" style="width:100%;"><thead><tr><th style="text-align:left;">Tedarikçi Adı</th><th style="text-align:right;width:80px;">İşlem</th></tr></thead><tbody>' +
+    list.map(c => `<tr>
+      <td><strong>${c}</strong></td>
+      <td style="text-align:right;">
+        <button class="btn-ui btn-sm btn-outline" onclick="deleteSupplier('${c}')" title="Sil" style="color:var(--accent);"><i class="fa-solid fa-trash-can"></i></button>
+      </td>
+    </tr>`).join('') +
+    '</tbody></table>';
+}
+
+function deleteSupplier(name) {
+  if (!confirm(`"${name}" tedarikçisini silmek istediğinize emin misiniz?`)) return;
+  data.companies = (data.companies || []).filter(c => c !== name);
+  saveData();
+  refreshSuppliers();
+  refreshEntryForm();
+  toast(`"${name}" silindi.`, 'success');
+}
+
+// Tedarikçi sayfası yönetimi (DOMContentLoaded'dan bağımsız çalışır)
+(function setupSuppliers() {
+  const addBtn = document.getElementById('add-supplier-btn');
+  const input = document.getElementById('new-supplier-input');
+  if (!addBtn || !input) return;
+  const addSupplier = () => {
+    const name = input.value.trim().toUpperCase();
+    if (!name) { toast('Tedarikçi adı girin.', 'error'); return; }
+    if ((data.companies || []).includes(name)) { toast('Bu tedarikçi zaten var!', 'error'); return; }
+    data.companies = data.companies || [];
+    data.companies.push(name);
+    data.companies.sort((a, b) => a.localeCompare(b));
+    saveData();
+    input.value = '';
+    refreshSuppliers();
+    refreshEntryForm();
+    toast(`"${name}" eklendi.`, 'success');
+  };
+  addBtn.addEventListener('click', addSupplier);
+  input.addEventListener('keydown', (e) => { if (e.key === 'Enter') addSupplier(); });
+})();
+
 // ----- GİRİŞ FORMU -----
 function refreshEntryForm() {
+  // Tedarikçi filtresini doldur
+  const filter = document.getElementById('entry-supplier-filter');
+  if (filter) {
+    const seciliFirma = filter.value;
+    filter.innerHTML = '<option value="">Tüm Tedarikçiler</option>' +
+      (data.companies || []).map(c => `<option value="${c}"${c === seciliFirma ? ' selected' : ''}>${c}</option>`).join('');
+  }
+  // Ürün listesini filtrele
+  const seciliFirma2 = filter ? filter.value : '';
   const select = document.getElementById('entry-product');
-  const prods = Object.values(data.products).sort((a, b) => a.name.localeCompare(b.name));
+  let prods = Object.values(data.products).sort((a, b) => a.name.localeCompare(b.name));
+  if (seciliFirma2) prods = prods.filter(p => p.companyName === seciliFirma2);
   select.innerHTML = prods.map(p =>
     `<option value="${p.partiNo}">[${p.partiNo}] ${p.name}${p.companyName ? ' — ' + p.companyName : ''} (Stok: ${_fmt(p.stock)} ${p.unit})</option>`
   ).join('');
   if (!prods.length) select.innerHTML = '<option value="">Önce ürün ekleyin</option>';
   document.getElementById('entry-date').value = todayStr();
-  // Seçili ürün varsa STT'sini göster
   const secili = select.value;
   if (secili && data.products[secili] && data.products[secili].stt) {
     document.getElementById('entry-stt').value = data.products[secili].stt;
@@ -1020,6 +1080,10 @@ document.getElementById('entry-product').addEventListener('change', () => {
     document.getElementById('entry-stt').value = '';
   }
 });
+
+// Tedarikçi filtresi değişince ürün listesini güncelle
+const sf = document.getElementById('entry-supplier-filter');
+if (sf) sf.addEventListener('change', refreshEntryForm);
 
 function _parseAmount(v) {
   return parseFloat(v.replace(',', '.'));

@@ -81,6 +81,10 @@
                         <i class="fa-solid fa-file-signature"></i>
                         <span>İhale Takip</span>
                     </a>
+                    <a href="#" class="nav-item" data-target="suppliers">
+                        <i class="fa-solid fa-truck"></i>
+                        <span>Tedarikçiler</span>
+                    </a>
                 </div>
 
                 <div class="user-profile-card" style="margin-top: auto; padding: 0.75rem; background: var(--secondary); border-radius: var(--border-radius-md); margin-bottom: 0.75rem; display: flex; align-items: center; gap: 0.75rem; border: 1px solid var(--border-color);">
@@ -281,6 +285,12 @@
                         <h3 style="margin: 0; font-size:1.3rem;">Mal Kabul (Giriş) Formu</h3>
                     </div>
                     <form id="entry-form">
+                        <div class="form-group">
+                            <label>Tedarikçi Filtresi</label>
+                            <select id="entry-supplier-filter" class="form-control">
+                                <option value="">Tüm Tedarikçiler</option>
+                            </select>
+                        </div>
                         <div class="form-group">
                             <label>Ürün / Parti Seçimi</label>
                             <div style="display: flex; gap: 5px;">
@@ -572,6 +582,27 @@
                         <div class="form-group"><label>Birim Fiyat (₺)</label><input type="text" inputmode="decimal" id="tender-price" class="form-control" required></div>
                         <button type="submit" class="btn-ui btn-primary" style="width:100%;padding:0.9rem;margin-top:0.5rem;"><i class="fa-solid fa-save"></i> <span id="tender-submit-text">İhale Ekle</span></button>
                     </form>
+                </div>
+            </div>
+
+            <!-- Supplier / Tedarikçi Yönetimi -->
+            <div id="suppliers" class="view-section">
+                <div class="panel-container">
+                    <div class="panel-header">
+                        <h3><i class="fa-solid fa-truck"></i> Tedarikçi Listesi</h3>
+                        <div style="display:flex;gap:8px;flex-wrap:wrap;">
+                            <div style="display:flex;gap:6px;">
+                                <input type="text" id="new-supplier-input" class="form-control" placeholder="Yeni tedarikçi adı..." style="min-width:180px;">
+                                <button class="btn-ui btn-primary" id="add-supplier-btn"><i class="fa-solid fa-plus"></i> Ekle</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="panel-body">
+                        <p style="color:var(--text-muted);margin-bottom:12px;">
+                            <i class="fa-solid fa-info-circle"></i> Tedarikçiler, giriş formunda filtreleme ve yeni ürün eklerken öneri olarak kullanılır.
+                        </p>
+                        <div id="supplier-list"></div>
+                    </div>
                 </div>
             </div>
 
