@@ -931,6 +931,14 @@ document.getElementById('new-product-form').addEventListener('submit', (e) => {
     }
   } else {
     if (data.products[partiNo]) { toast('Bu Parti No zaten var!', 'error'); return; }
+    // Aynı isimde stokta olan ürün varsa engelle (stok 0 ise eklenebilir)
+    const ayniIsimVar = Object.values(data.products).some(p =>
+      p.name.toUpperCase() === name.toUpperCase() && p.stock > 0
+    );
+    if (ayniIsimVar) {
+      toast(`"${name}" stokta bulunuyor. Önce stoktaki ürünü kullanın veya sıfırlayın.`, 'error');
+      return;
+    }
     data.products[partiNo] = {
       partiNo, name, category, unit, stock, criticalLevel: critical, stt: stt, companyName,
       createdAt: new Date().toISOString()
