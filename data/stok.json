@@ -101,14 +101,6 @@
   ],
   "tenders": [
     {
-      "id": 1779588289192.092,
-      "companyName": "ALTUNDALLAR",
-      "product": "YARMA BUĞDAY",
-      "quantity": 700,
-      "delivered": 300,
-      "price": 29
-    },
-    {
       "id": 1779588955541.0244,
       "companyName": "ALTUNDALLAR",
       "product": "YOĞURT",
