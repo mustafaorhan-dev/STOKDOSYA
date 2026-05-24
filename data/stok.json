@@ -5,9 +5,9 @@
       "name": "DOMATES",
       "category": "Sebze",
       "unit": "kg",
-      "stock": 15,
+      "stock": 60,
       "criticalLevel": 50,
-      "stt": "",
+      "stt": "2026-06-11",
       "companyName": "MANAV",
       "createdAt": "2026-05-24T03:04:10.240Z"
     }
@@ -45,6 +45,18 @@
       "date": "2026-05-24",
       "note": "Düzenleme ile stok azalışı",
       "timestamp": "2026-05-24T03:08:56.094Z"
+    },
+    {
+      "id": 1779617110843.788,
+      "type": "giris",
+      "partiNo": "01",
+      "productName": "DOMATES",
+      "amount": 45,
+      "unit": "kg",
+      "date": "2026-05-24",
+      "note": "Mal kabul",
+      "stt": "6666-11-15",
+      "timestamp": "2026-05-24T10:05:10.407Z"
     }
   ],
   "companies": [
