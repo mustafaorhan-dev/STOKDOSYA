@@ -61,6 +61,16 @@
       "stt": "",
       "createdAt": "2026-05-23T19:57:30.086Z"
     },
+    "8877": {
+      "partiNo": "8877",
+      "name": "YOĞURT",
+      "category": "Süt Ürünleri",
+      "unit": "kg",
+      "stock": 455,
+      "criticalLevel": 50,
+      "stt": "2026-07-01",
+      "createdAt": "2026-05-24T01:00:37.803Z"
+    },
     "12358": {
       "partiNo": "12358",
       "name": "SALKIM DOMATES",
@@ -405,6 +415,17 @@
       "note": "ALTUNDALLAR",
       "stt": "2028-10-22",
       "timestamp": "2026-05-24T00:56:42.027Z"
+    },
+    {
+      "id": 1779584438432.298,
+      "type": "giris",
+      "partiNo": "8877",
+      "productName": "YOĞURT",
+      "amount": 455,
+      "unit": "kg",
+      "date": "2026-05-24",
+      "note": "İlk giriş",
+      "timestamp": "2026-05-24T01:00:37.803Z"
     }
   ],
   "tenders": [
