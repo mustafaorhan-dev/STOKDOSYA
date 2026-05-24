@@ -3,7 +3,7 @@
     "apiUrl": "",
     "autoBackupTime": "17:00",
     "autoBackupEnabled": false,
-    "theme": "dark",
+    "theme": "light",
     "autoSync": true,
     "_migrated": true,
     "github": {
@@ -480,5 +480,6 @@
       "delivered": 1700,
       "price": 52
     }
-  ]
+  ],
+  "companies": []
 }
