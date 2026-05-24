@@ -167,7 +167,7 @@
     "_migrated": true,
     "apiUrl": "",
     "autoBackupEnabled": false,
-    "theme": "light",
+    "theme": "dark",
     "github": {
       "owner": "mustafaorhan-dev",
       "repo": "STOKDOSYA",
