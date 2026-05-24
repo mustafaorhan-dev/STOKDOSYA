@@ -16,7 +16,7 @@
       "name": "YOĞURT",
       "category": "Süt Ürünleri",
       "unit": "kg",
-      "stock": 100,
+      "stock": 105,
       "criticalLevel": 50,
       "stt": "2026-08-02",
       "companyName": "ALTUNDALLAR",
@@ -76,7 +76,7 @@
       "companyName": "ALTUNDALLAR",
       "product": "YOĞURT",
       "quantity": 10000,
-      "delivered": 1600,
+      "delivered": 1605,
       "price": 52
     }
   ],
