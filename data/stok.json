@@ -21,6 +21,16 @@
   ],
   "activeUser": "MUSTAFA ORHAN",
   "products": {
+    "159": {
+      "partiNo": "159",
+      "name": "PİRİNÇ",
+      "category": "Bakliyat",
+      "unit": "kg",
+      "stock": 400,
+      "criticalLevel": 50,
+      "stt": "2028-10-22",
+      "createdAt": "2026-05-24T00:53:45.626Z"
+    },
     "226": {
       "partiNo": "226",
       "name": "TAVUK BONFİLE",
@@ -361,6 +371,17 @@
       "date": "2026-05-23",
       "note": "İlk giriş",
       "timestamp": "2026-05-23T23:11:26.433Z"
+    },
+    {
+      "id": 1779584026579.054,
+      "type": "giris",
+      "partiNo": "159",
+      "productName": "PİRİNÇ",
+      "amount": 400,
+      "unit": "kg",
+      "date": "2026-05-24",
+      "note": "İlk giriş",
+      "timestamp": "2026-05-24T00:53:45.626Z"
     }
   ],
   "tenders": [
