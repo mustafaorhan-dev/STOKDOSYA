@@ -10,6 +10,17 @@
       "stt": "2028-01-01",
       "companyName": "ALTUNDALLAR",
       "createdAt": "2026-05-24T02:06:52.007Z"
+    },
+    "02": {
+      "partiNo": "02",
+      "name": "YOĞURT",
+      "category": "Süt Ürünleri",
+      "unit": "kg",
+      "stock": 100,
+      "criticalLevel": 50,
+      "stt": "2026-08-02",
+      "companyName": "ALTUNDALLAR",
+      "createdAt": "2026-05-24T02:17:00.133Z"
     }
   },
   "transactions": [
@@ -35,6 +46,17 @@
       "note": "Mal kabul",
       "stt": "2028-01-01",
       "timestamp": "2026-05-24T02:07:39.374Z"
+    },
+    {
+      "id": 1779589020249.8125,
+      "type": "giris",
+      "partiNo": "02",
+      "productName": "YOĞURT",
+      "amount": 100,
+      "unit": "kg",
+      "date": "2026-05-24",
+      "note": "İlk giriş",
+      "timestamp": "2026-05-24T02:17:00.133Z"
     }
   ],
   "companies": [
@@ -54,7 +76,7 @@
       "companyName": "ALTUNDALLAR",
       "product": "YOĞURT",
       "quantity": 10000,
-      "delivered": 1500,
+      "delivered": 1600,
       "price": 52
     }
   ],
