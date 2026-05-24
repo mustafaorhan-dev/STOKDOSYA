@@ -1,99 +1,32 @@
 {
-  "products": {},
+  "products": {
+    "01": {
+      "partiNo": "01",
+      "name": "DOMATES",
+      "category": "Sebze",
+      "unit": "kg",
+      "stock": 40,
+      "criticalLevel": 50,
+      "stt": "",
+      "companyName": "MANAV",
+      "createdAt": "2026-05-24T03:04:10.240Z"
+    }
+  },
   "transactions": [
     {
-      "id": 1779588412256.8528,
+      "id": 1779591850272.3257,
       "type": "giris",
       "partiNo": "01",
-      "productName": "YARMA BUĞDAY",
-      "amount": 100,
-      "unit": "kg",
-      "date": "2026-05-24",
-      "note": "İlk giriş",
-      "timestamp": "2026-05-24T02:06:52.007Z"
-    },
-    {
-      "id": 1779588459484.573,
-      "type": "giris",
-      "partiNo": "01",
-      "productName": "YARMA BUĞDAY",
-      "amount": 100,
-      "unit": "kg",
-      "date": "2026-05-24",
-      "note": "Mal kabul",
-      "stt": "2028-01-01",
-      "timestamp": "2026-05-24T02:07:39.374Z"
-    },
-    {
-      "id": 1779589020249.8125,
-      "type": "giris",
-      "partiNo": "02",
-      "productName": "YOĞURT",
-      "amount": 100,
-      "unit": "kg",
-      "date": "2026-05-24",
-      "note": "İlk giriş",
-      "timestamp": "2026-05-24T02:17:00.133Z"
-    },
-    {
-      "id": 1779589427855.013,
-      "type": "giris",
-      "partiNo": "03",
       "productName": "DOMATES",
-      "amount": 300,
+      "amount": 20,
       "unit": "kg",
       "date": "2026-05-24",
       "note": "İlk giriş",
-      "timestamp": "2026-05-24T02:23:47.763Z"
-    },
-    {
-      "id": 1779589811679.2327,
-      "type": "giris",
-      "partiNo": "05",
-      "productName": "EKMEK",
-      "amount": 1000,
-      "unit": "adet",
-      "date": "2026-05-24",
-      "note": "İlk giriş",
-      "timestamp": "2026-05-24T02:30:10.982Z"
-    },
-    {
-      "id": 1779590779188.475,
-      "type": "giris",
-      "partiNo": "09963",
-      "productName": "SALKIM DOMATES",
-      "amount": 400,
-      "unit": "kg",
-      "date": "2026-05-24",
-      "note": "İlk giriş",
-      "timestamp": "2026-05-24T02:46:18.671Z"
-    },
-    {
-      "id": 1779590912619.3926,
-      "type": "giris",
-      "partiNo": "05",
-      "productName": "EKMEK",
-      "amount": 88,
-      "unit": "adet",
-      "date": "2026-05-24",
-      "note": "Mal kabul",
-      "stt": "",
-      "timestamp": "2026-05-24T02:48:32.431Z"
-    },
-    {
-      "id": 1779591011128.955,
-      "type": "cikis",
-      "partiNo": "05",
-      "productName": "EKMEK",
-      "amount": 1000,
-      "unit": "adet",
-      "date": "2026-05-24",
-      "note": "MUSTAFA ORHAN",
-      "timestamp": "2026-05-24T02:50:10.905Z"
+      "timestamp": "2026-05-24T03:04:10.245Z"
     }
   ],
   "companies": [
-    "ÖYKÜM MANAV"
+    "MANAV"
   ],
   "tenders": [],
   "settings": {
@@ -102,7 +35,7 @@
     "_migrated": true,
     "apiUrl": "",
     "autoBackupEnabled": false,
-    "theme": "light",
+    "theme": "dark",
     "github": {
       "owner": "mustafaorhan-dev",
       "repo": "STOKDOSYA",
