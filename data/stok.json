@@ -54,6 +54,17 @@
       "stt": "",
       "companyName": "OKUL",
       "createdAt": "2026-05-24T02:30:10.973Z"
+    },
+    "09963": {
+      "partiNo": "09963",
+      "name": "SALKIM DOMATES",
+      "category": "Sebze",
+      "unit": "kg",
+      "stock": 400,
+      "criticalLevel": 50,
+      "stt": "",
+      "companyName": "AHMET BAKKAL",
+      "createdAt": "2026-05-24T02:46:18.671Z"
     }
   },
   "transactions": [
@@ -112,6 +123,17 @@
       "date": "2026-05-24",
       "note": "İlk giriş",
       "timestamp": "2026-05-24T02:30:10.982Z"
+    },
+    {
+      "id": 1779590779188.475,
+      "type": "giris",
+      "partiNo": "09963",
+      "productName": "SALKIM DOMATES",
+      "amount": 400,
+      "unit": "kg",
+      "date": "2026-05-24",
+      "note": "İlk giriş",
+      "timestamp": "2026-05-24T02:46:18.671Z"
     }
   ],
   "companies": [
