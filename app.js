@@ -941,8 +941,22 @@ document.getElementById('new-product-form').addEventListener('submit', (e) => {
   if (isEdit) {
     const p = data.products[partiNo];
     if (p) {
+      const fark = stock - p.stock;
       p.name = name; p.category = category; p.unit = unit;
       p.stock = stock; p.criticalLevel = critical; p.stt = stt; p.companyName = companyName;
+
+      // Stok artışını ihaleye işle
+      if (fark > 0 && p.companyName && data.tenders && data.tenders.length) {
+        const eslesen = data.tenders.filter(t =>
+          t.companyName === p.companyName && t.product === p.name
+        );
+        eslesen.forEach(t => { t.delivered += fark; });
+        if (eslesen.length) {
+          saveData();
+          toast(`✅ ${_fmt(fark)} ${p.unit} "${p.companyName}" ihaleye işlendi.`, 'success');
+        }
+      }
+
       saveData();
       toast('Ürün güncellendi.', 'success');
     }
