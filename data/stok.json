@@ -21,17 +21,6 @@
   ],
   "activeUser": "MUSTAFA ORHAN",
   "products": {
-    "159": {
-      "partiNo": "159",
-      "name": "PİRİNÇ",
-      "category": "Bakliyat",
-      "unit": "kg",
-      "stock": 9002,
-      "criticalLevel": 50,
-      "stt": "2028-10-22",
-      "createdAt": "2026-05-24T00:53:45.626Z",
-      "companyName": "ALTUNDALLAR"
-    },
     "7777": {
       "partiNo": "7777",
       "name": "AYVA",
@@ -60,16 +49,6 @@
       "stock": 6.599999999999909,
       "criticalLevel": 50,
       "createdAt": "2026-05-23T19:07:53.045Z"
-    },
-    "KRF014": {
-      "partiNo": "KRF014",
-      "name": "KURU FASÜLYE",
-      "category": "Bakliyat",
-      "unit": "kg",
-      "stock": 550,
-      "criticalLevel": 50,
-      "stt": "2028-11-22",
-      "createdAt": "2026-05-23T23:11:26.433Z"
     }
   },
   "transactions": [
