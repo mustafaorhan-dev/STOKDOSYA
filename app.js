@@ -936,9 +936,10 @@ document.getElementById('new-product-form').addEventListener('submit', (e) => {
   const stt = document.getElementById('np-stt').value || '';
   const companyName = document.getElementById('np-company').value.trim().toUpperCase() || '';
 
-  if (!partiNo || !name) { toast('Parti No ve ürün adı gerekli!', 'error'); return; }
-  if (!companyName) {
-    toast('⚠️ Tedarikçi girilmedi. İhale takibi için Tedarikçiler sayfasından ekleyebilirsiniz.', 'warning');
+  if (!partiNo || !name || !companyName) {
+    toast('Parti No, ürün adı ve tedarikçi gerekli!', 'error');
+    if (!companyName) document.getElementById('np-company').focus();
+    return;
   }
 
   if (isEdit) {
