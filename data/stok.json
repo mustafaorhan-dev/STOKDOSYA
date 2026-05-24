@@ -1,33 +1,31 @@
 {
-    "products":  {
-
-                 },
-    "transactions":  [
-
-                     ],
-    "companies":  [
-
-                  ],
-    "tenders":  [
-
-                ],
-    "settings":  {
-                     "autoBackupTime":  "17:00",
-                     "autoSync":  true,
-                     "_migrated":  true,
-                     "apiUrl":  "",
-                     "autoBackupEnabled":  false,
-                     "theme":  "light"
-                 },
-    "users":  [
-                  {
-                      "name":  "Depo Şefi",
-                      "role":  "Yönetici"
-                  },
-                  {
-                      "name":  "Yardımcı Şef Ali",
-                      "role":  "Depo Sorumlusu"
-                  }
-              ],
-    "activeUser":  "Depo Şefi"
+  "products": {},
+  "transactions": [],
+  "companies": [],
+  "tenders": [],
+  "settings": {
+    "autoBackupTime": "17:00",
+    "autoSync": true,
+    "_migrated": true,
+    "apiUrl": "",
+    "autoBackupEnabled": false,
+    "theme": "dark",
+    "github": {
+      "owner": "mustafaorhan-dev",
+      "repo": "STOKDOSYA",
+      "path": "data/stok.json",
+      "token": ""
+    }
+  },
+  "users": [
+    {
+      "name": "Depo Şefi",
+      "role": "Yönetici"
+    },
+    {
+      "name": "Yardımcı Şef Ali",
+      "role": "Depo Sorumlusu"
+    }
+  ],
+  "activeUser": "Depo Şefi"
 }
