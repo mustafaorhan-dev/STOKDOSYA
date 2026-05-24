@@ -32,28 +32,6 @@
       "stt": "2026-06-28",
       "companyName": "EL-TAŞ TAVUK",
       "createdAt": "2026-05-24T02:25:23.626Z"
-    },
-    "05": {
-      "partiNo": "05",
-      "name": "EKMEK",
-      "category": "Temel Gıda",
-      "unit": "adet",
-      "stock": 88,
-      "criticalLevel": 50,
-      "stt": "",
-      "companyName": "OKUL",
-      "createdAt": "2026-05-24T02:30:10.973Z"
-    },
-    "09963": {
-      "partiNo": "09963",
-      "name": "SALKIM DOMATES",
-      "category": "Sebze",
-      "unit": "kg",
-      "stock": 400,
-      "criticalLevel": 50,
-      "stt": "",
-      "companyName": "AHMET BAKKAL",
-      "createdAt": "2026-05-24T02:46:18.671Z"
     }
   },
   "transactions": [
