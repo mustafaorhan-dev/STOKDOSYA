@@ -362,5 +362,15 @@
       "note": "İlk giriş",
       "timestamp": "2026-05-23T23:11:26.433Z"
     }
+  ],
+  "tenders": [
+    {
+      "id": 1779583337758.2744,
+      "companyName": "ALTUNDALLAR",
+      "product": "PİRİNÇ",
+      "quantity": 6000,
+      "delivered": 0,
+      "price": 76.5
+    }
   ]
 }
