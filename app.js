@@ -1271,16 +1271,74 @@ function refreshMonthView() {
   function _birim(t) {
     return (data.products[t.partiNo] && data.products[t.partiNo].unit) || t.unit || '—';
   }
+  function _firma(t) {
+    return (data.products[t.partiNo] && data.products[t.partiNo].companyName) || '—';
+  }
+  function _stt(t) {
+    const stt = (data.products[t.partiNo] && data.products[t.partiNo].stt) || t.stt || '';
+    return stt ? formatDate(stt) : '—';
+  }
 
   const inBody = document.getElementById('month-in-list');
   inBody.innerHTML = girisler.length
-    ? girisler.map(t => `<tr><td>${formatDate(t.date)}</td><td>${t.productName}</td><td>${t.amount}</td><td>${_birim(t)}</td></tr>`).join('')
-    : '<tr><td colspan="4" style="text-align:center;color:var(--text-muted);padding:20px;">Bu ayda giriş yok.</td></tr>';
+    ? girisler.map(t => `<tr><td><strong>${_firma(t)}</strong></td><td>${formatDate(t.date)}</td><td>${t.productName}</td><td>${_stt(t)}</td><td>${t.amount}</td><td>${_birim(t)}</td></tr>`).join('')
+    : '<tr><td colspan="6" style="text-align:center;color:var(--text-muted);padding:20px;">Bu ayda giriş yok.</td></tr>';
 
   const outBody = document.getElementById('month-out-list');
   outBody.innerHTML = cikislar.length
-    ? cikislar.map(t => `<tr><td>${formatDate(t.date)}</td><td>${t.productName}</td><td>${t.amount}</td><td>${_birim(t)}</td></tr>`).join('')
-    : '<tr><td colspan="4" style="text-align:center;color:var(--text-muted);padding:20px;">Bu ayda çıkış yok.</td></tr>';
+    ? cikislar.map(t => `<tr><td><strong>${_firma(t)}</strong></td><td>${formatDate(t.date)}</td><td>${t.productName}</td><td>${t.amount}</td><td>${_birim(t)}</td></tr>`).join('')
+    : '<tr><td colspan="5" style="text-align:center;color:var(--text-muted);padding:20px;">Bu ayda çıkış yok.</td></tr>';
+
+  window._monthGirisler = girisler;
+  window._monthCikislar = cikislar;
+  window._monthAy = ay;
+  window._monthYil = yil;
+}
+
+function monthExportPrint() {
+  const girisler = window._monthGirisler || [];
+  const cikislar = window._monthCikislar || [];
+  const ay = window._monthAy;
+  const yil = window._monthYil;
+  const ayAdi = AYLAR[ay] || '';
+  function _firma(t) { return (data.products[t.partiNo] && data.products[t.partiNo].companyName) || '—'; }
+  function _stt(t) { const stt = (data.products[t.partiNo] && data.products[t.partiNo].stt) || t.stt || ''; return stt ? formatDate(stt) : '—'; }
+  function _birim(t) { return (data.products[t.partiNo] && data.products[t.partiNo].unit) || t.unit || '—'; }
+
+  const w = window.open('', '_blank');
+  w.document.write(`
+    <html><head><title>Aylık Rapor - ${ayAdi} ${yil}</title>
+    <style>
+      body { font-family:Arial; padding:20px; }
+      h2 { margin-bottom:4px; }
+      .sub { color:#666; margin-bottom:16px; font-size:13px; }
+      h4 { margin:20px 0 8px; }
+      table { width:100%; border-collapse:collapse; font-size:12px; margin-bottom:20px; }
+      th, td { border:1px solid #ccc; padding:6px 8px; text-align:left; }
+      th { background:#e2e8f0; }
+      .toplam { font-weight:700; background:#f8fafc; }
+      @media print { .no-print { display:none; } }
+    </style></head>
+    <body>
+      <h2>Aylık Rapor — ${ayAdi} ${yil}</h2>
+      <p class="sub">Oluşturulma: ${new Date().toLocaleDateString('tr-TR')}</p>
+
+      <h4>Girişler (Toplam: ${_fmt(girisler.reduce((s,t) => s + t.amount, 0))})</h4>
+      <table>
+        <thead><tr><th>Firma</th><th>Tarih</th><th>Ürün</th><th>STT</th><th>Miktar</th><th>Birim</th></tr></thead>
+        <tbody>${girisler.map(t => `<tr><td>${_firma(t)}</td><td>${formatDate(t.date)}</td><td>${t.productName}</td><td>${_stt(t)}</td><td>${t.amount}</td><td>${_birim(t)}</td></tr>`).join('')}</tbody>
+      </table>
+
+      <h4>Çıkışlar (Toplam: ${_fmt(cikislar.reduce((s,t) => s + t.amount, 0))})</h4>
+      <table>
+        <thead><tr><th>Firma</th><th>Tarih</th><th>Ürün</th><th>Miktar</th><th>Birim</th></tr></thead>
+        <tbody>${cikislar.map(t => `<tr><td>${_firma(t)}</td><td>${formatDate(t.date)}</td><td>${t.productName}</td><td>${t.amount}</td><td>${_birim(t)}</td></tr>`).join('')}</tbody>
+      </table>
+
+      <button class="no-print" onclick="window.print()" style="padding:8px 20px;font-size:14px;cursor:pointer;">🖨 Yazdır</button>
+    </body></html>
+  `);
+  w.document.close();
 }
 
 // ----- YILLIK RAPOR -----

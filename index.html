@@ -404,6 +404,9 @@
                 <div class="panel-container">
                     <div class="panel-header">
                         <h3 id="month-title">Aylık Rapor</h3>
+                        <div style="display:flex; gap:8px;">
+                            <button class="btn-ui btn-sm btn-outline" onclick="monthExportPrint()"><i class="fa-solid fa-print"></i> Çıktı Al</button>
+                        </div>
                     </div>
                     <div style="padding: 1.5rem;">
                         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem;">
@@ -413,8 +416,10 @@
                                 <table class="minimal-table">
                                     <thead>
                                         <tr>
+                                            <th>Firma</th>
                                             <th>Tarih</th>
                                             <th>Ürün</th>
+                                            <th>STT</th>
                                             <th>Miktar</th>
                                             <th>Birim</th>
                                         </tr>
@@ -428,6 +433,7 @@
                                 <table class="minimal-table">
                                     <thead>
                                         <tr>
+                                            <th>Firma</th>
                                             <th>Tarih</th>
                                             <th>Ürün</th>
                                             <th>Miktar</th>
