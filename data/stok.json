@@ -1,5 +1,16 @@
 {
   "products": {
+    "2345": {
+      "partiNo": "2345",
+      "name": "YOĞURT",
+      "category": "Süt Ürünleri",
+      "unit": "kg",
+      "stock": 450,
+      "criticalLevel": 50,
+      "stt": "2026-05-25",
+      "companyName": "ALTUNDALLAR",
+      "createdAt": "2026-05-24T10:19:43.730Z"
+    },
     "01": {
       "partiNo": "01",
       "name": "DOMATES",
@@ -81,9 +92,21 @@
       "note": "Mal kabul",
       "stt": "2026-06-11",
       "timestamp": "2026-05-24T10:14:44.950Z"
+    },
+    {
+      "id": 1779617983737.6938,
+      "type": "giris",
+      "partiNo": "2345",
+      "productName": "YOĞURT",
+      "amount": 450,
+      "unit": "kg",
+      "date": "2026-05-24",
+      "note": "İlk giriş",
+      "timestamp": "2026-05-24T10:19:43.730Z"
     }
   ],
   "companies": [
+    "ALTUNDALLAR",
     "MANAV"
   ],
   "tenders": [],
