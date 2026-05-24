@@ -1,6 +1,30 @@
 {
-  "products": {},
-  "transactions": [],
+  "products": {
+    "01": {
+      "partiNo": "01",
+      "name": "DOMATES",
+      "category": "Sebze",
+      "unit": "kg",
+      "stock": 20,
+      "criticalLevel": 50,
+      "stt": "",
+      "companyName": "MANAV",
+      "createdAt": "2026-05-24T03:04:10.240Z"
+    }
+  },
+  "transactions": [
+    {
+      "id": 1779591850272.3257,
+      "type": "giris",
+      "partiNo": "01",
+      "productName": "DOMATES",
+      "amount": 20,
+      "unit": "kg",
+      "date": "2026-05-24",
+      "note": "İlk giriş",
+      "timestamp": "2026-05-24T03:04:10.245Z"
+    }
+  ],
   "companies": [
     "MANAV"
   ],
