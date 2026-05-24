@@ -1025,14 +1025,13 @@ document.getElementById('entry-form').addEventListener('submit', (e) => {
   // İhale teslimatına otomatik ekle (ürünün firma adı ile eşleştir)
   let ihaleMsg = '';
   if (data.tenders && data.tenders.length && p.companyName) {
-      const eslesen = data.tenders.filter(t =>
-        t.companyName === p.companyName && t.product === p.name
-      );
-      eslesen.forEach(t => { t.delivered += amount; });
-      if (eslesen.length) {
-        saveData();
-        ihaleMsg = ` | ✅ "${p.companyName}" ihaleye işlendi`;
-      }
+    const eslesen = data.tenders.filter(t =>
+      t.companyName === p.companyName && t.product === p.name
+    );
+    eslesen.forEach(t => { t.delivered += amount; });
+    if (eslesen.length) {
+      saveData();
+      ihaleMsg = ` | ✅ "${p.companyName}" ihaleye işlendi`;
     }
   }
 
