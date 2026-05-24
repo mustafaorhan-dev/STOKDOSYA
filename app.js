@@ -285,6 +285,13 @@ function todayStr() {
   return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0');
 }
 
+function isValidDate(str) {
+  if (!str) return true;
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(str)) return false;
+  const d = new Date(str + 'T00:00:00');
+  return !isNaN(d.getTime());
+}
+
 // ----- KİŞİ ADI AYIKLAMA -----
 function extractPerson(note) {
   if (!note) return '';
@@ -941,6 +948,7 @@ document.getElementById('new-product-form').addEventListener('submit', (e) => {
     if (!companyName) document.getElementById('np-company').focus();
     return;
   }
+  if (stt && !isValidDate(stt)) { toast('Geçersiz STT tarihi!', 'error'); return; }
 
   if (isEdit) {
     const p = data.products[partiNo];
@@ -1150,6 +1158,8 @@ document.getElementById('entry-form').addEventListener('submit', (e) => {
   const stt = document.getElementById('entry-stt').value || '';
 
   if (!partiNo || !amount || amount <= 0 || !date) { toast('Tüm alanları doldurun.', 'error'); return; }
+  if (!isValidDate(date)) { toast('Geçersiz giriş tarihi!', 'error'); return; }
+  if (stt && !isValidDate(stt)) { toast('Geçersiz STT tarihi!', 'error'); return; }
   const p = data.products[partiNo];
   if (!p) { toast('Ürün bulunamadı.', 'error'); return; }
 
@@ -1206,6 +1216,7 @@ document.getElementById('exit-form').addEventListener('submit', (e) => {
   const note = document.getElementById('exit-note').value.trim();
 
   if (!partiNo || !amount || amount <= 0 || !date) { toast('Tüm alanları doldurun.', 'error'); return; }
+  if (!isValidDate(date)) { toast('Geçersiz çıkış tarihi!', 'error'); return; }
   const p = data.products[partiNo];
   if (!p) { toast('Ürün bulunamadı.', 'error'); return; }
   if (p.stock < amount) { toast(`Yetersiz stok! Mevcut: ${_fmt(p.stock)} ${p.unit}`, 'error'); return; }
