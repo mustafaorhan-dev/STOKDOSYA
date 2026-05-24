@@ -5,7 +5,7 @@
       "name": "DOMATES",
       "category": "Sebze",
       "unit": "kg",
-      "stock": 80,
+      "stock": 15,
       "criticalLevel": 50,
       "stt": "",
       "companyName": "MANAV",
@@ -34,6 +34,17 @@
       "date": "2026-05-24",
       "note": "Düzenleme ile stok artışı",
       "timestamp": "2026-05-24T03:08:39.656Z"
+    },
+    {
+      "id": 1779592136664.876,
+      "type": "cikis",
+      "partiNo": "01",
+      "productName": "DOMATES",
+      "amount": 65,
+      "unit": "kg",
+      "date": "2026-05-24",
+      "note": "Düzenleme ile stok azalışı",
+      "timestamp": "2026-05-24T03:08:56.094Z"
     }
   ],
   "companies": [
