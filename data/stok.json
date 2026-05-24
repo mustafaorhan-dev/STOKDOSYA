@@ -93,22 +93,12 @@
     }
   ],
   "companies": [
-    "AHMET BAKKAL",
     "ALTUNDALLAR",
     "EL-TAŞ TAVUK",
     "OKUL",
     "ÖYKÜM MANAV"
   ],
-  "tenders": [
-    {
-      "id": 1779588955541.0244,
-      "companyName": "ALTUNDALLAR",
-      "product": "YOĞURT",
-      "quantity": 10000,
-      "delivered": 1605,
-      "price": 52
-    }
-  ],
+  "tenders": [],
   "settings": {
     "autoBackupTime": "17:00",
     "autoSync": true,
