@@ -8,7 +8,7 @@
 const DATA_KEY = 'tazedepo_data';
 
 // ★ Google Sheets bağlantısı — Apps Script Web App URL'si
-const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzsdU5nbDSZBl3ONSMAY_kcJmvXn_BOnZVkkxWT2J11gljt6z1AWWwXdEfexdnXzNRd3g/exec';
+const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbApLf0-zHQzoL1s8ll0jPZU_Zh15c73rD6yOAFcmxMTb-jVnyBpibxQzvko5zxyEHf4g/exec';
 
 let data = { products: {}, transactions: [], users: [], activeUser: '', settings: {} };
 let nextPartiCounter = 1;
@@ -50,14 +50,11 @@ function initData() {
 async function loadData() {
   // Google Sheets'ten veri çek (GET)
   try {
-    const resp = await fetch(GOOGLE_SCRIPT_URL + '?action=get');
+    const resp = await fetch(GOOGLE_SCRIPT_URL);
     if (resp.ok) {
-      const text = await resp.text();
-      // Apps Script düz metin döndürür, JSON parse et
-      let parsed;
-      try { parsed = JSON.parse(text); } catch (_) { parsed = null; }
-      if (parsed && parsed.products) {
-        data = parsed;
+      const json = await resp.json();
+      if (json && json.products) {
+        data = json;
         document.getElementById('cloud-status-text').textContent = '✅ Google Sheets: veri yüklendi';
         initData();
         saveDataLocal();
@@ -88,16 +85,12 @@ function saveDataLocal() {
 
 function saveData() {
   saveDataLocal();
-  // Google Sheets'e POST ile kaydet (form body — Apps Script e.parameter ile okur)
+  // Google Sheets'e POST ile kaydet (ham JSON metin olarak)
   if (_syncLock) return;
   _syncLock = true;
-  const formData = new URLSearchParams();
-  formData.append('action', 'save');
-  formData.append('data', JSON.stringify(data));
-
   fetch(GOOGLE_SCRIPT_URL, {
     method: 'POST',
-    body: formData
+    body: JSON.stringify(data)
   })
   .then(r => r.text())
   .then(() => {
