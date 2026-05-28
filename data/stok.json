@@ -25,6 +25,10 @@
     {
       "name": "Yardımcı Şef Ali",
       "role": "Depo Sorumlusu"
+    },
+    {
+      "name": "MUSTAFA ORHAN",
+      "role": "Depo Personeli"
     }
   ],
   "activeUser": "Depo Şefi"
