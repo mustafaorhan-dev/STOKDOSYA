@@ -19,10 +19,6 @@
   },
   "users": [
     {
-      "name": "Depo Şefi",
-      "role": "Yönetici"
-    },
-    {
       "name": "Yardımcı Şef Ali",
       "role": "Depo Sorumlusu"
     },
