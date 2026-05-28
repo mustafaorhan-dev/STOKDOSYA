@@ -83,14 +83,14 @@ function saveDataLocal() {
   localStorage.setItem(DATA_KEY, JSON.stringify(data));
 }
 
-function saveData() {
+function saveData(targetSheet) {
   saveDataLocal();
-  // Google Sheets'e POST ile kaydet (ham JSON metin olarak)
   if (_syncLock) return;
   _syncLock = true;
+  const payload = targetSheet ? { ...data, _targetSheet: targetSheet } : data;
   fetch(GOOGLE_SCRIPT_URL, {
     method: 'POST',
-    body: JSON.stringify(data)
+    body: JSON.stringify(payload)
   })
   .then(r => r.text())
   .then(() => {
@@ -314,21 +314,22 @@ function toast(msg, type = 'info') {
 
 // ----- NAVIGASYON -----
 function navigateTo(target) {
-  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  document.querySelectorAll('.tab-item').forEach(n => n.classList.remove('active'));
   document.querySelectorAll('.view-section').forEach(v => v.classList.remove('active'));
 
-  const navItem = document.querySelector(`.nav-item[data-target="${target}"]`);
-  if (navItem) navItem.classList.add('active');
+  const tabItem = document.querySelector(`.tab-item[data-target="${target}"]`);
+  if (tabItem) tabItem.classList.add('active');
+  // Also activate in dropdown
+  document.querySelectorAll('.dropdown-item').forEach(d => d.classList.remove('active'));
+  const dropdownItem = document.querySelector(`.dropdown-item[data-target="${target}"]`);
+  if (dropdownItem) dropdownItem.classList.add('active');
 
   const view = document.getElementById(target);
   if (view) view.classList.add('active');
 
-  const titles = {
-    'dashboard': 'Genel Bakış', 'warehouse': 'Anbar Listesi', 'entry': 'Mal Kabul (Giriş)',
-    'exit': 'Ürün Çıkış', 'daily': 'Günlük İşlemler', 'month-view': 'Aylık Rapor',
-    'years-view': 'Yıllık Raporlar', 'stt-tracking': 'STT Takibi', 'tender-tracking': 'İhale Takip', 'suppliers': 'Tedarikçiler', 'drivers': 'Sürücüler', 'settings-view': 'Ayarlar & Bulut'
-  };
-  document.getElementById('page-title').textContent = titles[target] || 'STOKDOSYA';
+  // Close tab dropdown if open
+  const dd = document.getElementById('tab-dropdown');
+  if (dd) dd.classList.remove('show');
 
   // view'e ozel yenilemeler
   if (target === 'dashboard') refreshDashboard();
@@ -358,7 +359,7 @@ function buildMonthMenu() {
   container.innerHTML = AYLAR.map((ay, i) => {
     const aktif = (i === AY_INDEX && yil === new Date().getFullYear()) ? ' active' : '';
     const count = ayHareketSayisi(i, yil);
-    return `<a href="#" class="nav-item${aktif}" data-month="${i}" data-year="${yil}" onclick="goToMonth(${i}, ${yil})">
+    return `<a href="#" class="month-link${aktif}" data-month="${i}" data-year="${yil}" onclick="goToMonth(${i}, ${yil})">
       <i class="fa-regular fa-calendar"></i>
       <span>${ay} ${yil}</span>
       <span class="month-badge">${count}</span>
@@ -376,8 +377,8 @@ function ayHareketSayisi(ay, yil) {
 function goToMonth(ay, yil) {
   window._selectedMonth = ay;
   window._selectedYear = yil;
-  document.querySelectorAll('.nav-item[data-month]').forEach(n => n.classList.remove('active'));
-  const el = document.querySelector(`.nav-item[data-month="${ay}"]`);
+  document.querySelectorAll('.month-link').forEach(n => n.classList.remove('active'));
+  const el = document.querySelector(`.month-link[data-month="${ay}"]`);
   if (el) el.classList.add('active');
   navigateTo('month-view');
 }
@@ -1535,9 +1536,6 @@ function refreshUserSelect() {
 document.getElementById('active-user-select').addEventListener('change', (e) => {
   data.activeUser = e.target.value;
   saveData();
-  document.getElementById('display-username').textContent = data.activeUser;
-  const u = data.users.find(x => x.name === data.activeUser);
-  document.getElementById('display-role').textContent = u ? u.role : '';
   refreshSettings();
   toast(`Aktif kullanıcı: ${data.activeUser}`, 'info');
 });
@@ -1659,15 +1657,15 @@ function scheduleAutoBackup() {
 }
 
 // ----- NAVIGASYON EVENTLERI -----
-document.querySelectorAll('.nav-item[data-target]').forEach(item => {
+document.querySelectorAll('.tab-item[data-target], .dropdown-item[data-target]').forEach(item => {
   item.addEventListener('click', (e) => {
     e.preventDefault();
     const target = item.dataset.target;
     if (target === 'month-view') {
       window._selectedMonth = AY_INDEX;
       window._selectedYear = new Date().getFullYear();
-      document.querySelectorAll('.nav-item[data-month]').forEach(n => n.classList.remove('active'));
-      const el = document.querySelector(`.nav-item[data-month="${AY_INDEX}"]`);
+      document.querySelectorAll('.month-link').forEach(n => n.classList.remove('active'));
+      const el = document.querySelector(`.month-link[data-month="${AY_INDEX}"]`);
       if (el) el.classList.add('active');
     }
     navigateTo(target);
@@ -1764,7 +1762,7 @@ function pdfCikti() {
       .minimal-table { width: 100% !important; border-collapse: collapse !important; }
       .minimal-table th { background: #f1f5f9 !important; color: #000 !important; padding: 10px !important; border: 1px solid #ccc !important; }
       .minimal-table td { padding: 8px 10px !important; border: 1px solid #ddd !important; color: #000 !important; }
-      .btn-ui, .theme-btn, .nav-menu, .sidebar, .top-bar, .info-cards { display: none !important; }
+      .btn-ui, .theme-btn, .tab-actions { display: none !important; }
       .panel-container { box-shadow: none !important; border: 1px solid #ccc !important; }
       #daily-pdf-container { border: 1px solid #ccc !important; }
       h3 { font-size: 18px !important; margin-bottom: 12px !important; }
@@ -1807,40 +1805,31 @@ document.addEventListener('DOMContentLoaded', () => {
     updateClock();
     setInterval(updateClock, 10000);
     if (data.settings.autoBackupEnabled) scheduleAutoBackup();
-    document.getElementById('app-container').style.display = 'flex';
+    document.getElementById('app-container').style.display = 'block';
   });
 
-  // Mobil menü toggle
-  const menuBtn = document.getElementById('mobile-menu-btn');
-  const sidebar = document.querySelector('.sidebar');
-  const overlay = document.getElementById('sidebar-overlay');
-  if (menuBtn && sidebar) {
-    menuBtn.addEventListener('click', () => {
-      sidebar.classList.toggle('open');
-      if (overlay) overlay.classList.toggle('show');
-    });
-    if (overlay) overlay.addEventListener('click', () => {
-      sidebar.classList.remove('open');
-      overlay.classList.remove('show');
-    });
-    // Tabloları kaydırılabilir yap
-    document.querySelectorAll('.minimal-table').forEach(t => {
-      if (!t.parentElement.classList.contains('table-wrap')) {
-        const wrap = document.createElement('div');
-        wrap.className = 'table-wrap';
-        t.parentNode.insertBefore(wrap, t);
-        wrap.appendChild(t);
-      }
-    });
+  // Tabloları kaydırılabilir yap
+  document.querySelectorAll('.minimal-table').forEach(t => {
+    if (!t.parentElement.classList.contains('table-wrap')) {
+      const wrap = document.createElement('div');
+      wrap.className = 'table-wrap';
+      t.parentNode.insertBefore(wrap, t);
+      wrap.appendChild(t);
+    }
+  });
 
-    // Sidebar link tıklanınca kapat
-    document.querySelectorAll('.nav-item').forEach(item => {
-      item.addEventListener('click', () => {
-        if (window.innerWidth <= 480) {
-          sidebar.classList.remove('open');
-          if (overlay) overlay.classList.remove('show');
-        }
-      });
+  // Tab dropdown toggle
+  const moreBtn = document.getElementById('tab-more-btn');
+  const tabDropdown = document.getElementById('tab-dropdown');
+  if (moreBtn && tabDropdown) {
+    moreBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      tabDropdown.classList.toggle('show');
+    });
+    document.addEventListener('click', (e) => {
+      if (!tabDropdown.contains(e.target) && e.target !== moreBtn) {
+        tabDropdown.classList.remove('show');
+      }
     });
   }
 });

@@ -28,118 +28,53 @@
 
 
     <div id="app-container" class="app-container">
-        <!-- Sidebar -->
-        <aside class="sidebar">
-            <div class="brand">
-                <i class="fa-solid fa-boxes-packing logo-icon"></i>
-                <h1>STOKDOSYA</h1>
-            </div>
-
-            <nav class="nav-menu">
-                <div class="nav-group">
-                    <h4>Yönetim</h4>
-                    <a href="#" class="nav-item active" data-target="dashboard">
-                        <i class="fa-solid fa-chart-pie"></i>
-                        <span>Genel Bakış</span>
-                    </a>
-                    <a href="#" class="nav-item" data-target="warehouse">
-                        <i class="fa-solid fa-boxes-stacked"></i>
-                        <span>Anbar Listesi</span>
-                    </a>
+        <!-- Top Tab Bar -->
+        <nav class="tab-bar" id="tab-bar">
+            <div class="tab-inner">
+                <a class="tab-brand" href="#" onclick="navigateTo('dashboard');return false;">
+                    <i class="fa-solid fa-boxes-packing logo-icon"></i>
+                    <span class="tab-brand-text">STOKDOSYA</span>
+                </a>
+                <div class="tab-scroll" id="tab-scroll">
+                    <a href="#" class="tab-item" data-target="dashboard" title="Genel Bakış"><i class="fa-solid fa-chart-pie"></i><span class="tab-label">Genel</span></a>
+                    <a href="#" class="tab-item" data-target="warehouse" title="Anbar Listesi"><i class="fa-solid fa-boxes-stacked"></i><span class="tab-label">Anbar</span></a>
+                    <a href="#" class="tab-item" data-target="entry" title="Mal Kabul"><i class="fa-solid fa-arrow-right-to-bracket"></i><span class="tab-label">Giriş</span></a>
+                    <a href="#" class="tab-item" data-target="exit" title="Ürün Çıkış"><i class="fa-solid fa-dolly"></i><span class="tab-label">Çıkış</span></a>
+                    <a href="#" class="tab-item" data-target="daily" title="Günlük İşlemler"><i class="fa-solid fa-clipboard-list"></i><span class="tab-label">Günlük</span></a>
+                    <a href="#" class="tab-item" data-target="years-view" title="Yıllık Raporlar"><i class="fa-solid fa-calendar-check"></i><span class="tab-label">Yıllık</span></a>
+                    <a href="#" class="tab-item" data-target="stt-tracking" title="STT Takip"><i class="fa-regular fa-calendar"></i><span class="tab-label">STT</span></a>
+                    <a href="#" class="tab-item" data-target="tender-tracking" title="İhale Takip"><i class="fa-solid fa-file-signature"></i><span class="tab-label">İhale</span></a>
+                    <a href="#" class="tab-item" data-target="suppliers" title="Tedarikçiler"><i class="fa-solid fa-truck"></i><span class="tab-label">Tedarik</span></a>
                 </div>
-
-                <div class="nav-group">
-                    <h4>Operasyon</h4>
-                    <a href="#" class="nav-item" data-target="entry">
-                        <i class="fa-solid fa-arrow-right-to-bracket"></i>
-                        <span>Mal Kabul (Giriş)</span>
-                    </a>
-                    <a href="#" class="nav-item" data-target="exit">
-                        <i class="fa-solid fa-dolly"></i>
-                        <span>Ürün Çıkış</span>
-                    </a>
-                    <a href="#" class="nav-item" data-target="daily">
-                        <i class="fa-solid fa-clipboard-list"></i>
-                        <span>Günlük İşlemler</span>
-                    </a>
-                </div>
-
-                <div class="nav-group">
-                    <h4>Raporlar</h4>
-                    <a href="#" class="nav-item" data-target="years-view">
-                        <i class="fa-solid fa-calendar-check"></i>
-                        <span>Yıllık Raporlar</span>
-                    </a>
-                    <select id="months-year-select" class="form-control" style="width:calc(100% - 12px);margin:4px 6px 8px;font-size:13px;"></select>
-                    <div id="months-menu" style="display:flex; flex-direction:column; gap:0.25rem;"></div>
-                </div>
-
-                <div class="nav-group">
-                    <h4>Takip</h4>
-                    <a href="#" class="nav-item" data-target="stt-tracking">
-                        <i class="fa-regular fa-calendar"></i>
-                        <span>STT Takibi</span>
-                    </a>
-                    <a href="#" class="nav-item" data-target="tender-tracking">
-                        <i class="fa-solid fa-file-signature"></i>
-                        <span>İhale Takip</span>
-                    </a>
-                    <a href="#" class="nav-item" data-target="suppliers">
-                        <i class="fa-solid fa-truck"></i>
-                        <span>Tedarikçiler</span>
-                    </a>
-                    <a href="#" class="nav-item" data-target="drivers">
-                        <i class="fa-solid fa-id-card"></i>
-                        <span>Sürücüler</span>
-                    </a>
-                </div>
-
-                    <div class="user-profile-card" style="margin-top: auto; padding: 0.75rem; background: var(--secondary); border-radius: var(--border-radius-md); margin-bottom: 0.75rem; display: flex; align-items: center; gap: 0.75rem; border: 1px solid var(--border-color);">
-                        <div class="user-avatar" style="width: 32px; height: 32px; border-radius: 50%; background: var(--primary-light); color: var(--primary); display: flex; align-items: center; justify-content: center; font-size: 1rem; font-weight: 700; flex-shrink: 0;">
-                            <i class="fa-regular fa-user"></i>
-                        </div>
-                        <div class="user-details" style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap; flex: 1;">
-                            <h5 id="display-username" style="margin: 0; font-weight: 700; font-size: 0.8rem; color: var(--text-primary); text-align: left;">Depo Şefi</h5>
-                            <span id="display-role" style="font-size: 0.7rem; color: var(--text-secondary); display: block; text-align: left;">Yönetici</span>
+                <div class="tab-actions">
+                    <div class="tab-dropdown-wrapper">
+                        <button id="tab-more-btn" class="tab-icon-btn" title="Diğer"><i class="fa-solid fa-ellipsis-vertical"></i></button>
+                        <div id="tab-dropdown" class="tab-dropdown">
+                            <a href="#" class="dropdown-item" data-target="drivers"><i class="fa-solid fa-id-card"></i> Sürücüler</a>
+                            <a href="#" class="dropdown-item" data-target="settings-view"><i class="fa-solid fa-gear"></i> Ayarlar</a>
+                            <div class="dropdown-divider"></div>
+                            <div style="padding:8px;">
+                                <select id="months-year-select" class="form-control" style="width:100%;font-size:11px;margin-bottom:6px;"></select>
+                                <div id="months-menu" style="display:flex;flex-direction:column;gap:2px;"></div>
+                            </div>
                         </div>
                     </div>
-
-                <div class="nav-group">
-                    <h4>Sistem</h4>
-                    <a href="#" class="nav-item" data-target="settings-view">
-                        <i class="fa-solid fa-gear"></i>
-                        <span>Ayarlar & Bulut</span>
-                    </a>
-                </div>
-            </nav>
-        </aside>
-        <div id="sidebar-overlay" class="sidebar-overlay"></div>
-
-        <!-- Main Content -->
-        <main class="main-content">
-            <header class="top-bar">
-                <div style="display:flex;align-items:center;gap:12px;">
-                    <button id="mobile-menu-btn" class="mobile-menu-btn" aria-label="Menü">
-                        <i class="fa-solid fa-bars"></i>
-                    </button>
-                    <h2 id="page-title">Genel Bakış</h2>
-                </div>
-                <div class="info-cards">
-                    <div class="info-badge" id="cloud-status-badge">
+                    <span id="header-date" style="font-size:0.75rem;color:var(--text-secondary);white-space:nowrap;"></span>
+                    <div class="tab-badge" id="cloud-status-badge">
                         <i class="fa-solid fa-cloud"></i>
-                        <span id="cloud-status-text">Yerel Bellek</span>
+                        <span id="cloud-status-text">Yerel</span>
                     </div>
-                    <div class="info-badge" style="padding: 0.35rem 0.75rem;">
-                        <i class="fa-regular fa-user" style="margin-right: 2px;"></i>
-                        <select id="active-user-select" class="form-control" style="border: none; background: transparent; padding: 0; font-size: 0.85rem; font-weight: 700; color: var(--text-secondary); width: auto; min-width: 100px; cursor: pointer; outline: none;"></select>
-                    </div>
-                    <div class="info-badge">
-                        <i class="fa-regular fa-calendar"></i>
-                        <span id="header-date">...</span>
+                    <div class="tab-badge" style="gap:2px;">
+                        <i class="fa-regular fa-user"></i>
+                        <select id="active-user-select" class="form-control" style="border:none;background:transparent;padding:0;font-size:0.75rem;font-weight:700;color:var(--text-secondary);width:auto;min-width:70px;cursor:pointer;outline:none;"></select>
                     </div>
                     <button class="theme-btn" id="theme-toggle" title="Tema değiştir">🌙</button>
                 </div>
-            </header>
+            </div>
+        </nav>
+
+        <!-- Main Content -->
+        <main class="main-content">
 
             <!-- 1. DASHBOARD -->
             <div id="dashboard" class="view-section active">
