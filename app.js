@@ -2,6 +2,187 @@
 // STOKDOSYA — Ana Uygulama JavaScript'i
 // ─────────────────────────────────────────────
 
+// ----- GİRİŞ / OTP SİSTEMİ -----
+const ADMIN_USER = {
+  name: 'Depo Sorumlusu Mustafa ORHAN',
+  email: 'mustafa.orhan@ahievran.edu.tr',
+  password: 'MusGonMeh.2525',
+  role: 'Ana Yönetici'
+};
+const TOKEN_KEY = 'stokdosya_github_token';
+const AUTH_KEY = 'stokdosya_auth';
+
+let _otpCode = null;
+let _otpExpiry = null;
+let _otpVerified = false;
+let _currentUser = null;
+
+function getStoredToken() {
+  return localStorage.getItem(TOKEN_KEY) || '';
+}
+function setStoredToken(token) {
+  if (token) localStorage.setItem(TOKEN_KEY, token);
+  else localStorage.removeItem(TOKEN_KEY);
+}
+function isOtpVerified() {
+  return _otpVerified;
+}
+function checkSavedAuth() {
+  try {
+    const raw = localStorage.getItem(AUTH_KEY);
+    if (raw) {
+      const auth = JSON.parse(raw);
+      if (auth.verified && auth.expiry > Date.now()) {
+        _otpVerified = true;
+        _currentUser = auth.user || null;
+        return true;
+      }
+    }
+  } catch (e) { /* ignore */ }
+  return false;
+}
+function saveAuth(user) {
+  localStorage.setItem(AUTH_KEY, JSON.stringify({
+    verified: true,
+    expiry: Date.now() + 24 * 60 * 60 * 1000,
+    user: user
+  }));
+}
+function clearAuth() {
+  localStorage.removeItem(AUTH_KEY);
+  _otpVerified = false;
+  _currentUser = null;
+  _otpCode = null;
+}
+
+function generateOTP() {
+  return String(Math.floor(100000 + Math.random() * 900000));
+}
+
+function sendOTP(email, code) {
+  console.log('📧 OTP kodu (' + email + '): ' + code);
+  // EmailJS ile göndermeyi dene
+  try {
+    if (typeof emailjs !== 'undefined') {
+      emailjs.send('default_service', 'otp_template', {
+        to_email: email,
+        otp_code: code,
+        from_name: 'STOKDOSYA'
+      }).then(function(r) {
+        console.log('EmailJS başarılı:', r);
+      }, function(e) {
+        console.warn('EmailJS hatası (OTP yine de konsolda):', e);
+      });
+    }
+  } catch (e) {
+    console.warn('EmailJS kullanılamıyor, OTP konsolda görünür:', e);
+  }
+}
+
+function showLoginScreen() {
+  document.getElementById('login-screen').style.display = 'flex';
+  document.getElementById('otp-screen').style.display = 'none';
+  document.getElementById('app-container').style.display = 'none';
+}
+
+function showOTPScreen(email) {
+  document.getElementById('login-screen').style.display = 'none';
+  document.getElementById('otp-screen').style.display = 'flex';
+  document.getElementById('otp-email-info').textContent = email + ' adresine 6 haneli kod gönderildi.';
+  document.getElementById('app-container').style.display = 'none';
+}
+
+function showApp() {
+  document.getElementById('login-screen').style.display = 'none';
+  document.getElementById('otp-screen').style.display = 'none';
+  document.getElementById('app-container').style.display = 'flex';
+}
+
+function handleLogin(email, password) {
+  const loginError = document.getElementById('login-error');
+  loginError.textContent = '';
+
+  // Admin kontrolü
+  if (email.toLowerCase() === ADMIN_USER.email.toLowerCase() && password === ADMIN_USER.password) {
+    _currentUser = ADMIN_USER;
+    startOTP(email);
+    return;
+  }
+
+  // Personel listesinde ara
+  if (data.users && data.users.length) {
+    const found = data.users.find(u =>
+      u.email && u.email.toLowerCase() === email.toLowerCase() && u.password === password
+    );
+    if (found) {
+      _currentUser = found;
+      startOTP(email);
+      return;
+    }
+  }
+
+  loginError.textContent = '❌ E-posta veya şifre hatalı!';
+}
+
+function startOTP(email) {
+  _otpCode = generateOTP();
+  _otpExpiry = Date.now() + 5 * 60 * 1000;
+  sendOTP(email, _otpCode);
+  document.getElementById('otp-input').value = '';
+  document.getElementById('otp-error').textContent = '';
+  document.getElementById('otp-screen').style.display = 'flex';
+  document.getElementById('login-screen').style.display = 'none';
+  document.getElementById('app-container').style.display = 'none';
+}
+
+function verifyOTP(code) {
+  const otpError = document.getElementById('otp-error');
+  if (Date.now() > _otpExpiry) {
+    otpError.textContent = '❌ Kodun süresi doldu. Tekrar gönderin.';
+    return;
+  }
+  if (code === _otpCode) {
+    _otpVerified = true;
+    saveAuth(_currentUser);
+    showApp();
+    if (typeof refreshAll === 'function') refreshAll();
+  } else {
+    otpError.textContent = '❌ Hatalı doğrulama kodu!';
+  }
+}
+
+function logout() {
+  clearAuth();
+  showLoginScreen();
+  location.reload();
+}
+
+// Login form
+document.addEventListener('DOMContentLoaded', function() {
+  document.getElementById('login-form').addEventListener('submit', function(e) {
+    e.preventDefault();
+    const email = document.getElementById('login-email').value.trim();
+    const password = document.getElementById('login-password').value;
+    handleLogin(email, password);
+  });
+  document.getElementById('otp-form').addEventListener('submit', function(e) {
+    e.preventDefault();
+    const code = document.getElementById('otp-input').value.trim();
+    if (code.length === 6) verifyOTP(code);
+    else document.getElementById('otp-error').textContent = '❌ 6 haneli kodu girin.';
+  });
+  document.getElementById('resend-otp').addEventListener('click', function(e) {
+    e.preventDefault();
+    if (_currentUser) startOTP(_currentUser.email);
+  });
+  // OTP input'u 6 haneye ulaşınca otomatik gönder
+  document.getElementById('otp-input').addEventListener('input', function() {
+    if (this.value.length === 6) {
+      document.getElementById('otp-form').dispatchEvent(new Event('submit'));
+    }
+  });
+});
+
 // ----- VERİ KATMANI -----
 const DATA_KEY = 'tazedepo_data';
 
@@ -31,7 +212,7 @@ function getGithubConfig() {
     owner: (cfg && cfg.owner) || HARD_CODED_GITHUB.owner,
     repo: (cfg && cfg.repo) || HARD_CODED_GITHUB.repo,
     path: (cfg && cfg.path) || HARD_CODED_GITHUB.path,
-    token: (cfg && cfg.token) || HARD_CODED_GITHUB.token
+    token: getStoredToken() || (cfg && cfg.token) || HARD_CODED_GITHUB.token
   };
 }
 
@@ -159,9 +340,14 @@ async function githubTest() {
 function initData() {
   if (!data.users) data.users = [];
   if (!data.users.length) {
-    data.users = [{ name: 'Depo Şefi', role: 'Yönetici' }, { name: 'Yardımcı Şef Ali', role: 'Depo Sorumlusu' }];
+    data.users = [{ name: 'Depo Şefi', role: 'Yönetici', email: '', password: '' }, { name: 'Yardımcı Şef Ali', role: 'Depo Sorumlusu', email: '', password: '' }];
     data.activeUser = 'Depo Şefi';
   }
+  // Eski kullanıcı yapısını yeni yapıya dönüştür (email/password alanları ekle)
+  data.users.forEach(u => {
+    if (!u.email) u.email = '';
+    if (!u.password) u.password = '';
+  });
   if (!data.settings) data.settings = {};
   if (!data.settings.apiUrl) data.settings.apiUrl = '';
   if (!data.settings.autoBackupTime) data.settings.autoBackupTime = '17:00';
@@ -251,9 +437,14 @@ function saveDataLocal() {
 
 function saveData() {
   saveDataLocal();
-  // Otomatik GitHub senkronu
-  if (data.settings && data.settings.autoSync && githubApiUrl()) {
-    githubSave(data);
+  // Otomatik GitHub senkronu — sadece OTP doğrulandıysa
+  if (_otpVerified && data.settings && data.settings.autoSync && githubApiUrl()) {
+    // Token'ı GitHub'a gönderilen veriden temizle (409 hatasını önler)
+    const cleanData = JSON.parse(JSON.stringify(data));
+    if (cleanData.settings && cleanData.settings.github) {
+      delete cleanData.settings.github.token;
+    }
+    githubSave(cleanData);
   }
 }
 
@@ -1533,18 +1724,22 @@ function refreshSettings() {
   const ul = document.getElementById('users-list-ul');
   ul.innerHTML = data.users.map(u => {
     const aktif = u.name === data.activeUser;
+    const emailStr = u.email ? `<span style="color:var(--text-secondary);font-size:12px;">${u.email}</span>` : '<span style="color:var(--text-muted);font-size:12px;">(e-posta yok)</span>';
     return `<li style="display:flex;align-items:center;justify-content:space-between;background:var(--bg-primary);padding:10px 14px;border-radius:var(--border-radius-sm);border:1px solid ${aktif ? 'var(--primary)' : 'var(--border-color)'};">
-      <span><strong>${u.name}</strong> <span style="color:var(--text-secondary);font-size:13px;">— ${u.role}</span> ${aktif ? '<span style="background:var(--primary-light);color:var(--primary);padding:2px 8px;border-radius:999px;font-size:11px;font-weight:700;margin-left:6px;">AKTİF</span>' : ''}</span>
-      <button class="btn-ui btn-sm btn-outline" onclick="deleteUser('${u.name}')" style="color:var(--accent);"><i class="fa-solid fa-xmark"></i></button>
+      <div style="flex:1;min-width:0;">
+        <div><strong>${u.name}</strong> <span style="color:var(--text-secondary);font-size:13px;">— ${u.role}</span> ${aktif ? '<span style="background:var(--primary-light);color:var(--primary);padding:2px 8px;border-radius:999px;font-size:11px;font-weight:700;margin-left:6px;">AKTİF</span>' : ''}</div>
+        <div style="font-size:12px;color:var(--text-muted);margin-top:2px;">${emailStr} ${u.password ? '🔒' : ''}</div>
+      </div>
+      <button class="btn-ui btn-sm btn-outline" onclick="deleteUser('${u.name}')" style="color:var(--accent);flex-shrink:0;"><i class="fa-solid fa-xmark"></i></button>
     </li>`;
   }).join('');
 
-  // GitHub Ayarları
+  // GitHub Ayarları — token localStorage'dan gelir
   const gh = data.settings.github || {};
   document.getElementById('github-owner').value = gh.owner || HARD_CODED_GITHUB.owner || '';
   document.getElementById('github-repo').value = gh.repo || HARD_CODED_GITHUB.repo || '';
   document.getElementById('github-path').value = gh.path || HARD_CODED_GITHUB.path || '';
-  document.getElementById('github-token').value = gh.token || '';
+  document.getElementById('github-token').value = getStoredToken() || '';
 
   // Otomatik senkron
   document.getElementById('auto-sync-toggle').checked = data.settings.autoSync !== false;
@@ -1577,12 +1772,19 @@ document.getElementById('profile-form').addEventListener('submit', (e) => {
 // Kullanici ekle
 document.getElementById('add-user-btn').addEventListener('click', () => {
   const name = document.getElementById('new-username-input').value.trim();
-  if (!name) { toast('Kullanıcı adı girin.', 'error'); return; }
+  const email = document.getElementById('new-user-email').value.trim();
+  const password = document.getElementById('new-user-password').value;
+  const role = document.getElementById('new-user-role').value.trim() || 'Depo Personeli';
+  if (!name) { toast('Ad Soyad girin.', 'error'); return; }
   if (data.users.find(u => u.name === name)) { toast('Bu kullanıcı zaten var.', 'error'); return; }
-  data.users.push({ name, role: 'Depo Personeli' });
+  if (email && data.users.find(u => u.email && u.email.toLowerCase() === email.toLowerCase())) { toast('Bu e-posta başka kullanıcıda var.', 'error'); return; }
+  data.users.push({ name, email, password, role });
   saveData();
   toast(`"${name}" eklendi.`, 'success');
   document.getElementById('new-username-input').value = '';
+  document.getElementById('new-user-email').value = '';
+  document.getElementById('new-user-password').value = '';
+  document.getElementById('new-user-role').value = '';
   refreshSettings();
   refreshUserSelect();
 });
@@ -1627,7 +1829,9 @@ document.getElementById('save-api-btn').addEventListener('click', () => {
   data.settings.github.owner = owner;
   data.settings.github.repo = repo;
   data.settings.github.path = path;
-  data.settings.github.token = token;
+  // Token'ı localStorage'a kaydet, data.settings'e asla ekleme (GitHub sync'tan temiz kalsın)
+  if (token) setStoredToken(token);
+  else setStoredToken('');
   saveDataLocal();
 
   const status = document.getElementById('connection-status');
@@ -1921,7 +2125,7 @@ document.addEventListener('DOMContentLoaded', () => {
     saveDataLocal();
   });
 
-  // Önce veriyi yükle (Drive'dan çek), bitince arayüzü çiz
+  // Önce veriyi yükle, bitince arayüzü çiz
   loadData().then(() => {
     if (!data.settings._migrated) {
       data.settings.theme = 'light';
@@ -1934,6 +2138,14 @@ document.addEventListener('DOMContentLoaded', () => {
     updateClock();
     setInterval(updateClock, 10000);
     if (data.settings.autoBackupEnabled) scheduleAutoBackup();
+
+    // Auth kontrolü — daha önce doğrulandıysa direkt uygulamayı göster
+    if (checkSavedAuth()) {
+      showApp();
+      refreshAll();
+    } else {
+      showLoginScreen();
+    }
   });
 
   // Mobil menü toggle
