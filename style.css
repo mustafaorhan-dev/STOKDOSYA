@@ -416,42 +416,4 @@ input[type="file"].form-control { padding: 8px; }
   select.form-control { min-height: 38px; }
 }
 
-/* ----- GİRİŞ / OTP EKRANI ----- */
-.auth-screen {
-  display: flex; align-items: center; justify-content: center;
-  min-height: 100vh; padding: 20px;
-  background: var(--bg-primary);
-}
-.auth-card {
-  background: var(--bg-card); border: 1px solid var(--border-color);
-  border-radius: var(--border-radius-lg); padding: 40px 36px;
-  max-width: 420px; width: 100%;
-  box-shadow: 0 20px 60px rgba(0,0,0,0.3);
-}
-.auth-header { text-align: center; margin-bottom: 32px; }
-.auth-logo { font-size: 48px; color: var(--primary); margin-bottom: 12px; }
-.auth-header h1 { font-size: 28px; font-weight: 800; letter-spacing: -0.5px; color: var(--text-primary); }
-.auth-header p { font-size: 14px; color: var(--text-secondary); margin-top: 6px; }
-.auth-btn {
-  width: 100%; padding: 14px !important; font-size: 16px !important;
-  justify-content: center; margin-top: 8px;
-}
-.auth-error {
-  text-align: center; font-size: 14px; font-weight: 600;
-  color: var(--accent); margin-top: 12px; min-height: 20px;
-}
-.otp-input-group { text-align: center; margin: 20px 0; }
-.otp-box {
-  width: 200px !important; margin: 0 auto; text-align: center;
-  font-size: 32px !important; font-weight: 800 !important;
-  letter-spacing: 12px; padding: 16px !important;
-  border-color: var(--primary) !important;
-}
-.otp-box::placeholder { letter-spacing: 4px; font-size: 20px; }
 
-@media (max-width: 480px) {
-  .auth-card { padding: 28px 20px; }
-  .auth-logo { font-size: 36px; }
-  .auth-header h1 { font-size: 22px; }
-  .otp-box { width: 180px !important; font-size: 26px !important; }
-}
