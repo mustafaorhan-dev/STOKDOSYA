@@ -147,6 +147,7 @@ function initData() {
   if (!data.products) data.products = {};
   if (!data.transactions) data.transactions = [];
   if (!data.tenders) data.tenders = [];
+  if (!data.drivers) data.drivers = [];
   if (!data.companies) data.companies = [];
   // Mevcut ürünlerden firma adlarını topla
   if (data.products) {
@@ -460,7 +461,7 @@ function navigateTo(target) {
   const titles = {
     'dashboard': 'Genel Bakış', 'warehouse': 'Anbar Listesi', 'entry': 'Mal Kabul (Giriş)',
     'exit': 'Ürün Çıkış', 'daily': 'Günlük İşlemler', 'month-view': 'Aylık Rapor',
-    'years-view': 'Yıllık Raporlar', 'stt-tracking': 'STT Takibi', 'tender-tracking': 'İhale Takip', 'suppliers': 'Tedarikçiler', 'settings-view': 'Ayarlar & Bulut'
+    'years-view': 'Yıllık Raporlar', 'stt-tracking': 'STT Takibi', 'tender-tracking': 'İhale Takip', 'suppliers': 'Tedarikçiler', 'drivers': 'Sürücüler', 'settings-view': 'Ayarlar & Bulut'
   };
   document.getElementById('page-title').textContent = titles[target] || 'STOKDOSYA';
 
@@ -472,6 +473,7 @@ function navigateTo(target) {
   if (target === 'stt-tracking') refreshSttTracking();
   if (target === 'tender-tracking') refreshTenders();
   if (target === 'suppliers') refreshSuppliers();
+  if (target === 'drivers') refreshDrivers();
   if (target === 'entry') refreshEntryForm();
   if (target === 'exit') refreshExitForm();
   if (target === 'daily') {
@@ -1478,6 +1480,7 @@ function deleteTender(id) {
 }
 
 document.getElementById('add-tender-btn').addEventListener('click', () => openTenderModal());
+document.getElementById('add-driver-btn').addEventListener('click', () => openDriverModal());
 
 document.getElementById('tender-form').addEventListener('submit', (e) => {
   e.preventDefault();
@@ -1501,6 +1504,82 @@ document.getElementById('tender-form').addEventListener('submit', (e) => {
   saveData();
   document.getElementById('tender-modal').classList.remove('show');
   refreshTenders();
+});
+
+// ----- SÜRÜCÜ YÖNETİMİ -----
+function refreshDrivers() {
+  const tbody = document.getElementById('driver-body');
+  if (!data.drivers) data.drivers = [];
+  if (!data.drivers.length) {
+    tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;color:var(--text-muted);padding:2rem;">Henüz sürücü eklenmemiş.</td></tr>';
+    return;
+  }
+  tbody.innerHTML = data.drivers.map(d => `
+    <tr>
+      <td><strong>${d.name}</strong></td>
+      <td>${d.phone || '<span style="color:var(--text-muted)">—</span>'}</td>
+      <td>${d.plate || '<span style="color:var(--text-muted)">—</span>'}</td>
+      <td style="color:var(--text-secondary);font-size:13px;">${d.note || ''}</td>
+      <td style="text-align:right;">
+        <button class="btn-ui btn-sm btn-outline" onclick="editDriver(${d.id})" title="Düzenle"><i class="fa-solid fa-pen"></i></button>
+        <button class="btn-ui btn-sm btn-outline" onclick="deleteDriver(${d.id})" style="color:var(--accent);" title="Sil"><i class="fa-solid fa-trash"></i></button>
+      </td>
+    </tr>
+  `).join('');
+}
+
+function openDriverModal(editId) {
+  const form = document.getElementById('driver-form');
+  form.reset();
+  document.getElementById('driver-edit-id').value = '';
+  document.getElementById('driver-modal-title').textContent = 'Yeni Sürücü';
+  document.getElementById('driver-submit-text').textContent = 'Sürücü Ekle';
+
+  if (editId) {
+    const d = data.drivers.find(x => x.id === editId);
+    if (d) {
+      document.getElementById('driver-edit-id').value = editId;
+      document.getElementById('driver-name').value = d.name;
+      document.getElementById('driver-phone').value = d.phone || '';
+      document.getElementById('driver-plate').value = d.plate || '';
+      document.getElementById('driver-note').value = d.note || '';
+      document.getElementById('driver-modal-title').textContent = 'Sürücü Düzenle';
+      document.getElementById('driver-submit-text').textContent = 'Güncelle';
+    }
+  }
+  document.getElementById('driver-modal').classList.add('show');
+}
+function editDriver(id) { openDriverModal(id); }
+
+function deleteDriver(id) {
+  if (!confirm('Sürücüyü silmek istediğinize emin misiniz?')) return;
+  data.drivers = data.drivers.filter(d => d.id !== id);
+  saveData();
+  refreshDrivers();
+  toast('Sürücü silindi.', 'info');
+}
+
+document.getElementById('driver-form').addEventListener('submit', (e) => {
+  e.preventDefault();
+  const editId = document.getElementById('driver-edit-id').value;
+  const name = document.getElementById('driver-name').value.trim();
+  const phone = document.getElementById('driver-phone').value.trim();
+  const plate = document.getElementById('driver-plate').value.trim().toUpperCase();
+  const note = document.getElementById('driver-note').value.trim();
+
+  if (!name) { toast('Sürücü adı gerekli.', 'error'); return; }
+
+  if (editId) {
+    const d = data.drivers.find(x => x.id === parseFloat(editId));
+    if (d) { d.name = name; d.phone = phone; d.plate = plate; d.note = note; }
+    toast('Sürücü güncellendi.', 'success');
+  } else {
+    data.drivers.push({ id: Date.now() + Math.random() * 1000, name, phone, plate, note });
+    toast('Sürücü eklendi.', 'success');
+  }
+  saveData();
+  document.getElementById('driver-modal').classList.remove('show');
+  refreshDrivers();
 });
 
 // ----- AYARLAR -----
@@ -1650,6 +1729,7 @@ function resetAllData() {
     data.products = {};
     data.transactions = [];
     data.tenders = [];
+    data.drivers = [];
     data.companies = [];
 
     // Kullanıcıları ve ayarları koru
