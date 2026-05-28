@@ -48,12 +48,14 @@ function initData() {
 
 
 async function loadData() {
-  // Google Sheets'ten veri çek
+  // Google Sheets'ten veri çek (GET)
   try {
-    const resp = await fetch(GOOGLE_SCRIPT_URL);
+    const resp = await fetch(GOOGLE_SCRIPT_URL + '?action=get');
     if (resp.ok) {
-      const jsonStr = await resp.text();
-      const parsed = JSON.parse(jsonStr);
+      const text = await resp.text();
+      // Apps Script düz metin döndürür, JSON parse et
+      let parsed;
+      try { parsed = JSON.parse(text); } catch (_) { parsed = null; }
       if (parsed && parsed.products) {
         data = parsed;
         document.getElementById('cloud-status-text').textContent = '✅ Google Sheets: veri yüklendi';
@@ -86,19 +88,25 @@ function saveDataLocal() {
 
 function saveData() {
   saveDataLocal();
-  // Google Sheets'e POST ile kaydet
+  // Google Sheets'e POST ile kaydet (form body — Apps Script e.parameter ile okur)
   if (_syncLock) return;
   _syncLock = true;
+  const formData = new URLSearchParams();
+  formData.append('action', 'save');
+  formData.append('data', JSON.stringify(data));
+
   fetch(GOOGLE_SCRIPT_URL, {
     method: 'POST',
-    mode: 'no-cors',
-    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-    body: JSON.stringify(data)
-  }).then(() => {
+    body: formData
+  })
+  .then(r => r.text())
+  .then(() => {
     document.getElementById('cloud-status-text').textContent = '✅ Google Sheets: kaydedildi';
-  }).catch((e) => {
+  })
+  .catch((e) => {
     document.getElementById('cloud-status-text').textContent = '⚠️ Google Sheets: ' + e.message;
-  }).finally(() => {
+  })
+  .finally(() => {
     _syncLock = false;
   });
 }
