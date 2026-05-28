@@ -8,7 +8,7 @@
 const DATA_KEY = 'tazedepo_data';
 
 // ★ Google Sheets bağlantısı — Apps Script Web App URL'si
-const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbApLf0-zHQzoL1s8ll0jPZU_Zh15c73rD6yOAFcmxMTb-jVnyBpibxQzvko5zxyEHf4g/exec';
+const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbywjFXRSPYgcxdf9PoLZH98__LEZRNO16FBxlaUYlaq2oHtMk64_K6Vdo8cWgYUBq_6RA/exec';
 
 let data = { products: {}, transactions: [], users: [], activeUser: '', settings: {} };
 let nextPartiCounter = 1;
