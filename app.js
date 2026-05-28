@@ -7,125 +7,12 @@
 // ----- VERİ KATMANI -----
 const DATA_KEY = 'tazedepo_data';
 
-// ★ BURAYA KALICI GOOGLE SCRIPT URL'NİZİ YAPIŞTIRIN ★
-const HARD_CODED_API_URL = '';
-
-// ★ GITHUB YAPILANDIRMASI (Kalıcı — tarayıcı silinse bile durur) ★
-const HARD_CODED_GITHUB = {
-  owner: 'mustafaorhan-dev',
-  repo: 'STOKDOSYA',
-  path: 'data/stok.json',
-  token: '' // GitHub Personal Access Token (settings'ten de girilebilir)
-};
+// ★ Google Sheets bağlantısı — Apps Script Web App URL'si
+const GOOGLE_SCRIPT_URL = 'https://docs.google.com/spreadsheets/d/1yAaMIRr1Wn1hGkahgAt-88_1GS1RFpXaixZYbDjnAtY/edit?pli=1&gid=0#gid=0';
 
 let data = { products: {}, transactions: [], users: [], activeUser: '', settings: {} };
 let nextPartiCounter = 1;
 let _syncLock = false;
-
-function getApiUrl() {
-  return HARD_CODED_API_URL || (data.settings && data.settings.apiUrl) || '';
-}
-
-// ----- GITHUB API (Birincil Depolama) -----
-function getGithubConfig() {
-  const cfg = data.settings && data.settings.github;
-  return {
-    owner: (cfg && cfg.owner) || HARD_CODED_GITHUB.owner,
-    repo: (cfg && cfg.repo) || HARD_CODED_GITHUB.repo,
-    path: (cfg && cfg.path) || HARD_CODED_GITHUB.path,
-    token: (cfg && cfg.token) || HARD_CODED_GITHUB.token
-  };
-}
-
-function githubApiUrl() {
-  const c = getGithubConfig();
-  if (!c.owner || !c.repo || !c.path || !c.token) return null;
-  return `https://api.github.com/repos/${c.owner}/${c.repo}/contents/${c.path}`;
-}
-
-async function githubLoad() {
-  const url = githubApiUrl();
-  if (!url) return null;
-  try {
-    const resp = await fetch(url, {
-      headers: {
-        Authorization: 'token ' + getGithubConfig().token,
-        Accept: 'application/vnd.github.v3+json'
-      }
-    });
-    if (!resp.ok) {
-      if (resp.status === 404) return null;
-      throw new Error('GitHub API hatası: ' + resp.status);
-    }
-    const json = await resp.json();
-    const binary = atob(json.content.replace(/\n/g, ''));
-    const bytes = new Uint8Array(binary.length);
-    for (let i = 0; i < binary.length; i++) {
-      bytes[i] = binary.charCodeAt(i);
-    }
-    const decoded = new TextDecoder('utf-8').decode(bytes);
-    const parsed = JSON.parse(decoded);
-    document.getElementById('cloud-status-text').textContent = '✅ GitHub: veri yüklendi';
-    return parsed;
-  } catch (e) {
-    document.getElementById('cloud-status-text').textContent = '⚠️ GitHub: ' + e.message;
-    return null;
-  }
-}
-
-async function githubSave(dataToSave) {
-  const url = githubApiUrl();
-  if (!url || _syncLock) return;
-  _syncLock = true;
-  try {
-    // Önce mevcut dosyanın SHA'sını al (güncelleme için gerekli)
-    let sha = null;
-    const existing = await fetch(url, {
-      headers: {
-        Authorization: 'token ' + getGithubConfig().token,
-        Accept: 'application/vnd.github.v3+json'
-      }
-    });
-    if (existing.ok) {
-      const existingJson = await existing.json();
-      sha = existingJson.sha;
-    }
-
-    const encoder = new TextEncoder();
-    const utf8Bytes = encoder.encode(JSON.stringify(dataToSave, null, 2));
-    let binary = '';
-    for (let i = 0; i < utf8Bytes.length; i++) {
-      binary += String.fromCharCode(utf8Bytes[i]);
-    }
-    const content = btoa(binary);
-    const body = {
-      message: 'STOKDOSYA otomatik kayıt',
-      content: content
-    };
-    if (sha) body.sha = sha;
-
-    const resp = await fetch(url, {
-      method: 'PUT',
-      headers: {
-        Authorization: 'token ' + getGithubConfig().token,
-        Accept: 'application/vnd.github.v3+json',
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(body)
-    });
-
-    if (!resp.ok) {
-      const errText = await resp.text();
-      throw new Error('GitHub yazma hatası: ' + resp.status + ' — ' + errText);
-    }
-
-    document.getElementById('cloud-status-text').textContent = '✅ GitHub: eşitlendi';
-  } catch (e) {
-    document.getElementById('cloud-status-text').textContent = '⚠️ GitHub: ' + e.message;
-  } finally {
-    _syncLock = false;
-  }
-}
 
 function initData() {
   if (!data.users) data.users = [];
@@ -139,11 +26,9 @@ function initData() {
     if (!u.password) u.password = '';
   });
   if (!data.settings) data.settings = {};
-  if (!data.settings.apiUrl) data.settings.apiUrl = '';
   if (!data.settings.autoBackupTime) data.settings.autoBackupTime = '17:00';
   if (data.settings.autoBackupEnabled === undefined) data.settings.autoBackupEnabled = false;
   if (!data.settings.theme) data.settings.theme = 'light';
-  if (!data.settings.autoSync) data.settings.autoSync = true;
   if (!data.products) data.products = {};
   if (!data.transactions) data.transactions = [];
   if (!data.tenders) data.tenders = [];
@@ -160,55 +45,28 @@ function initData() {
   }
 }
 
-// ----- DRIVE SENKRONİZASYON -----
-async function driveKaydet() {
-  const url = getApiUrl();
-  if (!url || _syncLock) return;
-  _syncLock = true;
-  try {
-    // no-cors ile çalışması için form verisi olarak gönder
-    const formData = new URLSearchParams();
-    formData.append('action', 'save');
-    formData.append('data', JSON.stringify(data));
-    await fetch(url, {
-      method: 'POST', mode: 'no-cors',
-      body: formData
-    });
-    document.getElementById('cloud-status-text').textContent = 'Bulut: eşitlendi ✅';
-  } catch (e) {
-    document.getElementById('cloud-status-text').textContent = 'Bulut: bağlantı hatası ⚠';
-  } finally {
-    _syncLock = false;
-  }
-}
 
-async function driveYukle() {
-  return null; // Google Drive desteği kaldırıldı, GitHub kullanın
-}
-
-function getLocalSettings() {
-  try {
-    const raw = localStorage.getItem(DATA_KEY);
-    if (raw) {
-      const cached = JSON.parse(raw);
-      return cached.settings || {};
-    }
-  } catch (e) {}
-  return {};
-}
 
 async function loadData() {
-  // Önce GitHub'dan yüklemeyi dene
-  const githubData = await githubLoad();
-  if (githubData) {
-    data = githubData;
-    data.settings = { ...data.settings, ...getLocalSettings() };
-    initData();
-    saveDataLocal();
-    return;
+  // Google Sheets'ten veri çek
+  try {
+    const resp = await fetch(GOOGLE_SCRIPT_URL);
+    if (resp.ok) {
+      const jsonStr = await resp.text();
+      const parsed = JSON.parse(jsonStr);
+      if (parsed && parsed.products) {
+        data = parsed;
+        document.getElementById('cloud-status-text').textContent = '✅ Google Sheets: veri yüklendi';
+        initData();
+        saveDataLocal();
+        return;
+      }
+    }
+  } catch (e) {
+    document.getElementById('cloud-status-text').textContent = '⚠️ Google Sheets: ' + e.message;
   }
 
-  // GitHub yoksa localStorage'a bak (cache)
+  // Sheets yoksa localStorage'a bak (cache)
   try {
     const raw = localStorage.getItem(DATA_KEY);
     if (raw) {
@@ -228,15 +86,21 @@ function saveDataLocal() {
 
 function saveData() {
   saveDataLocal();
-  // Otomatik GitHub senkronu
-  if (data.settings && data.settings.autoSync && githubApiUrl()) {
-    // Token'ı GitHub'a gönderilen veriden temizle (409 hatasını önler)
-    const cleanData = JSON.parse(JSON.stringify(data));
-    if (cleanData.settings && cleanData.settings.github) {
-      delete cleanData.settings.github.token;
-    }
-    githubSave(cleanData);
-  }
+  // Google Sheets'e POST ile kaydet
+  if (_syncLock) return;
+  _syncLock = true;
+  fetch(GOOGLE_SCRIPT_URL, {
+    method: 'POST',
+    mode: 'no-cors',
+    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+    body: JSON.stringify(data)
+  }).then(() => {
+    document.getElementById('cloud-status-text').textContent = '✅ Google Sheets: kaydedildi';
+  }).catch((e) => {
+    document.getElementById('cloud-status-text').textContent = '⚠️ Google Sheets: ' + e.message;
+  }).finally(() => {
+    _syncLock = false;
+  });
 }
 
 // ----- TEMA -----
@@ -1605,7 +1469,7 @@ function refreshSettings() {
 
   // Cloud status badge
   const badge = document.getElementById('cloud-status-badge');
-  if (githubApiUrl()) {
+  if (GOOGLE_SCRIPT_URL) {
     badge.style.borderColor = 'var(--success)';
     badge.style.color = 'var(--success)';
   } else {
@@ -1736,12 +1600,6 @@ function resetAllData() {
     initData();
 
     saveData();
-
-    // GitHub'a da sıfırlanmış veriyi gönder
-    if (githubApiUrl()) {
-      document.getElementById('loading-text').textContent = 'GitHub senkronize ediliyor...';
-      await githubSave(data);
-    }
 
     overlay.style.display = 'none';
     toast('✅ Depo tamamen sıfırlandı! Baştan başlayabilirsiniz.', 'success');
