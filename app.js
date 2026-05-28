@@ -127,37 +127,6 @@ async function githubSave(dataToSave) {
   }
 }
 
-async function githubTest() {
-  const c = getGithubConfig();
-  if (!c.owner || !c.repo || !c.token) {
-    toast('GitHub bilgileri eksik!', 'error');
-    return;
-  }
-  const overlay = document.getElementById('loading-overlay');
-  overlay.style.display = 'flex';
-  document.getElementById('loading-text').textContent = 'GitHub bağlantısı test ediliyor...';
-  try {
-    const resp = await fetch(`https://api.github.com/repos/${c.owner}/${c.repo}`, {
-      headers: {
-        Authorization: 'token ' + c.token,
-        Accept: 'application/vnd.github.v3+json'
-      }
-    });
-    const json = await resp.json();
-    if (resp.ok) {
-      toast(`✅ GitHub bağlantısı başarılı! Depo: ${json.full_name}`, 'success');
-      document.getElementById('connection-status').innerHTML =
-        `<span style="color:var(--success);">✅ GitHub: ${json.full_name} — ${json.private ? 'Gizli' : 'Açık'} repo</span>`;
-    } else {
-      toast('❌ GitHub hatası: ' + (json.message || 'bilinmiyor'), 'error');
-    }
-  } catch (e) {
-    toast('❌ Bağlantı hatası: ' + e.message, 'error');
-  } finally {
-    overlay.style.display = 'none';
-  }
-}
-
 function initData() {
   if (!data.users) data.users = [];
   if (!data.users.length) {
@@ -1555,16 +1524,6 @@ function refreshSettings() {
     </li>`;
   }).join('');
 
-  // GitHub Ayarları — token localStorage'dan gelir
-  const gh = data.settings.github || {};
-  document.getElementById('github-owner').value = gh.owner || HARD_CODED_GITHUB.owner || '';
-  document.getElementById('github-repo').value = gh.repo || HARD_CODED_GITHUB.repo || '';
-  document.getElementById('github-path').value = gh.path || HARD_CODED_GITHUB.path || '';
-  document.getElementById('github-token').value = localStorage.getItem('stokdosya_github_token') || '';
-
-  // Otomatik senkron
-  document.getElementById('auto-sync-toggle').checked = data.settings.autoSync !== false;
-
   // Cloud status badge
   const badge = document.getElementById('cloud-status-badge');
   if (githubApiUrl()) {
@@ -1639,51 +1598,7 @@ document.getElementById('active-user-select').addEventListener('change', (e) => 
   toast(`Aktif kullanıcı: ${data.activeUser}`, 'info');
 });
 
-// ----- GITHUB AYARLARI -----
-document.getElementById('save-api-btn').addEventListener('click', () => {
-  const owner = document.getElementById('github-owner').value.trim();
-  const repo = document.getElementById('github-repo').value.trim();
-  const path = document.getElementById('github-path').value.trim();
-  const token = document.getElementById('github-token').value.trim();
 
-  if (!data.settings.github) data.settings.github = {};
-  data.settings.github.owner = owner;
-  data.settings.github.repo = repo;
-  data.settings.github.path = path;
-  // Token'ı localStorage'a kaydet, data.settings'e asla ekleme (GitHub sync'tan temiz kalsın)
-  if (token) localStorage.setItem('stokdosya_github_token', token);
-  else localStorage.removeItem('stokdosya_github_token');
-  saveDataLocal();
-
-  const status = document.getElementById('connection-status');
-  if (owner && repo && token) {
-    status.innerHTML = '<span style="color:var(--success);">✅ GitHub bilgileri kaydedildi. "Test Et" ile bağlantıyı doğrulayın.</span>';
-  } else {
-    status.innerHTML = '<span style="color:var(--text-secondary);">ℹ️ GitHub bilgileri temizlendi.</span>';
-  }
-  toast('GitHub ayarları kaydedildi.', 'success');
-  refreshSettings();
-});
-
-document.getElementById('test-connection-btn').addEventListener('click', githubTest);
-
-document.getElementById('sync-now-btn').addEventListener('click', async () => {
-  if (!githubApiUrl()) { toast('GitHub bilgileri eksik. Ayarları doldurun.', 'error'); return; }
-
-  const overlay = document.getElementById('loading-overlay');
-  overlay.style.display = 'flex';
-  document.getElementById('loading-text').textContent = 'GitHub\'a kaydediliyor...';
-
-  try {
-    await githubSave(data);
-    toast('✅ Tüm veriler GitHub\'a kaydedildi!', 'success');
-  } catch (err) {
-    toast('GitHub kayıt hatası: ' + err.message, 'error');
-  } finally {
-    overlay.style.display = 'none';
-    refreshSettings();
-  }
-});
 
 // ----- YEDEKLEME -----
 document.getElementById('backup-btn').addEventListener('click', () => {
@@ -1939,12 +1854,6 @@ document.addEventListener('DOMContentLoaded', () => {
   if (personSelect) {
     personSelect.addEventListener('change', refreshDailyView);
   }
-
-  // Otomatik senkron aç/kapa
-  document.getElementById('auto-sync-toggle').addEventListener('change', (e) => {
-    data.settings.autoSync = e.target.checked;
-    saveDataLocal();
-  });
 
   // Önce veriyi yükle, bitince arayüzü çiz
   loadData().then(() => {
