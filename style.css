@@ -61,7 +61,7 @@ body {
   border-right: 1px solid var(--border-color);
   display: flex; flex-direction: column; padding: 0;
   position: fixed; top: 0; left: 0; bottom: 0;
-  z-index: 100; overflow-y: auto;
+  z-index: 9999 !important; overflow-y: auto;
 }
 .sidebar::-webkit-scrollbar { width: 4px; }
 .sidebar::-webkit-scrollbar-thumb { background: var(--border-color); border-radius: 4px; }
@@ -352,7 +352,7 @@ input[type="file"].form-control { padding: 8px; }
 
 @media (max-width: 480px) {
   .mobile-menu-btn { display: flex !important; }
-  .sidebar { transform: translateX(-100%); width: 260px !important; transition: transform 0.3s ease; z-index: 1100; border-right: 0; }
+  .sidebar { transform: translateX(-100%); width: 260px !important; transition: transform 0.3s ease; z-index: 9999 !important; border-right: 0; }
   .sidebar.open { transform: translateX(0); }
   .sidebar.open .brand h1, .sidebar.open .nav-item span,
   .sidebar.open .nav-group h4, .sidebar.open .user-details,
@@ -363,7 +363,7 @@ input[type="file"].form-control { padding: 8px; }
   .sidebar.open .nav-item { justify-content: flex-start; padding: 10px 12px; }
   .sidebar.open .nav-item i { width: 20px; }
   .sidebar.open #months-menu { display: flex; }
-  .sidebar-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 1050; }
+  .sidebar-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 9990; }
   .sidebar-overlay.show { display: block; }
   .main-content { margin-left: 0 !important; }
   .top-bar { padding: 8px 10px; }
